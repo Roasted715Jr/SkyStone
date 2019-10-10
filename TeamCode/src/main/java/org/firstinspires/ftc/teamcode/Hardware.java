@@ -11,17 +11,24 @@ public class Hardware<T extends GenericOpMode> {
     private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
     private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
     //    private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
-    private static final double TURN_SPEED = 0.25;
+//    private static final double TURN_SPEED = 0.25;
+    private static final double JOY_DEADZONE = 0.05;
+//    private static final double VAL = 0.5 / (Math.sqrt(2) / 2);
+    private static final double VAL = 1;
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
     private static final int TINY_BOT = 2;
-    private static final int ROBOT_TYPE = MAIN_BOT;
+    private static final int MECANUM_PUSHBOT = 3;
+    private static final int ROBOT_TYPE = MECANUM_PUSHBOT;
 
     static final String VUFORIA_LICENSE_KEY = "Abq1tHr/////AAABmYC8ioniS0f2gyQRx7fZlTWMwyYcrV/bnslJvcDe0AhxA/GAkYTIdNbPWjYtplipzvASUZRGR+AoGDI1dKyuCFCc4qy1eVbx8NO4nuAKzeGoncY7acvfol19suW5Zl29E+APEV0CG4GVBe4R+bZ/Xyd2E7CZ7AcrLbWM8+SJiMCDnxJa3J0ozBHMPMs6GNFyYS6YCVNMkFcLEKxDicwXqpuJddG5XenbAs8ot9UT11WRYZjpprLkSRtM1/OyigcUeb0wk2PL6lFVBMHMZbWK5HkJEmBoN5+v2fP6zouj0GPGyEh/eV8Xe71LhBz0WXKd180hUCowZVBfdsTtuYwFiBkAyRLtiQQb4/b80sAx1b6s";
 
     private static int PINION_TEETH;
     private static int SPUR_TEETH;
+    private static double xMult;
+    private static double yMult;
+    private static double rMult;
 
     DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
     DcMotor rightMotor, leftMotor; //For the baby bots
@@ -52,12 +59,16 @@ public class Hardware<T extends GenericOpMode> {
                 PINION_TEETH = 1;
                 SPUR_TEETH = 1;
                 break;
-            case TINY_BOT:
-                rightMotor = hardwareMap.get(DcMotor.class, "driveR");
-                leftMotor = hardwareMap.get(DcMotor.class, "driveL");
-                setSimpleMotorPowers(0);
-                setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            case MECANUM_PUSHBOT:
+                flMotor = hardwareMap.get(DcMotor.class, "frontL");
+                blMotor = hardwareMap.get(DcMotor.class, "backL");
+                frMotor = hardwareMap.get(DcMotor.class, "frontR");
+                brMotor = hardwareMap.get(DcMotor.class, "backR");
+                frMotor.setDirection(DcMotor.Direction.REVERSE);
+                brMotor.setDirection(DcMotor.Direction.REVERSE);
+                setMecanumMotorPowers(0, 0, 0);
+                setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 PINION_TEETH = 1;
                 SPUR_TEETH = 1;
@@ -73,14 +84,44 @@ public class Hardware<T extends GenericOpMode> {
                 PINION_TEETH = 1;
                 SPUR_TEETH = 1;
                 break;
+            case TINY_BOT:
+                rightMotor = hardwareMap.get(DcMotor.class, "driveR");
+                leftMotor = hardwareMap.get(DcMotor.class, "driveL");
+                setSimpleMotorPowers(0);
+                setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                PINION_TEETH = 1;
+                SPUR_TEETH = 1;
+                break;
         }
     }
 
     void setMecanumMotorPowers(double x, double y, double r) {
-        flMotor.setPower(x * (0.4) + y * (0.4) + r * (0.2));
-        blMotor.setPower(-x * (0.4) + y * (0.4) + r * (0.2));
-        frMotor.setPower(-x * (0.4) + y * (0.4) - r * (0.2));
-        brMotor.setPower(x * (0.4) + y * (0.4) - r * (0.2));
+        //Turn speed is half of x or y
+        //x and y speed are the same
+//        xMult = 0.4;
+//        yMult = 0.4;
+//        rMult = 0.2;
+
+//        xMult = 1;
+//        yMult = 1;
+//        rMult = 1;
+
+        xMult = VAL;
+        yMult = VAL;
+        rMult = VAL;
+
+//        xMult = VAL * 2 / 5;
+//        yMult = VAL * 2 / 5;
+//        rMult = VAL / 5;
+
+        //When at 45 deg on left stick, multiply by 0.704 (or 1/2 / (sqrt(2) / 2)) to get optimal x and y
+
+        flMotor.setPower(x * xMult + y * yMult + r * rMult);
+        blMotor.setPower(-x * xMult + y * yMult + r * rMult);
+        frMotor.setPower(-x * xMult + y * yMult - r * rMult);
+        brMotor.setPower(x * xMult + y * yMult - r * rMult);
     }
 
     void setSimpleMotorPowers(double power) {

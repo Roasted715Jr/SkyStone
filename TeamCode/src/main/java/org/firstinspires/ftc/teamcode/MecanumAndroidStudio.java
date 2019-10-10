@@ -20,9 +20,9 @@ public class MecanumAndroidStudio extends GenericOpMode {
 
             robot.setMecanumMotorPowers(x, y, r);
 
-            telemetry.addData("x", "%.2f", x);
-            telemetry.addData("y", "%.2f", y);
-            telemetry.addData("r", "%.2f", r);
+            telemetry.addData("x", "%.5f", x);
+            telemetry.addData("y", "%.5f", y);
+            telemetry.addData("r", "%.5f", r);
             telemetry.update();
         }
     }
