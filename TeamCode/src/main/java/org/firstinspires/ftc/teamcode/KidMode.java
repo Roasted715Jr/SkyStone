@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Mecanum Android Studio", group = "Android Studio")
-public class MecanumAndroidStudio extends GenericOpMode {
-    private Hardware<MecanumAndroidStudio> robot = new Hardware<>(this);
+@TeleOp(name = "KidMode", group = "Android Studio")
+public class KidMode extends GenericOpMode {
+    private Hardware<KidMode> robot = new Hardware<>(this);
 
-    private final double MOTOR_MULT = 1;
+    private final double MOTOR_MULT = 0.5;
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);

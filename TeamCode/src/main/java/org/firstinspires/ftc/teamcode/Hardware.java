@@ -13,8 +13,7 @@ public class Hardware<T extends GenericOpMode> {
     //    private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
 //    private static final double TURN_SPEED = 0.25;
     private static final double JOY_DEADZONE = 0.05;
-//    private static final double VAL = 0.5 / (Math.sqrt(2) / 2);
-    private static final double VAL = 1;
+//    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
@@ -108,20 +107,16 @@ public class Hardware<T extends GenericOpMode> {
 //        yMult = 1;
 //        rMult = 1;
 
-        xMult = VAL;
-        yMult = VAL;
-        rMult = VAL;
-
-//        xMult = VAL * 2 / 5;
-//        yMult = VAL * 2 / 5;
-//        rMult = VAL / 5;
+//        xMult = MOTOR_MULTIPLIER * 2 / 5;
+//        yMult = MOTOR_MULTIPLIER * 2 / 5;
+//        rMult = MOTOR_MULTIPLIER / 5;
 
         //When at 45 deg on left stick, multiply by 0.704 (or 1/2 / (sqrt(2) / 2)) to get optimal x and y
 
-        flMotor.setPower(x * xMult + y * yMult + r * rMult);
-        blMotor.setPower(-x * xMult + y * yMult + r * rMult);
-        frMotor.setPower(-x * xMult + y * yMult - r * rMult);
-        brMotor.setPower(x * xMult + y * yMult - r * rMult);
+        flMotor.setPower(x + y + r);
+        blMotor.setPower(-x + y + r);
+        frMotor.setPower(-x + y - r);
+        brMotor.setPower(x + y - r);
     }
 
     void setSimpleMotorPowers(double power) {
