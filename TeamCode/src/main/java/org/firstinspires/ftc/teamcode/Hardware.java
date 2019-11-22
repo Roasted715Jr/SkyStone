@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 public class Hardware<T extends GenericOpMode> {
     private static final double INCH_PER_MM = 0.03937007874;
@@ -11,15 +14,16 @@ public class Hardware<T extends GenericOpMode> {
     private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
     private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
     //    private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
+    private static final double EXTERNAL_COUNTS_PER_REVOLUTION = 8192;
 //    private static final double TURN_SPEED = 0.25;
-    private static final double JOY_DEADZONE = 0.05;
+//    private static final double JOY_DEADZONE = 0.05;
 //    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
     private static final int TINY_BOT = 2;
     private static final int MECANUM_PUSHBOT = 3;
-    private static final int ROBOT_TYPE = MECANUM_PUSHBOT;
+    private static final int ROBOT_TYPE = MATT_TINY_BOT;
 
     static final String VUFORIA_LICENSE_KEY = "Abq1tHr/////AAABmYC8ioniS0f2gyQRx7fZlTWMwyYcrV/bnslJvcDe0AhxA/GAkYTIdNbPWjYtplipzvASUZRGR+AoGDI1dKyuCFCc4qy1eVbx8NO4nuAKzeGoncY7acvfol19suW5Zl29E+APEV0CG4GVBe4R+bZ/Xyd2E7CZ7AcrLbWM8+SJiMCDnxJa3J0ozBHMPMs6GNFyYS6YCVNMkFcLEKxDicwXqpuJddG5XenbAs8ot9UT11WRYZjpprLkSRtM1/OyigcUeb0wk2PL6lFVBMHMZbWK5HkJEmBoN5+v2fP6zouj0GPGyEh/eV8Xe71LhBz0WXKd180hUCowZVBfdsTtuYwFiBkAyRLtiQQb4/b80sAx1b6s";
 
@@ -29,8 +33,10 @@ public class Hardware<T extends GenericOpMode> {
     private static double yMult;
     private static double rMult;
 
-    DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
-    DcMotor rightMotor, leftMotor; //For the baby bots
+    //Ctrl+Q or Ctrl+Shift+I for documentation and definition
+    private DistanceSensor distanceSensor;
+    private DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
+    private DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
     private T runningOpMode;
 
@@ -52,6 +58,7 @@ public class Hardware<T extends GenericOpMode> {
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 //Init other sensors
+                //3 encoders
 
                 //Init gyro?
 
@@ -80,6 +87,8 @@ public class Hardware<T extends GenericOpMode> {
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+                distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+
                 PINION_TEETH = 1;
                 SPUR_TEETH = 1;
                 break;
@@ -94,6 +103,10 @@ public class Hardware<T extends GenericOpMode> {
                 SPUR_TEETH = 1;
                 break;
         }
+    }
+
+    public DistanceSensor getDistanceSensor() {
+        return distanceSensor;
     }
 
     void setMecanumMotorPowers(double x, double y, double r) {
@@ -146,5 +159,17 @@ public class Hardware<T extends GenericOpMode> {
     private void setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         rightMotor.setZeroPowerBehavior(zeroPowerBehavior);
         leftMotor.setZeroPowerBehavior(zeroPowerBehavior);
+    }
+
+    private void goToRelativePos(Position pos, double r) {
+
+    }
+
+    private Position getOdometryDistance() {
+        return new Position();
+    }
+
+    private double getOdometryRotation() {
+        return 0;
     }
 }
