@@ -80,7 +80,6 @@ public class AutonProcedures<T extends GenericOpMode> {
     // For convenience, gather together all the trackable objects in one easily-iterable collection */
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
-    OpenGLMatrix robotLocationTransform;
     VectorF translation;
     Orientation rotation;
 
@@ -97,37 +96,38 @@ public class AutonProcedures<T extends GenericOpMode> {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
+        //For if we don't need to see what is in the camera frame
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
         stoneTarget = targetsSkyStone.get(0);
-        blueRearBridge = targetsSkyStone.get(1);
-        redRearBridge = targetsSkyStone.get(2);
-        redFrontBridge = targetsSkyStone.get(3);
-        blueFrontBridge = targetsSkyStone.get(4);
-        red1 = targetsSkyStone.get(5);
-        red2 = targetsSkyStone.get(6);
-        front1 = targetsSkyStone.get(7);
-        front2 = targetsSkyStone.get(8);
-        blue1 = targetsSkyStone.get(9);
-        blue2 = targetsSkyStone.get(10);
-        rear1 = targetsSkyStone.get(11);
-        rear2 = targetsSkyStone.get(12);
-
         stoneTarget.setName("Stone Target");
+        blueRearBridge = targetsSkyStone.get(1);
         blueRearBridge.setName("Blue Rear Bridge");
+        redRearBridge = targetsSkyStone.get(2);
         redRearBridge.setName("Red Rear Bridge");
+        redFrontBridge = targetsSkyStone.get(3);
         redFrontBridge.setName("Red Front Bridge");
+        blueFrontBridge = targetsSkyStone.get(4);
         blueFrontBridge.setName("Blue Front Bridge");
+        red1 = targetsSkyStone.get(5);
         red1.setName("Red Perimeter 1");
+        red2 = targetsSkyStone.get(6);
         red2.setName("Red Perimeter 2");
+        front1 = targetsSkyStone.get(7);
         front1.setName("Front Perimeter 1");
+        front2 = targetsSkyStone.get(8);
         front2.setName("Front Perimeter 2");
+        blue1 = targetsSkyStone.get(9);
         blue1.setName("Blue Perimeter 1");
+        blue2 = targetsSkyStone.get(10);
         blue2.setName("Blue Perimeter 2");
+        rear1 = targetsSkyStone.get(11);
         rear1.setName("Rear Perimeter 1");
+        rear2 = targetsSkyStone.get(12);
         rear2.setName("Rear Perimeter 2");
+
         allTrackables.addAll(targetsSkyStone);
 
         // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
@@ -231,6 +231,7 @@ public class AutonProcedures<T extends GenericOpMode> {
         }
 
         thread.interrupt();
+        targetsSkyStone.deactivate();
         runningOpMode.addTelemetry("Done");
         runningOpMode.updateTelemetry();
     }
@@ -245,7 +246,7 @@ public class AutonProcedures<T extends GenericOpMode> {
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
-                robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
