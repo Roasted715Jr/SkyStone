@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Mecanum Android Studio", group = "Android Studio")
-public class MecanumAndroidStudio extends GenericOpMode {
-    private Hardware<MecanumAndroidStudio> robot = new Hardware<>(this);
-
-    private final double MOTOR_MULT = 1;
+@TeleOp(name = "SkyStone", group = "SkyStone")
+public class SkyStoneTeleOp extends GenericOpMode {
+    private Hardware<SkyStoneTeleOp> robot = new Hardware<>(this);
 
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
@@ -20,7 +18,7 @@ public class MecanumAndroidStudio extends GenericOpMode {
             y = -gamepad1.left_stick_y;
             r = gamepad1.right_stick_x;
 
-            robot.setMecanumMotorPowers(x * MOTOR_MULT, y * MOTOR_MULT, r * MOTOR_MULT);
+            robot.setMecanumMotorPowers(x, y, r);
 
             telemetry.addData("x", "%.5f", x);
             telemetry.addData("y", "%.5f", y);
