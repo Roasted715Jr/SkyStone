@@ -133,16 +133,16 @@ public class Hardware<T extends GenericOpMode> {
 
         //When at 45 deg on left stick, multiply by 0.704 (or 1/2 / (sqrt(2) / 2)) to get optimal x and y
 
-        flMotor.setPower(x + y + r);
-        blMotor.setPower(-x + y + r);
-        frMotor.setPower(-x + y - r);
-        brMotor.setPower(x + y - r);
-
-        //For the sideways configuration
 //        flMotor.setPower(x + y + r);
 //        blMotor.setPower(-x + y + r);
-//        frMotor.setPower(-(-x + y - r));
-//        brMotor.setPower(-(x + y - r));
+//        frMotor.setPower(-x + y - r);
+//        brMotor.setPower(x + y - r);
+
+        //For the sideways configuration
+        flMotor.setPower(x + y + r);
+        blMotor.setPower(-x + y + r);
+        frMotor.setPower(-(-x + y - r));
+        brMotor.setPower(-(x + y - r));
     }
 
     void setSimpleMotorPowers(double power) {
