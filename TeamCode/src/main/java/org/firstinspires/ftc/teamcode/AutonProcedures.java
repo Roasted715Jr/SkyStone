@@ -272,15 +272,15 @@ public class AutonProcedures<T extends GenericOpMode> {
         if (targetVisible) {
             // express position (translation) of robot in inches.
             translation = lastLocation.getTranslation();
-//            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-//                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
             // express the rotation of the robot in degrees.
-//            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-//            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {
-//            runningOpMode.addTelemetry("Visible Target", "none");
+            runningOpMode.addTelemetry("Visible Target", "none");
         }
 
 //        runningOpMode.updateTelemetry();
