@@ -28,10 +28,11 @@ public class Auton extends GenericOpMode {
         while (opModeIsActive()) {
             if (isStopRequested()) {
                 autonProcedures.running = false; //For testing purposes
-//                thread.interrupt();
             }
 
 //            telemetry.update();
         }
+
+        thread.stop();
     }
 }

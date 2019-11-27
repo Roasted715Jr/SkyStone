@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
@@ -38,6 +39,7 @@ public class Hardware<T extends GenericOpMode> {
     private DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
     private DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
+    Servo armServo, clawServo, lFoundationServo, rFoundationServo;
     private T runningOpMode;
 
     Hardware(T runningOpMode) {
@@ -56,6 +58,11 @@ public class Hardware<T extends GenericOpMode> {
                 setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                armServo = hardwareMap.get(Servo.class, "armServo"); //Vertical is at 0.3
+                clawServo = hardwareMap.get(Servo.class, "clawServo");
+                rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
+                lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
 
                 //Init other sensors
                 //3 encoders
