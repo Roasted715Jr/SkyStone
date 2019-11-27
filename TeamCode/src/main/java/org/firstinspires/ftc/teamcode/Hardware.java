@@ -87,7 +87,7 @@ public class Hardware<T extends GenericOpMode> {
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+//                distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
                 PINION_TEETH = 1;
                 SPUR_TEETH = 1;

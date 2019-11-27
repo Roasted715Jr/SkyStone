@@ -26,6 +26,13 @@ public class AutonProcedures<T extends GenericOpMode> {
     private T runningOpMode;
     boolean running = true; //Just for testing purposes
 
+    //These align with their respective coordinate quadrants
+    private static final int START_BLUE_FOUNDATION = 1;
+    private static final int START_BLUE_SKYSTONE = 2;
+    private static final int START_RED_SKYSTONE = 3;
+    private static final int START_RED_FOUNDATION = 4;
+    private int startSpot = 0;
+
     //Stuff for Vuforia
     private static final boolean PHONE_IS_PORTRAIT = false;
 
@@ -70,6 +77,8 @@ public class AutonProcedures<T extends GenericOpMode> {
     VuforiaTrackable blue2;
     VuforiaTrackable rear1;
     VuforiaTrackable rear2;
+
+    VuforiaTrackable target;
 
     // Next, translate the camera lens to where it is on the robot.
     // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
@@ -216,18 +225,20 @@ public class AutonProcedures<T extends GenericOpMode> {
             @Override
             public void run() {
                 while (!interrupted())
-                    updatePosition();
+                    target = updatePosition();
             }
         });
 
         thread.start();
 
-        runningOpMode.addTelemetry("This is the first step");
-        runningOpMode.updateTelemetry();
-        //func();
+//        runningOpMode.addTelemetry("This is the first step");
+//        runningOpMode.updateTelemetry();
+
+        startSpot = getStartSpot();
 
         while (running) {
-
+            runningOpMode.addTelemetry("Starting spot", startSpot);
+            runningOpMode.updateTelemetry();
         }
 
         thread.interrupt();
@@ -236,13 +247,16 @@ public class AutonProcedures<T extends GenericOpMode> {
         runningOpMode.updateTelemetry();
     }
 
-    void updatePosition() {
+    VuforiaTrackable updatePosition() {
+        VuforiaTrackable target = null;
+
         // check all the trackable targets to see which one (if any) is visible.
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
                 runningOpMode.addTelemetry("Visible Target", trackable.getName());
                 targetVisible = true;
+                target = trackable;
 
                 // getUpdatedRobotLocation() will return null if no new information is available since
                 // the last time that call was made, or if the trackable is not currently visible.
@@ -258,15 +272,45 @@ public class AutonProcedures<T extends GenericOpMode> {
         if (targetVisible) {
             // express position (translation) of robot in inches.
             translation = lastLocation.getTranslation();
-            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+//            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+//                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
             // express the rotation of the robot in degrees.
-            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+//            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+//            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {
-            runningOpMode.addTelemetry("Visible Target", "none");
+//            runningOpMode.addTelemetry("Visible Target", "none");
         }
+
+//        runningOpMode.updateTelemetry();
+
+        return target;
+    }
+
+    int getStartSpot() {
+        //Wait for the target to become identified
+        while (updatePosition() == null) {
+            runningOpMode.addTelemetry("Finding Starting Spot");
+            runningOpMode.updateTelemetry();
+        }
+
+        int pos = 0;
+        float x = translation.get(0);
+        float y = translation.get(1);
+
+        if (y > 0) {
+            if (x > 0)
+                pos = 1;
+            else
+                pos = 2;
+        } else {
+            if (x > 0)
+                pos = 4;
+            else
+                pos = 3;
+        }
+
+        return pos;
     }
 }
