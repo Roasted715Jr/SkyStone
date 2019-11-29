@@ -221,15 +221,18 @@ public class AutonProcedures<T extends GenericOpMode> {
     void start() {
         targetsSkyStone.activate();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!interrupted())
-                    target = updatePosition();
-            }
-        });
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (!interrupted())
+//                    target = updatePosition();
+//            }
+//        });
+//
+//        thread.start();
 
-        thread.start();
+        while (target == null)
+            target = updatePosition();
 
 //        runningOpMode.addTelemetry("This is the first step");
 //        runningOpMode.updateTelemetry();
@@ -243,10 +246,10 @@ public class AutonProcedures<T extends GenericOpMode> {
             case START_BLUE_FOUNDATION:
                 break;
             case START_BLUE_SKYSTONE:
-                skyStonePos = getSkyStonePosition();
+//                skyStonePos = getSkyStonePosition();
                 break;
             case START_RED_SKYSTONE:
-                skyStonePos = getSkyStonePosition();
+//                skyStonePos = getSkyStonePosition();
                 break;
             case START_RED_FOUNDATION:
                 break;
@@ -259,7 +262,8 @@ public class AutonProcedures<T extends GenericOpMode> {
             runningOpMode.updateTelemetry();
         }
 
-        thread.interrupt();
+//        thread.interrupt();
+//        thread.stop();
         targetsSkyStone.deactivate();
         runningOpMode.addTelemetry("Done");
         runningOpMode.updateTelemetry();
@@ -332,57 +336,57 @@ public class AutonProcedures<T extends GenericOpMode> {
         return pos;
     }
 
-    VectorF getSkyStonePosition() {
-        while (findTarget(stoneTarget) == null) {
-            runningOpMode.addTelemetry("Finding Skystone");
-            runningOpMode.updateTelemetry();
-        }
+//    VectorF getSkyStonePosition() {
+//        while (findTarget(stoneTarget) == null) {
+//            runningOpMode.addTelemetry("Finding Skystone");
+//            runningOpMode.updateTelemetry();
+//        }
+//
+//        return translation;
+//    }
 
-        return translation;
-    }
-
-    VuforiaTrackable findTarget(VuforiaTrackable target) {
-        VuforiaTrackable foundTarget = null;
-
-        // check all the trackable targets to see which one (if any) is visible.
-        targetVisible = false;
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                runningOpMode.addTelemetry("Visible Target", trackable.getName());
-                targetVisible = true;
-                foundTarget = trackable;
-
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                break;
-            }
-        }
-
-        // Provide feedback as to where the robot is located (if we know).
-        if (targetVisible) {
-            // express position (translation) of robot in inches.
-            translation = lastLocation.getTranslation();
-            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
-
-            // express the rotation of the robot in degrees.
-            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-        }
-        else {
-            runningOpMode.addTelemetry("Visible Target", "none");
-        }
-
-//        runningOpMode.updateTelemetry();
-
-        //Use this recursive boi
-        if (foundTarget == null)
-            foundTarget = findTarget(target);
-
-        return foundTarget;
-    }
+//    VuforiaTrackable findTarget(VuforiaTrackable target) {
+//        VuforiaTrackable foundTarget = null;
+//
+//        // check all the trackable targets to see which one (if any) is visible.
+//        targetVisible = false;
+//        for (VuforiaTrackable trackable : allTrackables) {
+//            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+//                runningOpMode.addTelemetry("Visible Target", trackable.getName());
+//                targetVisible = true;
+//                foundTarget = trackable;
+//
+//                // getUpdatedRobotLocation() will return null if no new information is available since
+//                // the last time that call was made, or if the trackable is not currently visible.
+//                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+//                if (robotLocationTransform != null) {
+//                    lastLocation = robotLocationTransform;
+//                }
+//                break;
+//            }
+//        }
+//
+//        // Provide feedback as to where the robot is located (if we know).
+//        if (targetVisible) {
+//            // express position (translation) of robot in inches.
+//            translation = lastLocation.getTranslation();
+//            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+//                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+//
+//            // express the rotation of the robot in degrees.
+//            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+//            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+//        }
+//        else {
+//            runningOpMode.addTelemetry("Visible Target", "none");
+//        }
+//
+////        runningOpMode.updateTelemetry();
+//
+//        //Use this recursive boi
+//        if (foundTarget == null)
+//            foundTarget = findTarget(target);
+//
+//        return foundTarget;
+//    }
 }

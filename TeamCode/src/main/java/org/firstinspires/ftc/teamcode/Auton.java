@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import static java.lang.Thread.interrupted;
 
-@Autonomous(name = "Autonomous", group = "Android Studio")
+@Autonomous(name = "Autonomous", group = "SkyStone")
 public class Auton extends GenericOpMode {
     Hardware<Auton> robot = new Hardware<>(this);
     AutonProcedures<Auton> autonProcedures = new AutonProcedures<>();
@@ -33,6 +33,7 @@ public class Auton extends GenericOpMode {
 //            telemetry.update();
         }
 
-        thread.stop();
+        thread.interrupt();
+//        thread.stop();
     }
 }

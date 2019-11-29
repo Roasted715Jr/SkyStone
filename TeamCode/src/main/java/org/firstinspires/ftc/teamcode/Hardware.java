@@ -1,21 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
+//Length is 15.75
+//Width is 17.25
+
 public class Hardware<T extends GenericOpMode> {
     private static final double INCH_PER_MM = 0.03937007874;
-    private static final double WHEEL_DIAMETER_INCH = 100.965 * INCH_PER_MM;
+    private static final double WHEEL_DIAMETER_INCH = 100 * INCH_PER_MM;
     private static final double WHEEL_CIRCUMFERENCE_INCH = WHEEL_DIAMETER_INCH * Math.PI;
-    private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
-    private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
-    //    private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
-    private static final double EXTERNAL_COUNTS_PER_REVOLUTION = 8192;
+//    private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
+//    private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
+    private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
+//    private static final double EXTERNAL_COUNTS_PER_REVOLUTION = 8192;
 //    private static final double TURN_SPEED = 0.25;
 //    private static final double JOY_DEADZONE = 0.05;
 //    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
@@ -35,12 +41,16 @@ public class Hardware<T extends GenericOpMode> {
     private static double rMult;
 
     //Ctrl+Q or Ctrl+Shift+I for documentation and definition
+    RevColorSensorV3 rColor;
+    ColorSensor lColor;
     private DistanceSensor distanceSensor;
-    private DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
+    DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
     private DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
+    private Position pos;
     Servo armServo, clawServo, lFoundationServo, rFoundationServo;
     private T runningOpMode;
+    TouchSensor rTouch, lTouch;
 
     Hardware(T runningOpMode) {
         this.runningOpMode = runningOpMode;
@@ -64,13 +74,19 @@ public class Hardware<T extends GenericOpMode> {
                 rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
                 lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
 
+                rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
+//                lColor = hardwareMap.get(ColorSensor.class, "lColor");
+
+//                rTouch = hardwareMap.get(TouchSensor.class, "rTouch");
+//                lTouch = hardwareMap.get(TouchSensor.class, "lTouch");
+
                 //Init other sensors
                 //3 encoders
 
                 //Init gyro?
 
-                PINION_TEETH = 1;
-                SPUR_TEETH = 1;
+//                PINION_TEETH = 1;
+//                SPUR_TEETH = 1;
                 break;
             case MECANUM_PUSHBOT:
                 flMotor = hardwareMap.get(DcMotor.class, "frontL");
@@ -83,8 +99,8 @@ public class Hardware<T extends GenericOpMode> {
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                PINION_TEETH = 1;
-                SPUR_TEETH = 1;
+//                PINION_TEETH = 1;
+//                SPUR_TEETH = 1;
                 break;
             case MATT_TINY_BOT:
                 rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
@@ -150,14 +166,14 @@ public class Hardware<T extends GenericOpMode> {
         leftMotor.setPower(power);
     }
 
-    private void setMecanumMotorRunmodes(DcMotor.RunMode runMode) {
+    void setMecanumMotorRunmodes(DcMotor.RunMode runMode) {
         flMotor.setMode(runMode);
         blMotor.setMode(runMode);
         frMotor.setMode(runMode);
         brMotor.setMode(runMode);
     }
 
-    private void setSimpleMotorRunmodes(DcMotor.RunMode runMode) {
+    void setSimpleMotorRunmodes(DcMotor.RunMode runMode) {
         rightMotor.setMode(runMode);
         leftMotor.setMode(runMode);
     }
@@ -174,15 +190,31 @@ public class Hardware<T extends GenericOpMode> {
         leftMotor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
-    private void goToRelativePos(Position pos, double r) {
+    void moveDistance(double x, double y) {
+        setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        int xCounts = (int) (x / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
+        int yCounts = (int) (y / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
+
+        setMecanumTargetPositions(yCounts);
+
+        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
+
+        setMecanumMotorPowers(0, 1, 0);
     }
 
-    private Position getOdometryDistance() {
-        return new Position();
+    void setMecanumTargetPositions(int target) {
+        flMotor.setTargetPosition(target);
+        blMotor.setTargetPosition(target);
+        frMotor.setTargetPosition(-target);
+        brMotor.setTargetPosition(-target);
     }
 
-    private double getOdometryRotation() {
-        return 0;
-    }
+//    private Position getOdometryDistance() {
+//        return new Position();
+//    }
+
+//    private double getOdometryRotation() {
+//        return 0;
+//    }
 }
