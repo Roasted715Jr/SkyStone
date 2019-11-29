@@ -16,11 +16,12 @@ public class MovementTest extends GenericOpMode {
 
         waitForStart();
 
-        robot.moveDistance(0, 24);
+        robot.rampMotor(robot.frMotor, 1, true);
+
+//        robot.moveDistance(0, 5, 0);
 
         while (opModeIsActive()) {
-            telemetry.addData("Motor Value", robot.frMotor.getCurrentPosition());
-            telemetry.update();
+
         }
     }
 }

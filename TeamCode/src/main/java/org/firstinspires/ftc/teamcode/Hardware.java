@@ -190,24 +190,78 @@ public class Hardware<T extends GenericOpMode> {
         leftMotor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
-    void moveDistance(double x, double y) {
+    void moveDistance(double x, double y, double r) {
         setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int xCounts = (int) (x / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
         int yCounts = (int) (y / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
+        int rCounts = 0;
 
-        setMecanumTargetPositions(yCounts);
+        setMecanumTargetPositions(xCounts, yCounts, rCounts);
 
         setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
 
-        setMecanumMotorPowers(0, 1, 0);
+        rampMecanumMotors(0, 1, 0);
+
+//        setMecanumMotorPowers(1, 0, 0);
     }
 
-    void setMecanumTargetPositions(int target) {
-        flMotor.setTargetPosition(target);
-        blMotor.setTargetPosition(target);
-        frMotor.setTargetPosition(-target);
-        brMotor.setTargetPosition(-target);
+    void setMecanumTargetPositions(int x, int y, int r) {
+        flMotor.setTargetPosition(x + y + r);
+        blMotor.setTargetPosition(-x + y + r);
+        frMotor.setTargetPosition(-(-x + y - r));
+        brMotor.setTargetPosition(-(x + y - r));
+    }
+
+    void rampMecanumMotors(double x, double y, double r) {
+        rampMotor(flMotor, x + y + r, x + y + r > 0);
+        rampMotor(flMotor, -x + y + r, -x + y + r > 0);
+        rampMotor(flMotor, -(-x + y - r), -(-x + y - r) > 0);
+        rampMotor(flMotor, -(x + y - r), -(x + y - r) > 0);
+    }
+
+    void rampMotor(DcMotor motor, double x, double y, double z, double increment, int cycle, boolean rampUp) {
+        double power = 0;
+
+
+        //We need to find a way to set all of these motors to ramp to their specific values, preferrably not the hard way
+        while (power < Math.abs(target)) {
+            if (rampUp) {
+                // Keep stepping up until we hit the max value.
+                power += increment;
+                if (power >= target) {
+                    //                power = target;
+                    //                rampUp = !rampUp;   // Switch ramp direction
+                    return;
+                }
+            } else {
+                // Keep stepping down until we hit the min value.
+                power -= increment;
+                if (power <= target) {
+                    //                power = target;
+                    //                rampUp = !rampUp;  // Switch ramp direction
+                    return;
+                }
+            }
+
+            // Display the current value
+//            runningOpMode.addTelemetry("Motor Power", "%5.2f", power);
+//            runningOpMode.addTelemetry(">", "Press Stop to end test.");
+//            runningOpMode.updateTelemetry();
+
+            // Set the motor to the new power and pause;
+            motor.setPower(power);
+
+            try {
+                Thread.sleep(cycle);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    void rampMotor(DcMotor motor, double target, boolean rampUp) {
+        rampMotor(motor, target, 0.05, 50, rampUp);
     }
 
 //    private Position getOdometryDistance() {
