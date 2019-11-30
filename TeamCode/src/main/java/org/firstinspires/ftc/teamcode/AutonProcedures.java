@@ -221,16 +221,6 @@ public class AutonProcedures<T extends GenericOpMode> {
     void start() {
         targetsSkyStone.activate();
 
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (!interrupted())
-//                    target = updatePosition();
-//            }
-//        });
-//
-//        thread.start();
-
         while (target == null)
             target = updatePosition();
 
@@ -262,8 +252,6 @@ public class AutonProcedures<T extends GenericOpMode> {
             runningOpMode.updateTelemetry();
         }
 
-//        thread.interrupt();
-//        thread.stop();
         targetsSkyStone.deactivate();
         runningOpMode.addTelemetry("Done");
         runningOpMode.updateTelemetry();
@@ -335,4 +323,6 @@ public class AutonProcedures<T extends GenericOpMode> {
 
         return pos;
     }
+
+
 }
