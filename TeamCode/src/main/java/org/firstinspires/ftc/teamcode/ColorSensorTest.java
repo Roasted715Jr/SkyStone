@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Color Sensor Test", group = "SkyStone")
+@TeleOp(name = "Color Sensor Test", group = "Testing")
 public class ColorSensorTest extends GenericOpMode {
     Hardware<ColorSensorTest> robot = new Hardware<>(this);
 

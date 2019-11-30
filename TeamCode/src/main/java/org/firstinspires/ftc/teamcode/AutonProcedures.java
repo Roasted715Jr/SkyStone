@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -14,7 +16,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Thread.interrupted;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -32,6 +33,9 @@ public class AutonProcedures<T extends GenericOpMode> {
     private static final int START_RED_SKYSTONE = 3;
     private static final int START_RED_FOUNDATION = 4;
     private int startSpot = 0;
+
+    //1 is closest to the wall
+    private int blockPos = 0;
 
     //Stuff for Vuforia
     private static final boolean PHONE_IS_PORTRAIT = false;
@@ -237,19 +241,22 @@ public class AutonProcedures<T extends GenericOpMode> {
                 break;
             case START_BLUE_SKYSTONE:
 //                skyStonePos = getSkyStonePosition();
+                goToSkyStone(false);
                 break;
             case START_RED_SKYSTONE:
 //                skyStonePos = getSkyStonePosition();
+                goToSkyStone(true);
                 break;
             case START_RED_FOUNDATION:
                 break;
         }
-            //Move to marked Skystone and pick it up
-            //Move backwards, turn towards the audience, and move backwards past the bridge
+
+//        Move to marked Skystone and pick it up
+//        Move backwards, turn towards the audience, and move backwards past the bridge
 
         while (running) {
-            runningOpMode.addTelemetry("Starting spot", startSpot);
-            runningOpMode.updateTelemetry();
+//            runningOpMode.addTelemetry("Starting spot", startSpot);
+//            runningOpMode.updateTelemetry();
         }
 
         targetsSkyStone.deactivate();
@@ -257,7 +264,7 @@ public class AutonProcedures<T extends GenericOpMode> {
         runningOpMode.updateTelemetry();
     }
 
-    VuforiaTrackable updatePosition() {
+    private VuforiaTrackable updatePosition() {
         VuforiaTrackable target = null;
 
         // check all the trackable targets to see which one (if any) is visible.
@@ -298,7 +305,7 @@ public class AutonProcedures<T extends GenericOpMode> {
         return target;
     }
 
-    int getStartSpot() {
+    private int getStartSpot() {
         //Wait for the target to become identified
         while (updatePosition() == null) {
             runningOpMode.addTelemetry("Finding Starting Spot");
@@ -324,5 +331,31 @@ public class AutonProcedures<T extends GenericOpMode> {
         return pos;
     }
 
+    private void goToSkyStone(boolean isRed) {
+        robot.goDistance(0, 54, 0);
 
+        robot.setMecanumMotorPower(0, 0.5, 0);
+        while (robot.distanceSensor.getDistance(DistanceUnit.INCH) > 0.5) {
+
+        }
+        robot.setMecanumMotorPower(0, 0, 0);
+
+        if (foundSkyStone(robot.rColor))
+            blockPos = isRed ? 3 : 1;
+        else if (foundSkyStone(robot.lColor))
+            blockPos = 2;
+        else
+            blockPos = isRed ? 1 : 3;
+
+        runningOpMode.addTelemetry("Block Position", blockPos);
+        runningOpMode.updateTelemetry();
+    }
+
+    private boolean foundSkyStone(RevColorSensorV3 color) {
+        return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000);
+    }
+
+    private boolean inRange(double val, double min, double max) {
+        return min < val && val < max;
+    }
 }

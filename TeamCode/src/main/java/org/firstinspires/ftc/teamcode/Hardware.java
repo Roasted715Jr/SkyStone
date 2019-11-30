@@ -2,13 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -67,7 +63,7 @@ public class Hardware<T extends GenericOpMode> {
                 blMotor = hardwareMap.get(DcMotor.class, "blMotor");
                 frMotor = hardwareMap.get(DcMotor.class, "frMotor");
                 brMotor = hardwareMap.get(DcMotor.class, "brMotor");
-                setMecanumMotorPowers(0, 0, 0);
+                setMecanumMotorPower(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -99,7 +95,7 @@ public class Hardware<T extends GenericOpMode> {
                 brMotor = hardwareMap.get(DcMotor.class, "backR");
                 frMotor.setDirection(DcMotor.Direction.REVERSE);
                 brMotor.setDirection(DcMotor.Direction.REVERSE);
-                setMecanumMotorPowers(0, 0, 0);
+                setMecanumMotorPower(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -132,7 +128,7 @@ public class Hardware<T extends GenericOpMode> {
         }
     }
 
-    void setMecanumMotorPowers(double x, double y, double r) {
+    void setMecanumMotorPower(double x, double y, double r) {
         //Turn speed is half of x or y
         //x and y speed are the same
 //        xMult = 0.4;
@@ -190,7 +186,7 @@ public class Hardware<T extends GenericOpMode> {
         leftMotor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
-    void moveDistance(double x, double y, double r) {
+    void goDistance(double x, double y, double r) {
         setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int xCounts = (int) (x / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
@@ -205,11 +201,14 @@ public class Hardware<T extends GenericOpMode> {
 
 //        rampMecanumMotors(0, 0, 0, false);
 
-        setMecanumMotorPowers(0, 1, 0);
+        setMecanumMotorPower(0, 1, 0);
 
         while (flMotor.isBusy() && frMotor.isBusy()) {
 
         }
+
+        setMecanumMotorPower(0, 0, 0);
+        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     void setMecanumTargetPositions(int x, int y, int r) {
@@ -247,7 +246,7 @@ public class Hardware<T extends GenericOpMode> {
                 if (power >= 1) {
                     //                power = target;
                     //                rampUp = !rampUp;   // Switch ramp direction
-                    setMecanumMotorPowers(x, y, r);
+                    setMecanumMotorPower(x, y, r);
                     return;
                 }
             } else {
@@ -256,7 +255,7 @@ public class Hardware<T extends GenericOpMode> {
                 if (power <= 0) {
                     //                power = target;
                     //                rampUp = !rampUp;  // Switch ramp direction
-                    setMecanumMotorPowers(0, 0, 0);
+                    setMecanumMotorPower(0, 0, 0);
                     return;
                 }
             }
@@ -278,7 +277,7 @@ public class Hardware<T extends GenericOpMode> {
                 flMotor.setPower(power * flMax);
                 blMotor.setPower(power * blMax);
             } else
-                setMecanumMotorPowers(power * x, power * y, power * r);
+                setMecanumMotorPower(power * x, power * y, power * r);
 
             runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + "/" + flMotor.getTargetPosition());
             runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + "/" + blMotor.getTargetPosition());
