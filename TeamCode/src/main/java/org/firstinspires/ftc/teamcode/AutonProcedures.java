@@ -236,17 +236,24 @@ public class AutonProcedures<T extends GenericOpMode> {
         startSpot = 2;
 
         //Interpret our starting spot
-        VectorF skyStonePos;
+//        VectorF skyStonePos;
         switch (startSpot) {
             case START_BLUE_FOUNDATION:
                 break;
             case START_BLUE_SKYSTONE:
 //                skyStonePos = getSkyStonePosition();
-                goToSkyStone(false);
+
+//                runningOpMode.addTelemetry("Moving to SkyStone");
+//                runningOpMode.updateTelemetry();
+//                robot.goDistance(0, 54, 0, 0, 1, 0);
+                getSkyStone(false);
+//                robot.goDistance(some amount left, maybe backwards, no turning, x, y, r);
+//                robot.goDistance(reverse of what we just did but more, maybe forwards, no turning, x, y, r);
+//                approachSkyStone();
                 break;
             case START_RED_SKYSTONE:
 //                skyStonePos = getSkyStonePosition();
-                goToSkyStone(true);
+                getSkyStone(true);
                 break;
             case START_RED_FOUNDATION:
                 break;
@@ -254,11 +261,6 @@ public class AutonProcedures<T extends GenericOpMode> {
 
 //        Move to marked Skystone and pick it up
 //        Move backwards, turn towards the audience, and move backwards past the bridge
-
-        while (running) {
-//            runningOpMode.addTelemetry("Starting spot", startSpot);
-//            runningOpMode.updateTelemetry();
-        }
 
         targetsSkyStone.deactivate();
         runningOpMode.addTelemetry("Done");
@@ -332,18 +334,8 @@ public class AutonProcedures<T extends GenericOpMode> {
         return pos;
     }
 
-    private void goToSkyStone(boolean isRed) {
-        runningOpMode.addTelemetry("Moving to SkyStone");
-        runningOpMode.updateTelemetry();
-
-//        robot.goDistance(0, 54, 0, 0, 1, 0);
-
-        robot.setMecanumMotorPowers(0, 0.25, 0);
-        while (robot.distanceSensor.getDistance(DistanceUnit.INCH) > 3) {
-            runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
-            runningOpMode.updateTelemetry();
-        }
-        robot.setMecanumMotorPowers(0, 0, 0);
+    private void getSkyStone(boolean isRed) {
+        approachSkyStone();
 
         if (foundSkyStone(robot.rColor))
             blockPos = isRed ? 3 : 1;
@@ -354,6 +346,17 @@ public class AutonProcedures<T extends GenericOpMode> {
 
         runningOpMode.addTelemetry("Block Position", blockPos);
         runningOpMode.updateTelemetry();
+
+        //Grab the SkyStone based on its position
+    }
+
+    private void approachSkyStone() {
+        robot.setMecanumMotorPowers(0, 0.25, 0);
+        while (robot.distanceSensor.getDistance(DistanceUnit.INCH) > 3) {
+            runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
+            runningOpMode.updateTelemetry();
+        }
+        robot.setMecanumMotorPowers(0, 0, 0);
     }
 
     private boolean foundSkyStone(RevColorSensorV3 color) {

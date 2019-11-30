@@ -7,6 +7,9 @@ public class SkyStoneTeleOp extends GenericOpMode {
     private Hardware<SkyStoneTeleOp> robot = new Hardware<>(this);
 
     public void runOpMode() throws InterruptedException {
+        boolean aPressed = false, multiplierToggle = false;
+        double speedMultiplier = 1;
+
         robot.init(hardwareMap);
 
         double x, y, r;
@@ -18,12 +21,16 @@ public class SkyStoneTeleOp extends GenericOpMode {
             y = -gamepad1.left_stick_y;
             r = gamepad1.right_stick_x;
 
-            robot.setMecanumMotorPowers(x, y, r);
+            if (gamepad1.a) {
+                if (!aPressed)
+                    multiplierToggle = !multiplierToggle;
+                aPressed = true;
+            } else
+                aPressed = false;
 
-            telemetry.addData("x", "%.5f", x);
-            telemetry.addData("y", "%.5f", y);
-            telemetry.addData("r", "%.5f", r);
-            telemetry.update();
+            speedMultiplier = multiplierToggle ? 0.5 : 1;
+
+            robot.setMecanumMotorPowers(x * speedMultiplier, y * speedMultiplier, r * speedMultiplier);
 
             if (gamepad2.right_trigger > 0.5)
                 robot.clawServo.setPosition(0.95);
@@ -43,6 +50,12 @@ public class SkyStoneTeleOp extends GenericOpMode {
                 robot.lFoundationServo.setPosition(1);
             }
 
+
+            telemetry.addData("speedMultiplier", speedMultiplier);
+            telemetry.addData("x", "%.5f", x);
+            telemetry.addData("y", "%.5f", y);
+            telemetry.addData("r", "%.5f", r);
+            telemetry.update();
         }
     }
 }

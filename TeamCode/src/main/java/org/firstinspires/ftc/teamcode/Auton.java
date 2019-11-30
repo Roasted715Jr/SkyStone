@@ -26,9 +26,9 @@ public class Auton extends GenericOpMode {
         thread.start();
 
         while (opModeIsActive()) {
-            if (isStopRequested()) {
-                autonProcedures.running = false; //For testing purposes
-            }
+//            if (isStopRequested()) {
+////                autonProcedures.running = false; //For testing purposes
+//            }
 
 //            telemetry.update();
         }
