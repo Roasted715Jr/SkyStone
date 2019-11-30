@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "Distance Sensor", group = "Android Studio")
-@Disabled
+@TeleOp(name = "Distance Sensor Test", group = "Android Studio")
+//@Disabled
 public class DistanceSensorTest extends GenericOpMode {
     Hardware<DistanceSensorTest> robot = new Hardware<>(this);
 
@@ -22,7 +22,7 @@ public class DistanceSensorTest extends GenericOpMode {
             start = System.currentTimeMillis();
 
             //Goes from 0.25 in to 3 in for V3
-            distance = robot.getDistanceSensor().getDistance(DistanceUnit.METER);
+            distance = robot.distanceSensor.getDistance(DistanceUnit.METER);
 
             finish = System.currentTimeMillis();
 

@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -41,13 +44,12 @@ public class Hardware<T extends GenericOpMode> {
     private static double rMult;
 
     //Ctrl+Q or Ctrl+Shift+I for documentation and definition
-    RevColorSensorV3 rColor;
-    ColorSensor lColor;
-    private DistanceSensor distanceSensor;
+    RevColorSensorV3 rColor, lColor;
+    Rev2mDistanceSensor distanceSensor;
     DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
-    private DcMotor rightMotor, leftMotor; //For the baby bots
+    DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
-    private Position pos;
+    Position pos;
     Servo armServo, clawServo, lFoundationServo, rFoundationServo;
     private T runningOpMode;
     TouchSensor rTouch, lTouch;
@@ -75,10 +77,12 @@ public class Hardware<T extends GenericOpMode> {
                 lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
 
                 rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
-//                lColor = hardwareMap.get(ColorSensor.class, "lColor");
+                lColor = hardwareMap.get(RevColorSensorV3.class, "lColor");
 
 //                rTouch = hardwareMap.get(TouchSensor.class, "rTouch");
 //                lTouch = hardwareMap.get(TouchSensor.class, "lTouch");
+
+                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
 
                 //Init other sensors
                 //3 encoders
@@ -126,10 +130,6 @@ public class Hardware<T extends GenericOpMode> {
                 SPUR_TEETH = 1;
                 break;
         }
-    }
-
-    public DistanceSensor getDistanceSensor() {
-        return distanceSensor;
     }
 
     void setMecanumMotorPowers(double x, double y, double r) {

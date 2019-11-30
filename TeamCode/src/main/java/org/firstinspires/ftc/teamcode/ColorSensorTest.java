@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "ColorSensorTest", group = "SkyStone")
+@TeleOp(name = "Color Sensor Test", group = "SkyStone")
 public class ColorSensorTest extends GenericOpMode {
     Hardware<ColorSensorTest> robot = new Hardware<>(this);
 
@@ -21,9 +21,12 @@ public class ColorSensorTest extends GenericOpMode {
             telemetry.addData("Green", robot.rColor.green());
             telemetry.addData("Blue", robot.rColor.blue());
 
+            //500, 1000, 600 marked
 
+            //5000 7500 1000 yellow
 
-            if (inRange(robot.rColor.red() + robot.rColor.green() + robot.rColor.blue(), 1000, 10000))
+//            if (inRange(robot.rColor.red() + robot.rColor.green() + robot.rColor.blue(), 1000, 10000))
+            if (inRange(robot.rColor.red(), 500, 2500) && inRange(robot.rColor.green(), 1000, 3500) && inRange(robot.rColor.blue(), 600, 2000))
                 foundSkyStone = true;
 
             telemetry.addData("Found Skystone", foundSkyStone);

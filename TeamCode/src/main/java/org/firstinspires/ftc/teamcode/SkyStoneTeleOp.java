@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "SkyStone", group = "SkyStone")
+@TeleOp(name = "SkyStone TeleOp", group = "SkyStone")
 public class SkyStoneTeleOp extends GenericOpMode {
     private Hardware<SkyStoneTeleOp> robot = new Hardware<>(this);
 
@@ -25,15 +25,24 @@ public class SkyStoneTeleOp extends GenericOpMode {
             telemetry.addData("r", "%.5f", r);
             telemetry.update();
 
-            if (gamepad1.right_trigger > 0.5)
+            if (gamepad2.right_trigger > 0.5)
                 robot.clawServo.setPosition(0.95);
-            else if (gamepad1.right_bumper)
+            else if (gamepad2.right_bumper)
                 robot.clawServo.setPosition(0.25);
 
-            if (gamepad1.left_trigger > 0.5)
+            if (gamepad2.left_trigger > 0.5)
                 robot.armServo.setPosition(robot.armServo.getPosition() + 0.003);
-            else if (gamepad1.left_bumper)
+            else if (gamepad2.left_bumper)
                 robot.armServo.setPosition(robot.armServo.getPosition() - 0.003);
+
+            if (gamepad2.a) {
+                robot.rFoundationServo.setPosition(1);
+                robot.lFoundationServo.setPosition(0);
+            } else if (gamepad2.b) {
+                robot.rFoundationServo.setPosition(0);
+                robot.lFoundationServo.setPosition(1);
+            }
+
         }
     }
 }
