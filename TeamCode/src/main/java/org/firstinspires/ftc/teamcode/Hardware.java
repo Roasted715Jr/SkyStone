@@ -63,7 +63,7 @@ public class Hardware<T extends GenericOpMode> {
                 blMotor = hardwareMap.get(DcMotor.class, "blMotor");
                 frMotor = hardwareMap.get(DcMotor.class, "frMotor");
                 brMotor = hardwareMap.get(DcMotor.class, "brMotor");
-                setMecanumMotorPower(0, 0, 0);
+                setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -78,7 +78,7 @@ public class Hardware<T extends GenericOpMode> {
 //                rTouch = hardwareMap.get(TouchSensor.class, "rTouch");
 //                lTouch = hardwareMap.get(TouchSensor.class, "lTouch");
 
-                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
+                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
 
                 //Init other sensors
                 //3 encoders
@@ -95,7 +95,7 @@ public class Hardware<T extends GenericOpMode> {
                 brMotor = hardwareMap.get(DcMotor.class, "backR");
                 frMotor.setDirection(DcMotor.Direction.REVERSE);
                 brMotor.setDirection(DcMotor.Direction.REVERSE);
-                setMecanumMotorPower(0, 0, 0);
+                setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -128,7 +128,7 @@ public class Hardware<T extends GenericOpMode> {
         }
     }
 
-    void setMecanumMotorPower(double x, double y, double r) {
+    void setMecanumMotorPowers(double x, double y, double r) {
         //Turn speed is half of x or y
         //x and y speed are the same
 //        xMult = 0.4;
@@ -186,28 +186,33 @@ public class Hardware<T extends GenericOpMode> {
         leftMotor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
-    void goDistance(double x, double y, double r) {
+    void goDistance(double xDistance, double yDistance, double rAmount, double x, double y, double r) {
         setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        int xCounts = (int) (x / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
-        int yCounts = (int) (y / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
+        int xCounts = (int) (xDistance / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
+        int yCounts = (int) (yDistance / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
         int rCounts = 0;
 
         setMecanumTargetPositions(xCounts, yCounts, rCounts);
 
-        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
+//        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
 
-//        rampMecanumMotors(0, 1, 0, true);
+//        rampMecanumMotors(x, y, r, true);
 
-//        rampMecanumMotors(0, 0, 0, false);
+//        rampMecanumMotors(x, y, r, false);
 
-        setMecanumMotorPower(0, 1, 0);
+        setMecanumMotorPowers(x, y, r);
 
-        while (flMotor.isBusy() && frMotor.isBusy()) {
+        while (flMotor.isBusy() || blMotor.isBusy() || frMotor.isBusy() || brMotor.isBusy()) {
+//            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + " / " + flMotor.getTargetPosition());
+//            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + " / " + blMotor.getTargetPosition());
+//            runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + " / " + frMotor.getTargetPosition());
+//            runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + " / " + brMotor.getTargetPosition());
+//            runningOpMode.updateTelemetry();
 
+//            if ()
         }
 
-        setMecanumMotorPower(0, 0, 0);
         setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
@@ -224,10 +229,10 @@ public class Hardware<T extends GenericOpMode> {
 //        rampMotor(flMotor, -(-x + y - r), -(-x + y - r) > 0);
 //        rampMotor(flMotor, -(x + y - r), -(x + y - r) > 0);
 
-        rampMotor(flMotor, x, y, r, 0.1, 50, rampUp);
+        rampMotor(x, y, r, 0.1, 1000, rampUp);
     }
 
-    void rampMotor(DcMotor motor, double x, double y, double r, double increment, int cycle, boolean rampUp) {
+    void rampMotor(double x, double y, double r, double increment, int cycle, boolean rampUp) {
         double power = rampUp ? 0 : 1;
         double flMax = 0, blMax = 0, frMax = 0, brMax = 0;
 
@@ -246,7 +251,7 @@ public class Hardware<T extends GenericOpMode> {
                 if (power >= 1) {
                     //                power = target;
                     //                rampUp = !rampUp;   // Switch ramp direction
-                    setMecanumMotorPower(x, y, r);
+                    setMecanumMotorPowers(x, y, r);
                     return;
                 }
             } else {
@@ -255,7 +260,7 @@ public class Hardware<T extends GenericOpMode> {
                 if (power <= 0) {
                     //                power = target;
                     //                rampUp = !rampUp;  // Switch ramp direction
-                    setMecanumMotorPower(0, 0, 0);
+                    setMecanumMotorPowers(0, 0, 0);
                     return;
                 }
             }
@@ -277,13 +282,13 @@ public class Hardware<T extends GenericOpMode> {
                 flMotor.setPower(power * flMax);
                 blMotor.setPower(power * blMax);
             } else
-                setMecanumMotorPower(power * x, power * y, power * r);
+                setMecanumMotorPowers(power * x, power * y, power * r);
 
-            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + "/" + flMotor.getTargetPosition());
-            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + "/" + blMotor.getTargetPosition());
-            runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + "/" + frMotor.getTargetPosition());
-            runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + "/" + brMotor.getTargetPosition());
-            runningOpMode.updateTelemetry();
+//            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + "/" + flMotor.getTargetPosition());
+//            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + "/" + blMotor.getTargetPosition());
+//            runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + "/" + frMotor.getTargetPosition());
+//            runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + "/" + brMotor.getTargetPosition());
+//            runningOpMode.updateTelemetry();
 
             try {
                 Thread.sleep(cycle);

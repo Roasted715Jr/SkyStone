@@ -93,8 +93,8 @@ public class AutonProcedures<T extends GenericOpMode> {
     // For convenience, gather together all the trackable objects in one easily-iterable collection */
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
 
-    VectorF translation;
-    Orientation rotation;
+    private VectorF translation;
+    private Orientation rotation;
 
     void init(Hardware robot, HardwareMap hardwareMap, T runningOpMode) {
         this.robot = robot;
@@ -225,14 +225,15 @@ public class AutonProcedures<T extends GenericOpMode> {
     void start() {
         targetsSkyStone.activate();
 
-        while (target == null)
-            target = updatePosition();
+//        while (target == null)
+//            target = updatePosition();
 
 //        runningOpMode.addTelemetry("This is the first step");
 //        runningOpMode.updateTelemetry();
 
         //Find our starting spot
-        startSpot = getStartSpot();
+//        startSpot = getStartSpot();
+        startSpot = 2;
 
         //Interpret our starting spot
         VectorF skyStonePos;
@@ -332,13 +333,17 @@ public class AutonProcedures<T extends GenericOpMode> {
     }
 
     private void goToSkyStone(boolean isRed) {
-        robot.goDistance(0, 54, 0);
+        runningOpMode.addTelemetry("Moving to SkyStone");
+        runningOpMode.updateTelemetry();
 
-        robot.setMecanumMotorPower(0, 0.5, 0);
-        while (robot.distanceSensor.getDistance(DistanceUnit.INCH) > 0.5) {
+//        robot.goDistance(0, 54, 0, 0, 1, 0);
 
+        robot.setMecanumMotorPowers(0, 0.25, 0);
+        while (robot.distanceSensor.getDistance(DistanceUnit.INCH) > 3) {
+            runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
+            runningOpMode.updateTelemetry();
         }
-        robot.setMecanumMotorPower(0, 0, 0);
+        robot.setMecanumMotorPowers(0, 0, 0);
 
         if (foundSkyStone(robot.rColor))
             blockPos = isRed ? 3 : 1;

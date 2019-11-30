@@ -18,7 +18,7 @@ public class SkyStoneTeleOp extends GenericOpMode {
             y = -gamepad1.left_stick_y;
             r = gamepad1.right_stick_x;
 
-            robot.setMecanumMotorPower(x, y, r);
+            robot.setMecanumMotorPowers(x, y, r);
 
             telemetry.addData("x", "%.5f", x);
             telemetry.addData("y", "%.5f", y);

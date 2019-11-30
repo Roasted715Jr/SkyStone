@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name = "Movement Test", group = "Testing")
-@Disabled
+//@Disabled
 public class MovementTest extends GenericOpMode {
     Hardware<MovementTest> robot = new Hardware<>(this);
 
@@ -25,8 +25,8 @@ public class MovementTest extends GenericOpMode {
 //        robot.rampMecanumMotors(0, -1, 0, true);
 //        robot.rampMecanumMotors(0, 0, 0, false);
 
-        robot.goDistance(0, 54, 0);
-//        robot.goDistance(0, -48, 0);
+        robot.goDistance(0, 48, 0, 0, 1, 0);
+//        robot.goDistance(0, 56, 0);
 
         while (opModeIsActive()) {
 
