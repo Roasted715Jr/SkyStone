@@ -21,11 +21,17 @@ public class ColorSensorTest extends GenericOpMode {
             telemetry.addData("Green", robot.rColor.green());
             telemetry.addData("Blue", robot.rColor.blue());
 
-            if (robot.rColor.red() < 50 && robot.rColor.green() < 50)
+
+
+            if (inRange(robot.rColor.red() + robot.rColor.green() + robot.rColor.blue(), 1000, 10000))
                 foundSkyStone = true;
 
             telemetry.addData("Found Skystone", foundSkyStone);
             telemetry.update();
         }
+    }
+
+    private boolean inRange(double val, double min, double max) {
+        return min < val && val < max;
     }
 }

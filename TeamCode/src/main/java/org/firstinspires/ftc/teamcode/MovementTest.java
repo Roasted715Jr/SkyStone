@@ -16,9 +16,19 @@ public class MovementTest extends GenericOpMode {
 
         waitForStart();
 
-        robot.rampMotor(robot.frMotor, 1, true);
+//        robot.rampMecanumMotors(1, 1, 0, true);
 
-//        robot.moveDistance(0, 5, 0);
+//        robot.rampMotor(robot.frMotor, 1, true);
+
+//        robot.moveDistance(0, 500, 0);
+
+//        robot.rampMecanumMotors(0, 1, 0, true);
+//        robot.rampMecanumMotors(0, 0, 0, false);
+//        robot.rampMecanumMotors(0, -1, 0, true);
+//        robot.rampMecanumMotors(0, 0, 0, false);
+
+        robot.moveDistance(0, 54, 0);
+//        robot.moveDistance(0, -48, 0);
 
         while (opModeIsActive()) {
 

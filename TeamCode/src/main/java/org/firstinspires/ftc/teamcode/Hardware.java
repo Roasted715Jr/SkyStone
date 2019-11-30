@@ -155,10 +155,10 @@ public class Hardware<T extends GenericOpMode> {
 //        brMotor.setPower(x + y - r);
 
         //For the sideways configuration
-        flMotor.setPower(x + y + r);
-        blMotor.setPower(-x + y + r);
         frMotor.setPower(-(-x + y - r));
         brMotor.setPower(-(x + y - r));
+        flMotor.setPower(x + y + r);
+        blMotor.setPower(-x + y + r);
     }
 
     void setSimpleMotorPowers(double power) {
@@ -201,9 +201,15 @@ public class Hardware<T extends GenericOpMode> {
 
         setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
 
-        rampMecanumMotors(0, 1, 0);
+//        rampMecanumMotors(0, 1, 0, true);
 
-//        setMecanumMotorPowers(1, 0, 0);
+//        rampMecanumMotors(0, 0, 0, false);
+
+        setMecanumMotorPowers(0, 1, 0);
+
+        while (flMotor.isBusy() && frMotor.isBusy()) {
+
+        }
     }
 
     void setMecanumTargetPositions(int x, int y, int r) {
@@ -213,33 +219,44 @@ public class Hardware<T extends GenericOpMode> {
         brMotor.setTargetPosition(-(x + y - r));
     }
 
-    void rampMecanumMotors(double x, double y, double r) {
-        rampMotor(flMotor, x + y + r, x + y + r > 0);
-        rampMotor(flMotor, -x + y + r, -x + y + r > 0);
-        rampMotor(flMotor, -(-x + y - r), -(-x + y - r) > 0);
-        rampMotor(flMotor, -(x + y - r), -(x + y - r) > 0);
+    void rampMecanumMotors(double x, double y, double r, boolean rampUp) {
+//        rampMotor(flMotor, x + y + r, x + y + r > 0);
+//        rampMotor(flMotor, -x + y + r, -x + y + r > 0);
+//        rampMotor(flMotor, -(-x + y - r), -(-x + y - r) > 0);
+//        rampMotor(flMotor, -(x + y - r), -(x + y - r) > 0);
+
+        rampMotor(flMotor, x, y, r, 0.1, 50, rampUp);
     }
 
-    void rampMotor(DcMotor motor, double x, double y, double z, double increment, int cycle, boolean rampUp) {
-        double power = 0;
+    void rampMotor(DcMotor motor, double x, double y, double r, double increment, int cycle, boolean rampUp) {
+        double power = rampUp ? 0 : 1;
+        double flMax = 0, blMax = 0, frMax = 0, brMax = 0;
 
+        if (!rampUp) {
+            flMax = flMotor.getPower();
+            blMax = blMotor.getPower();
+            frMax = frMotor.getPower();
+            brMax = brMotor.getPower();
+        }
 
-        //We need to find a way to set all of these motors to ramp to their specific values, preferrably not the hard way
-        while (power < Math.abs(target)) {
+        //We need to find a way to set all of these motors to ramp to their specific values, preferably not the hard way
+        while (true) {
             if (rampUp) {
                 // Keep stepping up until we hit the max value.
                 power += increment;
-                if (power >= target) {
+                if (power >= 1) {
                     //                power = target;
                     //                rampUp = !rampUp;   // Switch ramp direction
+                    setMecanumMotorPowers(x, y, r);
                     return;
                 }
             } else {
                 // Keep stepping down until we hit the min value.
                 power -= increment;
-                if (power <= target) {
+                if (power <= 0) {
                     //                power = target;
                     //                rampUp = !rampUp;  // Switch ramp direction
+                    setMecanumMotorPowers(0, 0, 0);
                     return;
                 }
             }
@@ -250,7 +267,24 @@ public class Hardware<T extends GenericOpMode> {
 //            runningOpMode.updateTelemetry();
 
             // Set the motor to the new power and pause;
-            motor.setPower(power);
+//            motor.setPower(power);
+//            flMotor.setPower(power * (x + y + r));
+//            blMotor.setPower(power * (-x + y + r));
+//            frMotor.setPower(power * -(-x + y - r));
+//            brMotor.setPower(power * -(x + y - r));
+            if (!rampUp) {
+                frMotor.setPower(power * frMax);
+                brMotor.setPower(power * brMax);
+                flMotor.setPower(power * flMax);
+                blMotor.setPower(power * blMax);
+            } else
+                setMecanumMotorPowers(power * x, power * y, power * r);
+
+            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + "/" + flMotor.getTargetPosition());
+            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + "/" + blMotor.getTargetPosition());
+            runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + "/" + frMotor.getTargetPosition());
+            runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + "/" + brMotor.getTargetPosition());
+            runningOpMode.updateTelemetry();
 
             try {
                 Thread.sleep(cycle);
@@ -258,10 +292,6 @@ public class Hardware<T extends GenericOpMode> {
                 e.printStackTrace();
             }
         }
-    }
-
-    void rampMotor(DcMotor motor, double target, boolean rampUp) {
-        rampMotor(motor, target, 0.05, 50, rampUp);
     }
 
 //    private Position getOdometryDistance() {
