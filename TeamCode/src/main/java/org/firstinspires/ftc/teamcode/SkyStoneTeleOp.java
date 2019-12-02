@@ -42,14 +42,10 @@ public class SkyStoneTeleOp extends GenericOpMode {
             else if (gamepad2.left_bumper)
                 robot.armServo.setPosition(robot.armServo.getPosition() - 0.003);
 
-            if (gamepad2.a) {
-                robot.rFoundationServo.setPosition(1);
-                robot.lFoundationServo.setPosition(0);
-            } else if (gamepad2.b) {
-                robot.rFoundationServo.setPosition(0);
-                robot.lFoundationServo.setPosition(1);
-            }
-
+            if (gamepad2.a)
+                robot.moveHooks(true);
+            else if (gamepad2.b)
+                robot.moveHooks(false);
 
             telemetry.addData("speedMultiplier", speedMultiplier);
             telemetry.addData("x", "%.5f", x);

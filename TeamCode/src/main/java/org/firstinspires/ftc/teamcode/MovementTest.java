@@ -25,8 +25,10 @@ public class MovementTest extends GenericOpMode {
 //        robot.rampMecanumMotors(0, -1, 0, true);
 //        robot.rampMecanumMotors(0, 0, 0, false);
 
-        robot.goDistance(0, 48, 0, 0, 1, 0);
+//        robot.goDistance(0, 48, 0, 0, 1, 0);
 //        robot.goDistance(0, 56, 0);
+        robot.goDistance(24, 24, 0, 1, 1, 0);
+        robot.setMecanumMotorPowers(0, 0, 0);
 
         while (opModeIsActive()) {
 

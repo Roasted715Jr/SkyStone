@@ -24,6 +24,7 @@ public class Hardware<T extends GenericOpMode> {
 //    private static final double TURN_SPEED = 0.25;
 //    private static final double JOY_DEADZONE = 0.05;
 //    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
+    private static final int ENCODER_THRESHOLD = 10;
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
@@ -193,9 +194,10 @@ public class Hardware<T extends GenericOpMode> {
         int yCounts = (int) (yDistance / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
         int rCounts = 0;
 
+        //We can only adjust the target encoder positions if we are in the RUN_TO_POSITION runmode
+        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
         setMecanumTargetPositions(xCounts, yCounts, rCounts);
-
-//        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
+        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        rampMecanumMotors(x, y, r, true);
 
@@ -203,17 +205,15 @@ public class Hardware<T extends GenericOpMode> {
 
         setMecanumMotorPowers(x, y, r);
 
-        while (flMotor.isBusy() || blMotor.isBusy() || frMotor.isBusy() || brMotor.isBusy()) {
-//            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + " / " + flMotor.getTargetPosition());
-//            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + " / " + blMotor.getTargetPosition());
-//            runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + " / " + frMotor.getTargetPosition());
-//            runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + " / " + brMotor.getTargetPosition());
-//            runningOpMode.updateTelemetry();
+        while (notNearTarget(flMotor, ENCODER_THRESHOLD) || notNearTarget(blMotor, ENCODER_THRESHOLD) || notNearTarget(frMotor, ENCODER_THRESHOLD) || notNearTarget(brMotor, ENCODER_THRESHOLD)) {
+//        while (flMotor.isBusy() || blMotor.isBusy() || frMotor.isBusy() || brMotor.isBusy()) {
 
-//            if ()
+            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + " / " + flMotor.getTargetPosition());
+            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + " / " + blMotor.getTargetPosition());
+            runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + " / " + frMotor.getTargetPosition());
+            runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + " / " + brMotor.getTargetPosition());
+            runningOpMode.updateTelemetry();
         }
-
-        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     void setMecanumTargetPositions(int x, int y, int r) {
@@ -296,6 +296,18 @@ public class Hardware<T extends GenericOpMode> {
                 e.printStackTrace();
             }
         }
+    }
+
+    void moveHooks(boolean deploy) {
+        rFoundationServo.setPosition(deploy ? 1 : 0);
+        lFoundationServo.setPosition(deploy ? 0 : 1);
+    }
+
+    private boolean notNearTarget(DcMotor motor, int threshold) {
+        if (motor.getTargetPosition() > 0)
+            return motor.getTargetPosition() - motor.getCurrentPosition() > threshold;
+        else
+            return motor.getCurrentPosition() - motor.getTargetPosition() > threshold;
     }
 
 //    private Position getOdometryDistance() {
