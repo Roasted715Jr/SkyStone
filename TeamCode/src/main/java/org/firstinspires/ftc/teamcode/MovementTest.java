@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "Movement Test", group = "Testing")
-//@Disabled
+@Disabled
 public class MovementTest extends GenericOpMode {
     Hardware<MovementTest> robot = new Hardware<>(this);
 

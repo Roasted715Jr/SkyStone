@@ -233,7 +233,7 @@ public class AutonProcedures<T extends GenericOpMode> {
 
         //Find our starting spot
 //        startSpot = getStartSpot();
-        startSpot = 2;
+//        startSpot = 2;
 
         //Interpret our starting spot
 //        VectorF skyStonePos;
@@ -361,6 +361,10 @@ public class AutonProcedures<T extends GenericOpMode> {
 
     private boolean foundSkyStone(RevColorSensorV3 color) {
         return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000);
+    }
+
+    void simpleAuton(boolean isRight, boolean isFar) {
+
     }
 
     private boolean inRange(double val, double min, double max) {

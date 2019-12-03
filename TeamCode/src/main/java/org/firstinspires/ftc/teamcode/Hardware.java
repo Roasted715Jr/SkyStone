@@ -195,9 +195,8 @@ public class Hardware<T extends GenericOpMode> {
         int yCounts = (int) (yDistance / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
         int rCounts = 0;
 
-        //We can only adjust the target encoder positions if we are in the RUN_TO_POSITION runmode
-        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
         setMecanumTargetPositions(xCounts, yCounts, rCounts);
+        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
 //        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        rampMecanumMotors(x, y, r, true);
@@ -218,7 +217,6 @@ public class Hardware<T extends GenericOpMode> {
                 power += POWER_INCREMENT;
             }
 
-            runningOpMode.addTelemetry("Power", power);
             runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + " / " + flMotor.getTargetPosition());
             runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + " / " + blMotor.getTargetPosition());
             runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + " / " + frMotor.getTargetPosition());
