@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class GenericOpMode extends LinearOpMode {
     //For use in other classes during autonomous
-    void addTelemetry(String msg) {
+    void addTelemetry(Object msg) {
         telemetry.addData("Autonomous", msg);
     }
 

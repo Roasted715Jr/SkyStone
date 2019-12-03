@@ -24,7 +24,8 @@ public class Hardware<T extends GenericOpMode> {
 //    private static final double TURN_SPEED = 0.25;
 //    private static final double JOY_DEADZONE = 0.05;
 //    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
-    private static final int ENCODER_THRESHOLD = 10;
+    private static final int ENCODER_THRESHOLD = 50;
+    private static final double POWER_INCREMENT = 0.1;
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
@@ -188,51 +189,67 @@ public class Hardware<T extends GenericOpMode> {
     }
 
     void goDistance(double xDistance, double yDistance, double rAmount, double x, double y, double r) {
-        setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        int xCounts = (int) (xDistance / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
+        int xCounts = (int) ((xDistance/* + (xDistance > 0 ? 1 : -1)*/) / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION); //Was 1.06 or 1.03 or 1.05
         int yCounts = (int) (yDistance / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION);
         int rCounts = 0;
 
         //We can only adjust the target encoder positions if we are in the RUN_TO_POSITION runmode
         setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
         setMecanumTargetPositions(xCounts, yCounts, rCounts);
-        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        rampMecanumMotors(x, y, r, true);
 
 //        rampMecanumMotors(x, y, r, false);
 
-        setMecanumMotorPowers(x, y, r);
+//        setMecanumMotorPowers(x, y, r);
 
-        while (notNearTarget(flMotor, ENCODER_THRESHOLD) || notNearTarget(blMotor, ENCODER_THRESHOLD) || notNearTarget(frMotor, ENCODER_THRESHOLD) || notNearTarget(brMotor, ENCODER_THRESHOLD)) {
-//        while (flMotor.isBusy() || blMotor.isBusy() || frMotor.isBusy() || brMotor.isBusy()) {
+        double power = 0;
 
+//        while (nearTarget(flMotor, ENCODER_THRESHOLD) || nearTarget(blMotor, ENCODER_THRESHOLD) || nearTarget(frMotor, ENCODER_THRESHOLD) || nearTarget(brMotor, ENCODER_THRESHOLD)) {
+        while (flMotor.isBusy() || blMotor.isBusy() || frMotor.isBusy() || brMotor.isBusy()) {
+            if (nearTarget(flMotor, ENCODER_THRESHOLD) && nearTarget(blMotor, ENCODER_THRESHOLD) && nearTarget(frMotor, ENCODER_THRESHOLD) && nearTarget(brMotor, ENCODER_THRESHOLD))
+                break;
+
+            if (power < 1) {
+                setMecanumMotorPowers(power * x, power * y, power * r);
+                power += POWER_INCREMENT;
+            }
+
+            runningOpMode.addTelemetry("Power", power);
             runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + " / " + flMotor.getTargetPosition());
             runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + " / " + blMotor.getTargetPosition());
             runningOpMode.addTelemetry("frMotor", frMotor.getCurrentPosition() + " / " + frMotor.getTargetPosition());
             runningOpMode.addTelemetry("brMotor", brMotor.getCurrentPosition() + " / " + brMotor.getTargetPosition());
             runningOpMode.updateTelemetry();
         }
+
+//        runningOpMode.addTelemetry(nearTarget(flMotor, ENCODER_THRESHOLD));
+//        runningOpMode.addTelemetry(nearTarget(blMotor, ENCODER_THRESHOLD));
+//        runningOpMode.addTelemetry(nearTarget(frMotor, ENCODER_THRESHOLD));
+//        runningOpMode.addTelemetry(nearTarget(brMotor, ENCODER_THRESHOLD));
+//        runningOpMode.updateTelemetry();
     }
 
     void setMecanumTargetPositions(int x, int y, int r) {
-        flMotor.setTargetPosition(x + y + r);
-        blMotor.setTargetPosition(-x + y + r);
-        frMotor.setTargetPosition(-(-x + y - r));
-        brMotor.setTargetPosition(-(x + y - r));
+        flMotor.setTargetPosition(x + y + r + flMotor.getCurrentPosition());
+        blMotor.setTargetPosition(-x + y + r + blMotor.getCurrentPosition());
+        frMotor.setTargetPosition(-(-x + y - r) + frMotor.getCurrentPosition());
+        brMotor.setTargetPosition(-(x + y - r) + brMotor.getCurrentPosition());
     }
 
     void rampMecanumMotors(double x, double y, double r, boolean rampUp) {
-//        rampMotor(flMotor, x + y + r, x + y + r > 0);
-//        rampMotor(flMotor, -x + y + r, -x + y + r > 0);
-//        rampMotor(flMotor, -(-x + y - r), -(-x + y - r) > 0);
-//        rampMotor(flMotor, -(x + y - r), -(x + y - r) > 0);
+//        rampMotors(flMotor, x + y + r, x + y + r > 0);
+//        rampMotors(flMotor, -x + y + r, -x + y + r > 0);
+//        rampMotors(flMotor, -(-x + y - r), -(-x + y - r) > 0);
+//        rampMotors(flMotor, -(x + y - r), -(x + y - r) > 0);
 
-        rampMotor(x, y, r, 0.1, 1000, rampUp);
+        rampMotors(x, y, r, 0.1, 1000, rampUp);
     }
 
-    void rampMotor(double x, double y, double r, double increment, int cycle, boolean rampUp) {
+    void rampMotors(double x, double y, double r, double increment, int cycle, boolean rampUp) {
         double power = rampUp ? 0 : 1;
         double flMax = 0, blMax = 0, frMax = 0, brMax = 0;
 
@@ -303,11 +320,13 @@ public class Hardware<T extends GenericOpMode> {
         lFoundationServo.setPosition(deploy ? 0 : 1);
     }
 
-    private boolean notNearTarget(DcMotor motor, int threshold) {
+    private boolean nearTarget(DcMotor motor, int threshold) {
         if (motor.getTargetPosition() > 0)
-            return motor.getTargetPosition() - motor.getCurrentPosition() > threshold;
+            return motor.getTargetPosition() - motor.getCurrentPosition() <= threshold;
         else
-            return motor.getCurrentPosition() - motor.getTargetPosition() > threshold;
+            return motor.getCurrentPosition() - motor.getTargetPosition() <= threshold;
+
+//        return Math.abs(motor.getTargetPosition() - motor.getCurrentPosition()) > threshold;
     }
 
 //    private Position getOdometryDistance() {
