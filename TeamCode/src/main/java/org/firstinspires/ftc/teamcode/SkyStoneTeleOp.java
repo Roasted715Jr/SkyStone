@@ -28,7 +28,7 @@ public class SkyStoneTeleOp extends GenericOpMode {
             } else
                 aPressed = false;
 
-            speedMultiplier = multiplierToggle ? 0.5 : 1;
+            speedMultiplier = multiplierToggle ? 0.25 : 1;
 
             robot.setMecanumMotorPowers(x * speedMultiplier, y * speedMultiplier, r * speedMultiplier);
 
