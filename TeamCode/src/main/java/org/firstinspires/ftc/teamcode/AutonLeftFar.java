@@ -6,18 +6,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Left Far", group = "SkyStone")
 public class AutonLeftFar extends GenericOpMode {
     Hardware<AutonLeftFar> robot = new Hardware<>(this);
+    AutonProcedures<AutonLeftFar> autonProcedures = new AutonProcedures<>();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap);
+        autonProcedures.init(robot, hardwareMap, this);
 
         waitForStart();
 
-        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.goDistance(0, 22, 0, 0, 1, 0);
-        robot.goDistance(36, 0, 0, 1, 0, 0);
-
-        robot.setMecanumMotorPowers(0, 0, 0);
+        autonProcedures.simpleAuton(false, true);
 
         while (opModeIsActive()) {
             telemetry.update();

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -105,12 +106,11 @@ public class AutonProcedures<T extends GenericOpMode> {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        //For if we don't need to see what is in the camera frame
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = Hardware.VUFORIA_LICENSE_KEY;
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        //For if we don't need to see what is in the camera frame
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
@@ -223,7 +223,7 @@ public class AutonProcedures<T extends GenericOpMode> {
     }
 
     void start() {
-        targetsSkyStone.activate();
+//        targetsSkyStone.activate();
 
 //        while (target == null)
 //            target = updatePosition();
@@ -364,7 +364,12 @@ public class AutonProcedures<T extends GenericOpMode> {
     }
 
     void simpleAuton(boolean isRight, boolean isFar) {
+        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        robot.goDistance(0, isFar ? 22 : 4, 0, 0, 1, 0);
+        robot.goDistance(isRight ? -36 : 36, 0, 0, isRight ? -1 : 1, 0, 0);
+
+        robot.setMecanumMotorPowers(0, 0, 0);
     }
 
     private boolean inRange(double val, double min, double max) {
