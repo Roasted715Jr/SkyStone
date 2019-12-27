@@ -356,19 +356,19 @@ public class AutonProcedures<T extends GenericOpMode> {
         runningOpMode.addTelemetry("Block Position", blockPos);
         runningOpMode.updateTelemetry();
 
-        //Reposition to the correct stone
-        robot.setMecanumMotorPowers(foundSkyStone(robot.rColor) ? 0.25 : -0.25, 0, 0);
-
-        while (!(foundSkyStone(robot.rColor) && foundSkyStone(robot.lColor))) {
-
-        }
-
-        robot.setMecanumMotorPowers(0, 0, 0);
-
-        //Grab the Skystone based on its position
+        //Go to the SkyStone and grab it
+        centerOnSkyStone();
         robot.blockServo.setPosition(1);
 
-        //Move to the other side of the field
+        //Try 5 ft for now
+        deliverSkyStone(isRed, 60);
+        
+        //Move an extra 2 ft over
+        robot.goDistance(-84, 0, 0, -1, 0 ,0);
+        approachSkyStone();
+        centerOnSkyStone();
+        //Move past the previous
+        deliverSkyStone(isRed, 90);
     }
 
     private void approachSkyStone() {
@@ -378,7 +378,29 @@ public class AutonProcedures<T extends GenericOpMode> {
             runningOpMode.updateTelemetry();
         }
         robot.setMecanumMotorPowers(0, 0, 0);
+    }
 
+    private void centerOnSkyStone() {
+        while (!(foundSkyStone(robot.rColor) && foundSkyStone(robot.lColor))) {
+            //Run this inside the loop so that when we go for the second SkyStone we don't move if we're already lined up
+            robot.setMecanumMotorPowers(foundSkyStone(robot.rColor) ? 0.25 : -0.25, 0, 0);
+
+            runningOpMode.addTelemetry("Centering on block position " + blockPos);
+            runningOpMode.updateTelemetry();
+        }
+
+        robot.setMecanumMotorPowers(0, 0, 0);
+    }
+
+    private void deliverSkyStone(boolean isRed, int distance) {
+        robot.goDistance(0, -5, 0, 0, -1, 0);
+
+        int dir = isRed ? 1 : -1;
+        robot.goDistance(distance * dir, 0, 0, dir, 0 ,0);
+
+        robot.goDistance(0, 5, 0, 0, 1, 0);
+        robot.blockServo.setPosition(0);
+        robot.goDistance(0, -5, 0, 0, -1, 0);
     }
 
     private boolean foundSkyStone(RevColorSensorV3 color) {
