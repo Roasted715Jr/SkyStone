@@ -4,7 +4,6 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -12,14 +11,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 public class AutonProcedures<T extends GenericOpMode> {
@@ -222,6 +219,11 @@ public class AutonProcedures<T extends GenericOpMode> {
 //        }
     }
 
+    void setStartSpot(int startSpot) {
+        this.startSpot = startSpot;
+        start();
+    }
+
     void start() {
 //        targetsSkyStone.activate();
 
@@ -239,6 +241,7 @@ public class AutonProcedures<T extends GenericOpMode> {
 //        VectorF skyStonePos;
         switch (startSpot) {
             case START_BLUE_FOUNDATION:
+                runFoundationSide(false);
                 break;
             case START_BLUE_SKYSTONE:
 //                skyStonePos = getSkyStonePosition();
@@ -246,16 +249,17 @@ public class AutonProcedures<T extends GenericOpMode> {
 //                runningOpMode.addTelemetry("Moving to SkyStone");
 //                runningOpMode.updateTelemetry();
 //                robot.goDistance(0, 54, 0, 0, 1, 0);
-                getSkyStone(false);
+                runSkystoneSide(false);
 //                robot.goDistance(some amount left, maybe backwards, no turning, x, y, r);
 //                robot.goDistance(reverse of what we just did but more, maybe forwards, no turning, x, y, r);
 //                approachSkyStone();
                 break;
             case START_RED_SKYSTONE:
 //                skyStonePos = getSkyStonePosition();
-                getSkyStone(true);
+                runSkystoneSide(true);
                 break;
             case START_RED_FOUNDATION:
+                runFoundationSide(true);
                 break;
         }
 
@@ -334,7 +338,12 @@ public class AutonProcedures<T extends GenericOpMode> {
         return pos;
     }
 
-    private void getSkyStone(boolean isRed) {
+    private void runFoundationSide(boolean isRed) {
+
+    }
+
+    private void runSkystoneSide(boolean isRed) {
+        //Get the Skystone
         approachSkyStone();
 
         if (foundSkyStone(robot.rColor))
@@ -347,7 +356,19 @@ public class AutonProcedures<T extends GenericOpMode> {
         runningOpMode.addTelemetry("Block Position", blockPos);
         runningOpMode.updateTelemetry();
 
-        //Grab the SkyStone based on its position
+        //Reposition to the correct stone
+        robot.setMecanumMotorPowers(foundSkyStone(robot.rColor) ? 0.25 : -0.25, 0, 0);
+
+        while (!(foundSkyStone(robot.rColor) && foundSkyStone(robot.lColor))) {
+
+        }
+
+        robot.setMecanumMotorPowers(0, 0, 0);
+
+        //Grab the Skystone based on its position
+        robot.blockServo.setPosition(1);
+
+        //Move to the other side of the field
     }
 
     private void approachSkyStone() {
@@ -357,6 +378,7 @@ public class AutonProcedures<T extends GenericOpMode> {
             runningOpMode.updateTelemetry();
         }
         robot.setMecanumMotorPowers(0, 0, 0);
+
     }
 
     private boolean foundSkyStone(RevColorSensorV3 color) {

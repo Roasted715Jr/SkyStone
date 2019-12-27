@@ -48,7 +48,7 @@ public class Hardware<T extends GenericOpMode> {
     DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
     Position pos;
-    Servo armServo, clawServo, lFoundationServo, rFoundationServo;
+    Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
     private T runningOpMode;
     TouchSensor rTouch, lTouch;
 
@@ -73,6 +73,7 @@ public class Hardware<T extends GenericOpMode> {
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
                 rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
                 lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
+                blockServo = hardwareMap.get(Servo.class, "blockServo");
 
                 rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
                 lColor = hardwareMap.get(RevColorSensorV3.class, "lColor");
@@ -229,6 +230,7 @@ public class Hardware<T extends GenericOpMode> {
 //        runningOpMode.addTelemetry(nearTarget(frMotor, ENCODER_THRESHOLD));
 //        runningOpMode.addTelemetry(nearTarget(brMotor, ENCODER_THRESHOLD));
 //        runningOpMode.updateTelemetry();
+        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     void setMecanumTargetPositions(int x, int y, int r) {
