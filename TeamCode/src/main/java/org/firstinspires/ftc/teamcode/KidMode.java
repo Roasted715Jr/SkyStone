@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "KidMode", group = "Android Studio")
+@TeleOp(name = "KidMode", group = GenericOpMode.GROUP_SKYSTONE)
 public class KidMode extends GenericOpMode {
     private Hardware<KidMode> robot = new Hardware<>(this);
 

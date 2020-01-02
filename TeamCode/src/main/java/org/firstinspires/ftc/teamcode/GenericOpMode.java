@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class GenericOpMode extends LinearOpMode {
+    public static final String GROUP_SKYSTONE = "SkyStone";
+    public static final String GROUP_TESTINNG = "Testing";
+
     //For use in other classes during autonomous
     void addTelemetry(Object msg) {
         telemetry.addData("Autonomous", msg);

@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "Right Close", group = "SkyStone")
+@Autonomous(name = "Right Close", group = GenericOpMode.GROUP_SKYSTONE)
 public class AutonRightClose extends GenericOpMode {
     Hardware<AutonRightClose> robot = new Hardware<>(this);
     AutonProcedures<AutonRightClose> autonProcedures = new AutonProcedures<>();

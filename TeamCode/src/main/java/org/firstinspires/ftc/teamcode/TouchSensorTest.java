@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "TouchSensorTest", group = "SkyStone")
+@TeleOp(name = "TouchSensorTest", group = GenericOpMode.GROUP_SKYSTONE)
 @Disabled
 public class TouchSensorTest extends GenericOpMode {
     Hardware<TouchSensorTest> robot = new Hardware<>(this);

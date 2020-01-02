@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "Distance Sensor Test", group = "Testing")
+@TeleOp(name = "Distance Sensor Test", group = GenericOpMode.GROUP_TESTINNG)
 //@Disabled
 public class DistanceSensorTest extends GenericOpMode {
     Hardware<DistanceSensorTest> robot = new Hardware<>(this);

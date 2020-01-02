@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "SkyStone TeleOp", group = "SkyStone")
+@TeleOp(name = "SkyStone TeleOp", group = GenericOpMode.GROUP_SKYSTONE)
 public class SkyStoneTeleOp extends GenericOpMode {
     private Hardware<SkyStoneTeleOp> robot = new Hardware<>(this);
 
