@@ -64,10 +64,10 @@ public class Robot<T extends GenericOpMode> {
 
         switch (ROBOT_TYPE) {
             case MAIN_BOT:
-                flMotor = lOdometer = hardwareMap.get(DcMotor.class, "flMotor");
-                blMotor = mOdometer = hardwareMap.get(DcMotor.class, "blMotor");
-                frMotor = rOdometer = hardwareMap.get(DcMotor.class, "frMotor");
-                brMotor = hardwareMap.get(DcMotor.class, "brMotor");
+                flMotor = hardwareMap.get(DcMotor.class, "flMotor");
+                blMotor = lOdometer = hardwareMap.get(DcMotor.class, "blMotor");
+                frMotor = mOdometer = hardwareMap.get(DcMotor.class, "frMotor");
+                brMotor = rOdometer = hardwareMap.get(DcMotor.class, "brMotor");
                 setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
