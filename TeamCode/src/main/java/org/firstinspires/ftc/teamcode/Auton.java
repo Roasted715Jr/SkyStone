@@ -1,19 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-
-import static java.lang.Thread.interrupted;
 
 @Autonomous(name = "Autonomous", group = "SkyStone")
-@Disabled
+//@Disabled
 public class Auton extends GenericOpMode {
-    Hardware<Auton> robot = new Hardware<>(this);
+    Robot<Auton> robot = new Robot<>(this);
     AutonProcedures<Auton> autonProcedures = new AutonProcedures<>();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        autonProcedures.init(robot, hardwareMap, this); //This calls init in the Hardware class
+        autonProcedures.init(robot, hardwareMap, this); //This calls init in the Robot class
 
 //        Thread thread = new Thread(new Runnable() {
 //            @Override
@@ -27,7 +24,8 @@ public class Auton extends GenericOpMode {
 
 //        thread.start();
 
-        autonProcedures.start();
+        autonProcedures.startWithStartSpot(3);
+//        autonProcedures.start();
 
         while (opModeIsActive()) {
 //            if (isStopRequested()) {

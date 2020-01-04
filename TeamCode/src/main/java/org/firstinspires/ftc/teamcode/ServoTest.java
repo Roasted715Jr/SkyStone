@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "ServoTest", group = GenericOpMode.GROUP_SKYSTONE)
 @Disabled
 public class ServoTest extends GenericOpMode {
-    Hardware<ServoTest> robot = new Hardware<>(this);
+    Robot<ServoTest> robot = new Robot<>(this);
 
     @Override
     public void runOpMode() throws InterruptedException {

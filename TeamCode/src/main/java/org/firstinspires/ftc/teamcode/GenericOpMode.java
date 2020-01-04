@@ -19,7 +19,7 @@ public abstract class GenericOpMode extends LinearOpMode {
         telemetry.addData(caption, format, args);
     }
 
-    //For use in the Hardware class during autonomous
+    //For use in the Robot class during autonomous
     void updateTelemetry() {
         telemetry.update();
     }

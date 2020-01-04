@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 public class AutonProcedures<T extends GenericOpMode> {
-    private Hardware robot;
+    private Robot robot;
     private HardwareMap hardwareMap;
     private T runningOpMode;
     boolean running = true; //Just for testing purposes
@@ -94,7 +94,7 @@ public class AutonProcedures<T extends GenericOpMode> {
     private VectorF translation;
     private Orientation rotation;
 
-    void init(Hardware robot, HardwareMap hardwareMap, T runningOpMode) {
+    void init(Robot robot, HardwareMap hardwareMap, T runningOpMode) {
         this.robot = robot;
         this.hardwareMap = hardwareMap;
         this.runningOpMode = runningOpMode;
@@ -105,7 +105,7 @@ public class AutonProcedures<T extends GenericOpMode> {
 //        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 //        //For if we don't need to see what is in the camera frame
 //        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-//        parameters.vuforiaLicenseKey = Hardware.VUFORIA_LICENSE_KEY;
+//        parameters.vuforiaLicenseKey = Robot.VUFORIA_LICENSE_KEY;
 //        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
 //        vuforia = ClassFactory.getInstance().createVuforia(parameters);
 //
@@ -219,7 +219,7 @@ public class AutonProcedures<T extends GenericOpMode> {
 //        }
     }
 
-    void setStartSpot(int startSpot) {
+    void startWithStartSpot(int startSpot) {
         this.startSpot = startSpot;
         start();
     }
@@ -359,6 +359,11 @@ public class AutonProcedures<T extends GenericOpMode> {
         //Go to the SkyStone and grab it
         centerOnSkyStone();
         robot.blockServo.setPosition(1);
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+
+        }
 
         //Try 5 ft for now
         deliverSkyStone(isRed, 60);
@@ -400,6 +405,11 @@ public class AutonProcedures<T extends GenericOpMode> {
 
         robot.goDistance(0, 5, 0, 0, 1, 0);
         robot.blockServo.setPosition(0);
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+
+        }
         robot.goDistance(0, -5, 0, 0, -1, 0);
     }
 

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Color Sensor Test", group = GenericOpMode.GROUP_TESTINNG)
 public class ColorSensorTest extends GenericOpMode {
-    Hardware<ColorSensorTest> robot = new Hardware<>(this);
+    Robot<ColorSensorTest> robot = new Robot<>(this);
 
     @Override
     public void runOpMode() throws InterruptedException {

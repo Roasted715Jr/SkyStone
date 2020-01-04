@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Right Far", group = GenericOpMode.GROUP_SKYSTONE)
 public class AutonRightFar extends GenericOpMode {
-    Hardware<AutonRightFar> robot = new Hardware<>(this);
+    Robot<AutonRightFar> robot = new Robot<>(this);
     AutonProcedures<AutonRightFar> autonProcedures = new AutonProcedures<>();
 
     @Override

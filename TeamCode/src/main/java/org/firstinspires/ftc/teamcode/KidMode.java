@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "KidMode", group = GenericOpMode.GROUP_SKYSTONE)
 public class KidMode extends GenericOpMode {
-    private Hardware<KidMode> robot = new Hardware<>(this);
+    private Robot<KidMode> robot = new Robot<>(this);
 
     private final double MOTOR_MULT = 0.5;
 

@@ -13,10 +13,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 //Length is 15.75
 //Width is 17.25
 
-public class Hardware<T extends GenericOpMode> {
+public class Robot<T extends GenericOpMode> {
     private static final double INCH_PER_MM = 0.03937007874;
     private static final double WHEEL_DIAMETER_INCH = 100 * INCH_PER_MM;
+    private static final double ODOMETER_DIAMETER_INCH = 0;
     private static final double WHEEL_CIRCUMFERENCE_INCH = WHEEL_DIAMETER_INCH * Math.PI;
+    private static final double ODOMETER_CIRCUMFERENCE_INCH = ODOMETER_DIAMETER_INCH * Math.PI;
 //    private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
 //    private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
     private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
@@ -45,14 +47,15 @@ public class Hardware<T extends GenericOpMode> {
     RevColorSensorV3 rColor, lColor;
     Rev2mDistanceSensor distanceSensor;
     DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
+    DcMotor lOdometer, mOdometer, rOdometer; //The odometer encoders are identified through the motors
     DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
     Position pos;
     Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
     private T runningOpMode;
-    TouchSensor rTouch, lTouch;
+//    TouchSensor rTouch, lTouch;
 
-    Hardware(T runningOpMode) {
+    Robot(T runningOpMode) {
         this.runningOpMode = runningOpMode;
     }
 
@@ -61,9 +64,9 @@ public class Hardware<T extends GenericOpMode> {
 
         switch (ROBOT_TYPE) {
             case MAIN_BOT:
-                flMotor = hardwareMap.get(DcMotor.class, "flMotor");
-                blMotor = hardwareMap.get(DcMotor.class, "blMotor");
-                frMotor = hardwareMap.get(DcMotor.class, "frMotor");
+                flMotor = lOdometer = hardwareMap.get(DcMotor.class, "flMotor");
+                blMotor = mOdometer = hardwareMap.get(DcMotor.class, "blMotor");
+                frMotor = rOdometer = hardwareMap.get(DcMotor.class, "frMotor");
                 brMotor = hardwareMap.get(DcMotor.class, "brMotor");
                 setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -73,7 +76,7 @@ public class Hardware<T extends GenericOpMode> {
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
                 rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
                 lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
-                blockServo = hardwareMap.get(Servo.class, "blockServo");
+//                blockServo = hardwareMap.get(Servo.class, "blockServo");
 
                 rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
                 lColor = hardwareMap.get(RevColorSensorV3.class, "lColor");
@@ -82,11 +85,6 @@ public class Hardware<T extends GenericOpMode> {
 //                lTouch = hardwareMap.get(TouchSensor.class, "lTouch");
 
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
-
-                //Init other sensors
-                //3 encoders
-
-                //Init gyro?
 
 //                PINION_TEETH = 1;
 //                SPUR_TEETH = 1;

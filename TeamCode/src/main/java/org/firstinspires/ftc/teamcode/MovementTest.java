@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "Movement Test", group = GenericOpMode.GROUP_TESTINNG)
 @Disabled
 public class MovementTest extends GenericOpMode {
-    Hardware<MovementTest> robot = new Hardware<>(this);
+    Robot<MovementTest> robot = new Robot<>(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
