@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
@@ -44,14 +43,14 @@ public class Robot<T extends GenericOpMode> {
     private static double rMult;
 
     //Ctrl+Q or Ctrl+Shift+I for documentation and definition
-    RevColorSensorV3 rColor, lColor;
-    Rev2mDistanceSensor distanceSensor;
-    DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
+    public RevColorSensorV3 rColor, lColor;
+    public Rev2mDistanceSensor distanceSensor;
+    public DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
     DcMotor lOdometer, mOdometer, rOdometer; //The odometer encoders are identified through the motors
     DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
     Position pos;
-    Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
+    public Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
     private T runningOpMode;
 //    TouchSensor rTouch, lTouch;
 
@@ -59,7 +58,7 @@ public class Robot<T extends GenericOpMode> {
         this.runningOpMode = runningOpMode;
     }
 
-    void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap) {
         hardwareMap = ahwMap;
 
         switch (ROBOT_TYPE) {
@@ -129,7 +128,7 @@ public class Robot<T extends GenericOpMode> {
         }
     }
 
-    void setMecanumMotorPowers(double x, double y, double r) {
+    public void setMecanumMotorPowers(double x, double y, double r) {
         //Turn speed is half of x or y
         //x and y speed are the same
 //        xMult = 0.4;
@@ -163,7 +162,7 @@ public class Robot<T extends GenericOpMode> {
         leftMotor.setPower(power);
     }
 
-    void setMecanumMotorRunmodes(DcMotor.RunMode runMode) {
+    public void setMecanumMotorRunmodes(DcMotor.RunMode runMode) {
         flMotor.setMode(runMode);
         blMotor.setMode(runMode);
         frMotor.setMode(runMode);
@@ -187,7 +186,7 @@ public class Robot<T extends GenericOpMode> {
         leftMotor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
-    void goDistance(double xDistance, double yDistance, double rAmount, double x, double y, double r) {
+    public void goDistance(double xDistance, double yDistance, double rAmount, double x, double y, double r) {
 //        setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         int xCounts = (int) ((xDistance/* + (xDistance > 0 ? 1 : -1)*/) / WHEEL_CIRCUMFERENCE_INCH * NEVEREST_20_COUNTS_PER_REVOLUTION); //Was 1.06 or 1.03 or 1.05
@@ -313,7 +312,7 @@ public class Robot<T extends GenericOpMode> {
         }
     }
 
-    void moveHooks(boolean deploy) {
+    public void moveHooks(boolean deploy) {
         rFoundationServo.setPosition(deploy ? 1 : 0);
         lFoundationServo.setPosition(deploy ? 0 : 1);
     }

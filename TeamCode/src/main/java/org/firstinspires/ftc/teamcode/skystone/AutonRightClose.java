@@ -1,6 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.skystone;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.util.GenericOpMode;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @Autonomous(name = "Right Close", group = GenericOpMode.GROUP_SKYSTONE)
 public class AutonRightClose extends GenericOpMode {

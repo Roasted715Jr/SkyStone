@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -7,20 +7,20 @@ public abstract class GenericOpMode extends LinearOpMode {
     public static final String GROUP_TESTINNG = "Testing";
 
     //For use in other classes during autonomous
-    void addTelemetry(Object msg) {
+    public void addTelemetry(Object msg) {
         telemetry.addData("Autonomous", msg);
     }
 
-    void addTelemetry(String caption, Object value) {
+    public void addTelemetry(String caption, Object value) {
         telemetry.addData(caption, value);
     }
 
-    void addTelemetry(String caption, String format, Object... args) {
+    public void addTelemetry(String caption, String format, Object... args) {
         telemetry.addData(caption, format, args);
     }
 
     //For use in the Robot class during autonomous
-    void updateTelemetry() {
+    public void updateTelemetry() {
         telemetry.update();
     }
 

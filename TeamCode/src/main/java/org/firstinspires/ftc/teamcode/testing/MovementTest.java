@@ -1,8 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.util.GenericOpMode;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @Autonomous(name = "Movement Test", group = GenericOpMode.GROUP_TESTINNG)
 @Disabled

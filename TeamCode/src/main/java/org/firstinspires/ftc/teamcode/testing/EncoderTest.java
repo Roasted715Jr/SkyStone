@@ -1,6 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.util.GenericOpMode;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Encoder Test", group = GenericOpMode.GROUP_TESTINNG)
 public class EncoderTest extends GenericOpMode {
