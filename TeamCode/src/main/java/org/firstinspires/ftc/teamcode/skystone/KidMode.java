@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "KidMode", group = GenericOpMode.GROUP_SKYSTONE)
 public class KidMode extends GenericOpMode {
-    private Robot<KidMode> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     private final double MOTOR_MULT = 0.5;
 

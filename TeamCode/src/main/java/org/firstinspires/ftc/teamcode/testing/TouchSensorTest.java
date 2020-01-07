@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 @TeleOp(name = "TouchSensorTest", group = GenericOpMode.GROUP_SKYSTONE)
 @Disabled
 public class TouchSensorTest extends GenericOpMode {
-    Robot<TouchSensorTest> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {

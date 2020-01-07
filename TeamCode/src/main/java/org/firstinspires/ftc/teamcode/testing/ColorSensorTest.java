@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Color Sensor Test", group = GenericOpMode.GROUP_TESTINNG)
 public class ColorSensorTest extends GenericOpMode {
-    Robot<ColorSensorTest> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {

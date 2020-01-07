@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 @Autonomous(name = "Movement Test", group = GenericOpMode.GROUP_TESTINNG)
 @Disabled
 public class MovementTest extends GenericOpMode {
-    Robot<MovementTest> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {

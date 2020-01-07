@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 @TeleOp(name = "Distance Sensor Test", group = GenericOpMode.GROUP_TESTINNG)
 //@Disabled
 public class DistanceSensorTest extends GenericOpMode {
-    Robot<DistanceSensorTest> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     double distance;
     long start, finish;

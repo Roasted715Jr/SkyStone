@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "SkyStone TeleOp", group = GenericOpMode.GROUP_SKYSTONE)
 public class SkyStoneTeleOp extends GenericOpMode {
-    private Robot<SkyStoneTeleOp> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     public void runOpMode() throws InterruptedException {
         boolean aPressed = false, multiplierToggle = false;

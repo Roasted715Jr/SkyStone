@@ -21,10 +21,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGR
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
-public class AutonProcedures<T extends GenericOpMode> {
+public class AutonProcedures {
     private Robot robot;
     private HardwareMap hardwareMap;
-    private T runningOpMode;
+    private GenericOpMode runningOpMode;
     boolean running = true; //Just for testing purposes
 
     //These align with their respective coordinate quadrants
@@ -96,7 +96,7 @@ public class AutonProcedures<T extends GenericOpMode> {
     private VectorF translation;
     private Orientation rotation;
 
-    void init(Robot robot, HardwareMap hardwareMap, T runningOpMode) {
+    void init(Robot robot, HardwareMap hardwareMap, GenericOpMode runningOpMode) {
         this.robot = robot;
         this.hardwareMap = hardwareMap;
         this.runningOpMode = runningOpMode;

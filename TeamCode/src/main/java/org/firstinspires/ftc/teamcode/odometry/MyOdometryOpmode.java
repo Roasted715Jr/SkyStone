@@ -40,6 +40,10 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 
+        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+        goToPosition(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
             telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
@@ -56,7 +60,6 @@ public class MyOdometryOpmode extends LinearOpMode {
 
         //Stop the thread
         globalPositionUpdate.stop();
-
     }
 
     private void initDriveHardwareMap(String rfName, String rbName, String lfName, String lbName, String vlEncoderName, String vrEncoderName, String hEncoderName){
@@ -93,16 +96,30 @@ public class MyOdometryOpmode extends LinearOpMode {
         left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        left_front.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_front.setDirection(DcMotorSimple.Direction.REVERSE);
+//        left_front.setDirection(DcMotorSimple.Direction.REVERSE);
+//        right_front.setDirection(DcMotorSimple.Direction.REVERSE);
         right_back.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status", "Hardware Map Init Complete");
         telemetry.update();
     }
 
-    public void goToPosition(double targetX, double targetY, double robotPower, double targetRotation) {
-        
+    public void goToPosition(double targetX, double targetY, double robotPower, double targetRotation, double threshold) {
+        double distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
+        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+        double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+
+        while (opModeIsActive() && distance > threshold) {
+            distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
+            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+
+            //We are reversing x and y because 0 degrees is forwards rather than to the right
+            double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
+
+            double robotMovementXComponent = calculateX(robotMovementAngle, robotPower);
+            double robotMovementYComponent = calculateY(robotMovementAngle, robotPower);
+            double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
+        }
     }
 
     /**

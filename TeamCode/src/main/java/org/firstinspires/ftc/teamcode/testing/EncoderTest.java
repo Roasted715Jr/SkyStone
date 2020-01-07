@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Encoder Test", group = GenericOpMode.GROUP_TESTINNG)
 public class EncoderTest extends GenericOpMode {
-    Robot<EncoderTest> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {

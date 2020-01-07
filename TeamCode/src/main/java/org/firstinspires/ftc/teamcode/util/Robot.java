@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 //Length is 15.75
 //Width is 17.25
 
-public class Robot<T extends GenericOpMode> {
+public class Robot {
     private static final double INCH_PER_MM = 0.03937007874;
     private static final double WHEEL_DIAMETER_INCH = 100 * INCH_PER_MM;
     private static final double ODOMETER_DIAMETER_INCH = 0;
@@ -51,10 +51,10 @@ public class Robot<T extends GenericOpMode> {
     private HardwareMap hardwareMap;
     Position pos;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
-    private T runningOpMode;
+    private GenericOpMode runningOpMode;
 //    TouchSensor rTouch, lTouch;
 
-    Robot(T runningOpMode) {
+    public Robot(GenericOpMode runningOpMode) {
         this.runningOpMode = runningOpMode;
     }
 

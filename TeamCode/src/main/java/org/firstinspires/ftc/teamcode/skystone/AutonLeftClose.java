@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @Autonomous(name = "Left Close", group = GenericOpMode.GROUP_SKYSTONE)
 public class AutonLeftClose extends GenericOpMode {
-    Robot<AutonLeftClose> robot = new Robot<>(this);
-    AutonProcedures<AutonLeftClose> autonProcedures = new AutonProcedures<>();
+    private Robot robot = new Robot(this);
+    private AutonProcedures autonProcedures = new AutonProcedures();
 
     @Override
     public void runOpMode() throws InterruptedException {

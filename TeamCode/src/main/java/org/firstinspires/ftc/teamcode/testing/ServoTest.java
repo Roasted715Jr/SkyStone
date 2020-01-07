@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 @TeleOp(name = "ServoTest", group = GenericOpMode.GROUP_SKYSTONE)
 @Disabled
 public class ServoTest extends GenericOpMode {
-    Robot<ServoTest> robot = new Robot<>(this);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
