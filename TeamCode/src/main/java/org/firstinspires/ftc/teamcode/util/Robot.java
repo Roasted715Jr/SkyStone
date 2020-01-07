@@ -46,8 +46,8 @@ public class Robot {
     public RevColorSensorV3 rColor, lColor;
     public Rev2mDistanceSensor distanceSensor;
     public DcMotor frMotor, flMotor, brMotor, blMotor; //For the main bot
-    DcMotor lOdometer, mOdometer, rOdometer; //The odometer encoders are identified through the motors
-    DcMotor rightMotor, leftMotor; //For the baby bots
+    public DcMotor lOdometer, mOdometer, rOdometer; //The odometer encoders are identified through the motors
+    public DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
     Position pos;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
@@ -63,9 +63,9 @@ public class Robot {
 
         switch (ROBOT_TYPE) {
             case MAIN_BOT:
-                flMotor = hardwareMap.get(DcMotor.class, "flMotor");
+                flMotor = mOdometer = hardwareMap.get(DcMotor.class, "flMotor");
                 blMotor = lOdometer = hardwareMap.get(DcMotor.class, "blMotor");
-                frMotor = mOdometer = hardwareMap.get(DcMotor.class, "frMotor");
+                frMotor = hardwareMap.get(DcMotor.class, "frMotor");
                 brMotor = rOdometer = hardwareMap.get(DcMotor.class, "brMotor");
                 setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -150,7 +150,7 @@ public class Robot {
 //        frMotor.setPower(-x + y - r);
 //        brMotor.setPower(x + y - r);
 
-        //For the sideways configuration
+        //We reverse these because they're on the right side
         frMotor.setPower(-(-x + y - r));
         brMotor.setPower(-(x + y - r));
         flMotor.setPower(x + y + r);

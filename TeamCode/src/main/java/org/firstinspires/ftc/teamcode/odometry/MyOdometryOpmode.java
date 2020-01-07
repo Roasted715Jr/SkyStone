@@ -40,9 +40,11 @@ public class MyOdometryOpmode extends LinearOpMode {
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 
-        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
-        goToPosition(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
-        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+//        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+//        goToPosition(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+//        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+
+//        goToPosition(0 * COUNTS_PER_INCH, 2 * COUNTS_PER_INCH, 0.1, 0, 1 * COUNTS_PER_INCH);
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
@@ -96,10 +98,6 @@ public class MyOdometryOpmode extends LinearOpMode {
         left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-//        left_front.setDirection(DcMotorSimple.Direction.REVERSE);
-//        right_front.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_back.setDirection(DcMotorSimple.Direction.REVERSE);
-
         telemetry.addData("Status", "Hardware Map Init Complete");
         telemetry.update();
     }
@@ -119,7 +117,18 @@ public class MyOdometryOpmode extends LinearOpMode {
             double robotMovementXComponent = calculateX(robotMovementAngle, robotPower);
             double robotMovementYComponent = calculateY(robotMovementAngle, robotPower);
             double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
+
+            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, pivotCorrection);
+            distance = Math.hypot(distanceToXTarget, distanceToYTarget);
         }
+    }
+
+    public void setMecanumMotorPowers(double x, double y, double r) {
+        //We reverse these because they're on the right side
+        right_front.setPower(-(-x + y - r));
+        right_back.setPower(-(x + y - r));
+        left_front.setPower(x + y + r);
+        left_back.setPower(-x + y + r);
     }
 
     /**
