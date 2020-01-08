@@ -35,7 +35,9 @@ public class OdometryGlobalCoordinatePosition implements Runnable{
 
     private int verticalLeftEncoderPositionMultiplier = 1;
     private int verticalRightEncoderPositionMultiplier = 1;
+//    private int verticalRightEncoderPositionMultiplier = -1;
     private int normalEncoderPositionMultiplier = 1;
+//    private int normalEncoderPositionMultiplier = -1;
 
     /**
      * Constructor for GlobalCoordinatePosition Thread

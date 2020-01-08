@@ -67,8 +67,9 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
         positionThread.start();
 
         //Use this if encoder values are wrong
-        globalPositionUpdate.reverseRightEncoder();
-        globalPositionUpdate.reverseNormalEncoder();
+//        globalPositionUpdate.reverseRightEncoder();
+//        globalPositionUpdate.reverseLeftEncoder();
+//        globalPositionUpdate.reverseNormalEncoder();
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
