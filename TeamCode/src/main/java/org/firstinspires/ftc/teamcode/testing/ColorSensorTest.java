@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Color Sensor Test", group = GenericOpMode.GROUP_TESTINNG)
+@Disabled
 public class ColorSensorTest extends GenericOpMode {
     private Robot robot = new Robot(this);
 
