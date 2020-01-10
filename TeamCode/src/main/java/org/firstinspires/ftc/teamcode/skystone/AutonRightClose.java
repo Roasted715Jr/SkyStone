@@ -21,5 +21,7 @@ public class AutonRightClose extends GenericOpMode {
         while (opModeIsActive()) {
 
         }
+
+        robot.stop();
     }
 }

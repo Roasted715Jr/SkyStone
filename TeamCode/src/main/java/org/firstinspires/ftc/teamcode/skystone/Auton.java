@@ -41,5 +41,6 @@ public class Auton extends GenericOpMode {
 
 //        thread.interrupt();
 //        thread.stop();
+        robot.stop();
     }
 }

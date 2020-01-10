@@ -21,5 +21,7 @@ public class AutonLeftFar extends GenericOpMode {
         while (opModeIsActive()) {
             telemetry.update();
         }
+
+        robot.stop();
     }
 }

@@ -21,5 +21,7 @@ public class AutonRightFar extends GenericOpMode {
         while (opModeIsActive()) {
 
         }
+
+        robot.stop();
     }
 }

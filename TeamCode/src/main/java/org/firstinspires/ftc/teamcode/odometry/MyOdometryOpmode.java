@@ -14,14 +14,14 @@ import java.io.File;
  * Created by Sarthak on 10/4/2019.
  */
 @TeleOp(name = "My Odometry OpMode")
-@Disabled
+//@Disabled
 public class MyOdometryOpmode extends LinearOpMode {
     //Drive motors
     DcMotor right_front, right_back, left_front, left_back;
     //Odometry Wheels
     DcMotor verticalLeft, verticalRight, horizontal;
 
-    final double COUNTS_PER_INCH = 200;//90;//5;//.46; //307.699557;
+    final double COUNTS_PER_INCH = 306.381642;//90;//5;//.46; //307.699557;
 
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
     String rfName = "frMotor", rbName = "brMotor", lfName = "flMotor", lbName = "blMotor";
@@ -58,23 +58,25 @@ public class MyOdometryOpmode extends LinearOpMode {
 //        globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 
-//        goToPosition(0 * COUNTS_PER_INCH, 23.75 * COUNTS_PER_INCH, 0.5, 0, 0.2, 1.5 * COUNTS_PER_INCH, 3);
-//        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.2, 0, 0.2, 0.5 * COUNTS_PER_INCH, 3);
-//        goToPosition(24 * COUNTS_PER_INCH, 23.75 * COUNTS_PER_INCH, 0.5, 0, 0.2, 1.5 * COUNTS_PER_INCH, 3);
-//        goToPosition(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.2, 0, 0.2, 0.5 * COUNTS_PER_INCH, 3);
-//        goToPosition(0.75 * COUNTS_PER_INCH, 0.75 * COUNTS_PER_INCH, 0.5, 0, 0.2, 1.5 * COUNTS_PER_INCH, 3);
-//        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.2, 0, 0.2, 0.5 * COUNTS_PER_INCH, 3);
-//        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.2, 90, 0.5, 2 * COUNTS_PER_INCH, 3);
+//        goToPosition(0, 23.75, 0, 0.5, 0.2, 1.5, 3);
 
-//        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1.25 * COUNTS_PER_INCH, 3);
-//        goToPosition(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1.25 * COUNTS_PER_INCH, 3);
-//        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.5, 0, 1.25 * COUNTS_PER_INCH, 3);
+//        goToPosition(0, 24, 0.2, 0, 0.2, 0.5, 3);
+//        goToPosition(24, 23.75, 0.5, 0, 0.2, 1.5, 3);
+//        goToPosition(24, 24, 0.2, 0, 0.2, 0.5, 3);
+//        goToPosition(0.75, 0.75, 0.5, 0, 0.2, 1.5, 3);
+//        goToPosition(0, 0, 0.2, 0, 0.2, 0.5, 3);
+//        goToPosition(0, 0, 0.2, 90, 0.5, 2, 3);
 
-//        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.3, 90, 1.25 * COUNTS_PER_INCH, 3);
+//        goToPosition(0, 24, 0.5, 0, 1.25, 3);
+//        goToPosition(24, 24, 0.5, 0, 1.25, 3);
+//        goToPosition(0, 0, 0.5, 0, 1.25, 3);
 
-//        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.2, 0, 0.5 * COUNTS_PER_INCH, 1);
+//        goToPosition(0, 0, 0.3, 90, 1.25, 3);
 
-        goToPosition(0, 24 * COUNTS_PER_INCH, 0, 1, 0);
+//        goToPosition(0, 24, 0.2, 0, 0.5, 1);
+
+        //22.5 y
+        goToPosition(-36, 0, 0, 0.25, 0);
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
@@ -132,12 +134,15 @@ public class MyOdometryOpmode extends LinearOpMode {
         telemetry.update();
     }
 
-    public void goToPosition(double targetX, double targetY, double robotPower, double targetRotation, double rotationSpeed, double threshold, double angleThreshold) {
+    public void goToPosition(double targetX, double targetY, double targetRotation, double robotPower, double rotationSpeed, double threshold, double angleThreshold) {
+        targetX *= COUNTS_PER_INCH;
+        targetY *= COUNTS_PER_INCH;
+        threshold *= COUNTS_PER_INCH;
+
         double distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
         double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
         double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
         double orientation = globalPositionUpdate.returnOrientation();
-
 
 //        telemetry.addData("orientation", orientation);
 //        telemetry.update();
@@ -192,39 +197,64 @@ public class MyOdometryOpmode extends LinearOpMode {
     //Move closer to the block
 
     void goToPosition(double targetX, double targetY, double targetRotation, double speed, double rotationSpeed) {
-        goToY(targetY, 1);
-//        goToX(targetX);
-//        turnToR(targetRotation);
-//        goToY(targetY);
+        goToY(targetY, speed);
+        goToX(targetX, speed);
+//        turnToR(targetRotation, rotationSpeed);
+//        goToY(targetY, speed);
     }
 
     void goToY(double targetY, double speed) {
-        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
-//        double distanceToYTarget = (targetY - globalPositionUpdate.returnYCoordinate()) * odometerYMultiplier / COUNTS_PER_INCH;
-//
-        while (opModeIsActive() && distanceToYTarget > 0.25) {
-            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
-//            distanceToYTarget = (targetY - globalPositionUpdate.returnYCoordinate()) * odometerYMultiplier / COUNTS_PER_INCH;
-//
-            setMecanumMotorPowers(0, 0.25, 0);
-//
-            telemetry.addData("y-Coordinate", globalPositionUpdate.returnYCoordinate());
-            telemetry.addData("Left Odometer", verticalLeft.getCurrentPosition());
-            telemetry.addData("Right Odometer", verticalRight.getCurrentPosition());
-            telemetry.addData("distanceToYTarget", distanceToYTarget);
-            telemetry.addData("Distance in inches", distanceToYTarget / COUNTS_PER_INCH);
-            telemetry.update();
-        }
-//
-        setMecanumMotorPowers(0, 0, 0);
+//        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+////        double distanceToYTarget = (targetY - globalPositionUpdate.returnYCoordinate()) * odometerYMultiplier / COUNTS_PER_INCH;
+////
+//        while (opModeIsActive() && distanceToYTarget > 0.25) {
+//            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+////            distanceToYTarget = (targetY - globalPositionUpdate.returnYCoordinate()) * odometerYMultiplier / COUNTS_PER_INCH;
+////
+//            setMecanumMotorPowers(0, 0.25, 0);
+////
+//            telemetry.addData("y-Coordinate", globalPositionUpdate.returnYCoordinate());
+//            telemetry.addData("Left Odometer", verticalLeft.getCurrentPosition());
+//            telemetry.addData("Right Odometer", verticalRight.getCurrentPosition());
+//            telemetry.addData("distanceToYTarget", distanceToYTarget);
+//            telemetry.addData("Distance in inches", distanceToYTarget / COUNTS_PER_INCH);
+//            telemetry.update();
+//        }
+////
+//        setMecanumMotorPowers(0, 0, 0);
 //
 ////        ReadWriteFile.writeFile(odometerMultiplier, String.valueOf(targetY / COUNTS_PER_INCH / globalPositionUpdate.returnYCoordinate()));
 ////        ReadWriteFile.writeFile(odometerMultiplier, String.valueOf(distanceToYTarget / (targetY / COUNTS_PER_INCH)));
 ////        telemetry.addData("odometerMultiplier", Double.parseDouble(ReadWriteFile.readFile(odometerMultiplier).trim()));
+
+        targetY *= COUNTS_PER_INCH;
+        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+
+        //Make this so we can go backwards with this as well
+        while (opModeIsActive() && Math.abs(distanceToYTarget) > 0.25) {
+            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+            setMecanumMotorPowers(0, (distanceToYTarget > 0 ? 1 : -1) * speed, 0);
+            telemetry.addData("distanceToYTarget", distanceToYTarget / COUNTS_PER_INCH);
+            telemetry.update();
+        }
+
+        setMecanumMotorPowers(0, 0, 0);
     }
 
     void goToX(double targetX, double speed) {
+        targetX *= COUNTS_PER_INCH;
+        double distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
 
+        //Make this so we can go backwards with this as well
+        while (opModeIsActive() && Math.abs(distanceToXTarget) > 0.25) {
+            distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
+            setMecanumMotorPowers((distanceToXTarget > 0 ? 1 : -1) * speed, 0, 0);
+            telemetry.addData("distanceToXTarget", distanceToXTarget / COUNTS_PER_INCH);
+            telemetry.addData("horizontalEncoder", horizontal.getCurrentPosition());
+            telemetry.update();
+        }
+
+        setMecanumMotorPowers(0, 0, 0);
     }
 
     void turnToR(double targetRotation, double rotationSpeed) {

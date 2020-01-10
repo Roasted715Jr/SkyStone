@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values
  */
 @TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
-@Disabled
+//@Disabled
 public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
     //Odometry encoder wheels

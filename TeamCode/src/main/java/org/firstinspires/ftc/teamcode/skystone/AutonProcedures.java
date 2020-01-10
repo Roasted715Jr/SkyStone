@@ -419,16 +419,20 @@ public class AutonProcedures {
         return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000);
     }
 
-    void simpleAuton(boolean isRight, boolean isFar) {
-        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.goDistance(0, isFar ? 22 : 4, 0, 0, 1, 0);
-        robot.goDistance(isRight ? -36 : 36, 0, 0, isRight ? -1 : 1, 0, 0);
-
-        robot.setMecanumMotorPowers(0, 0, 0);
-    }
-
     private boolean inRange(double val, double min, double max) {
         return min < val && val < max;
+    }
+
+    void simpleAuton(boolean isRight, boolean isFar) {
+//        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+//        robot.goDistance(0, isFar ? 22 : 4, 0, 0, 1, 0);
+//        robot.goDistance(isRight ? -36 : 36, 0, 0, isRight ? -1 : 1, 0, 0);
+
+//        robot.goToPosition(isRight ? -36 : 36, isFar ? 22 : 4, 0, 0.5, 0.2, 1.5, 3);
+//        robot.goToPosition(0, 24, 0, 0.5, 0.2, 1.5, 3);
+        robot.goToPosition(-36, 0, 0, 0.25, 0);
+
+//        robot.setMecanumMotorPowers(0, 0, 0);
     }
 }

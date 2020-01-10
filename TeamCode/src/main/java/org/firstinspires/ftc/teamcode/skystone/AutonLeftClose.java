@@ -21,5 +21,7 @@ public class AutonLeftClose extends GenericOpMode {
         while (opModeIsActive()) {
             telemetry.update();
         }
+
+        robot.stop();
     }
 }
