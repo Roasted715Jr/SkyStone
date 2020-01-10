@@ -424,14 +424,38 @@ public class AutonProcedures {
     }
 
     void simpleAuton(boolean isRight, boolean isFar) {
+        simpleAuton(isRight, isFar, 0);
+    }
+
+    void simpleAuton(boolean isRight, boolean isFar, long waitTime) {
+        if (waitTime > 0) {
+            try {
+                Thread.sleep(waitTime);
+            } catch (Exception e) {
+
+            }
+        }
+
 //        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 //        robot.goDistance(0, isFar ? 22 : 4, 0, 0, 1, 0);
 //        robot.goDistance(isRight ? -36 : 36, 0, 0, isRight ? -1 : 1, 0, 0);
 
-//        robot.goToPosition(isRight ? -36 : 36, isFar ? 22 : 4, 0, 0.5, 0.2, 1.5, 3);
+        if (isFar) {
+            robot.goToPosition(0, 26, 0, 0.25, 0.2, 10, 3);
+            robot.goToPosition((isRight ? -1 : 1) * 38, 26, 0, 0.25, 0.2, 10, 3);
+        } else
+            robot.goToPosition((isRight ? -1 : 1) * 38, 4, 0, 0.25, 0.2, 10, 3);
+
+
+        robot.goToPosition((isRight ? -1 : 1) * 38, isFar ? 26 : 4, 0, 0.1, 0.2, 2, 3);
+
+
+
 //        robot.goToPosition(0, 24, 0, 0.5, 0.2, 1.5, 3);
-        robot.goToPosition(-36, 0, 0, 0.25, 0);
+
+        //For the 3 stage goToPosition
+//        robot.goToPosition(-36, 0, 0, 0.25, 0);
 
 //        robot.setMecanumMotorPowers(0, 0, 0);
     }

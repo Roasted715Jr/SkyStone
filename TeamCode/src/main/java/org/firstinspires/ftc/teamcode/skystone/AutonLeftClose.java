@@ -16,7 +16,7 @@ public class AutonLeftClose extends GenericOpMode {
 
         waitForStart();
 
-        autonProcedures.simpleAuton(false, false);
+        autonProcedures.simpleAuton(false, false, 22000);
 
         while (opModeIsActive()) {
             telemetry.update();

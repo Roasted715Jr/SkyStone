@@ -84,9 +84,13 @@ public class Robot {
 
                 globalPositionUpdate.reverseRightEncoder();
                 globalPositionUpdate.reverseNormalEncoder();
-//                lOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//                rOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//                hOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                lOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                hOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                lOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                hOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 armServo = hardwareMap.get(Servo.class, "armServo"); //Vertical is at 0.3
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
@@ -380,23 +384,23 @@ public class Robot {
             distance = Math.hypot(distanceToXTarget, distanceToYTarget);
             orientation = globalPositionUpdate.returnOrientation();
 
-//            telemetry.addData("distanceToXTarget", distanceToXTarget / COUNTS_PER_INCH);
-//            telemetry.addData("distanceToYTarget", distanceToYTarget / COUNTS_PER_INCH);
-//            telemetry.addData("distance", distance / COUNTS_PER_INCH);
-//            telemetry.addData("orientation", orientation);
-//
-//            telemetry.addData("robotMovementAngle", robotMovementAngle);
-//
-//            telemetry.addData("robotMovementXComponent", robotMovementXComponent);
-//            telemetry.addData("robotMovementYComponent", robotMovementYComponent);
-//            telemetry.addData("pivotCorrection", pivotCorrection);
-//            telemetry.addData("robotMovementRComponent", robotMovementRComponent);
-//
-//            telemetry.addData("orientation", orientation);
-//            telemetry.addData("Check 1", Math.abs(targetRotation) + angleThreshold < Math.abs(orientation));
-//            telemetry.addData("Check 2", Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold);
-//
-//            telemetry.update();
+            runningOpMode.telemetry.addData("distanceToXTarget", distanceToXTarget / ODOMETER_COUNTS_PER_INCH);
+            runningOpMode.telemetry.addData("distanceToYTarget", distanceToYTarget / ODOMETER_COUNTS_PER_INCH);
+            runningOpMode.telemetry.addData("distance", distance / ODOMETER_COUNTS_PER_INCH);
+            runningOpMode.telemetry.addData("orientation", orientation);
+
+            runningOpMode.telemetry.addData("robotMovementAngle", robotMovementAngle);
+
+            runningOpMode.telemetry.addData("robotMovementXComponent", robotMovementXComponent);
+            runningOpMode.telemetry.addData("robotMovementYComponent", robotMovementYComponent);
+            runningOpMode.telemetry.addData("pivotCorrection", pivotCorrection);
+            runningOpMode.telemetry.addData("robotMovementRComponent", robotMovementRComponent);
+
+            runningOpMode.telemetry.addData("orientation", orientation);
+            runningOpMode.telemetry.addData("Check 1", Math.abs(targetRotation) + angleThreshold < Math.abs(orientation));
+            runningOpMode.telemetry.addData("Check 2", Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold);
+
+            runningOpMode.telemetry.update();
         }
 
         setMecanumMotorPowers(0, 0, 0);
@@ -410,29 +414,6 @@ public class Robot {
     }
 
     void goToY(double targetY, double speed) {
-//        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
-////        double distanceToYTarget = (targetY - globalPositionUpdate.returnYCoordinate()) * odometerYMultiplier / COUNTS_PER_INCH;
-////
-//        while (opModeIsActive() && distanceToYTarget > 0.25) {
-//            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
-////            distanceToYTarget = (targetY - globalPositionUpdate.returnYCoordinate()) * odometerYMultiplier / COUNTS_PER_INCH;
-////
-//            setMecanumMotorPowers(0, 0.25, 0);
-////
-//            telemetry.addData("y-Coordinate", globalPositionUpdate.returnYCoordinate());
-//            telemetry.addData("Left Odometer", verticalLeft.getCurrentPosition());
-//            telemetry.addData("Right Odometer", verticalRight.getCurrentPosition());
-//            telemetry.addData("distanceToYTarget", distanceToYTarget);
-//            telemetry.addData("Distance in inches", distanceToYTarget / COUNTS_PER_INCH);
-//            telemetry.update();
-//        }
-////
-//        setMecanumMotorPowers(0, 0, 0);
-//
-////        ReadWriteFile.writeFile(odometerMultiplier, String.valueOf(targetY / COUNTS_PER_INCH / globalPositionUpdate.returnYCoordinate()));
-////        ReadWriteFile.writeFile(odometerMultiplier, String.valueOf(distanceToYTarget / (targetY / COUNTS_PER_INCH)));
-////        telemetry.addData("odometerMultiplier", Double.parseDouble(ReadWriteFile.readFile(odometerMultiplier).trim()));
-
         targetY *= ODOMETER_COUNTS_PER_INCH;
         double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
 
