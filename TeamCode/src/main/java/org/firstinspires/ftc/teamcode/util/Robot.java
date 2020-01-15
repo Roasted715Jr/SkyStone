@@ -51,8 +51,8 @@ public class Robot {
     public DcMotor lOdometer, hOdometer, rOdometer; //The odometer encoders are identified through the motors
     public DcMotor rightMotor, leftMotor; //For the baby bots
     private HardwareMap hardwareMap;
-    OdometryGlobalCoordinatePosition globalPositionUpdate;
-    Position pos;
+    private OdometryGlobalCoordinatePosition globalPositionUpdate;
+    public DcMotor armMotor;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
     private GenericOpMode runningOpMode;
 //    TouchSensor rTouch, lTouch;
@@ -92,8 +92,15 @@ public class Robot {
                 rOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 hOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                armServo = hardwareMap.get(Servo.class, "armServo"); //Vertical is at 0.3
+//                armServo = hardwareMap.get(Servo.class, "armServo"); //Vertical is at 0.3
+                armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+                armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                //As long as we keep power to the motor from the phone or the battery, the encoder will constantly be tracking its position
+                armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                armMotor.setTargetPosition(armMotor.getCurrentPosition());
+                armMotor.setPower(0);
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
+
                 rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
                 lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
 //                blockServo = hardwareMap.get(Servo.class, "blockServo");
@@ -147,6 +154,12 @@ public class Robot {
                 SPUR_TEETH = 1;
                 break;
         }
+    }
+
+    public void startGlobalPositionUpdate() {
+        globalPositionUpdate = new OdometryGlobalCoordinatePosition(lOdometer, rOdometer, hOdometer, ODOMETER_COUNTS_PER_INCH, 75);
+        Thread positionThread = new Thread(globalPositionUpdate);
+        positionThread.start();
     }
 
     public void setMecanumMotorPowers(double x, double y, double r) {

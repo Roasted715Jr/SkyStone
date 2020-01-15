@@ -102,7 +102,7 @@ public class AutonProcedures {
         this.runningOpMode = runningOpMode;
 
         robot.init(hardwareMap);
-
+        robot.startGlobalPositionUpdate();
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 //        //For if we don't need to see what is in the camera frame
