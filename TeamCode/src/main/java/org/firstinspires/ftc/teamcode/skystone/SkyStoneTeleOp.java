@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 public class SkyStoneTeleOp extends GenericOpMode {
     private static final double SPEED_MAX = 0.75;
     private static final double SPEED_MIN = 0.25;
-    private static final double ARM_SPEED = 0.75;
-    private static final int ARM_MAX_POS = 113;
+    private static final double ARM_SPEED = 0.5;
+    private static final int ARM_MAX_POS = 674; //113 //Make sure to negate stuff when you need to use this value
     private static final int ARM_INCREMENT = 1;
 
     private Robot robot = new Robot(this);
@@ -20,7 +20,7 @@ public class SkyStoneTeleOp extends GenericOpMode {
         boolean aPressed = false, multiplierToggle = false;
 //        double speedMultiplier = 1, currentPos, targetPos = 0;
         double speedMultiplier;
-        int currentPos, targetPos;
+        int currentPos, targetPos, previousPos;
         boolean isMoving = false;
 
         robot.init(hardwareMap);
@@ -30,6 +30,7 @@ public class SkyStoneTeleOp extends GenericOpMode {
         waitForStart();
 
         targetPos = robot.armMotor.getCurrentPosition();
+        previousPos = robot.armMotor.getCurrentPosition();
 
         while (opModeIsActive()) {
             x = gamepad1.left_stick_x;
@@ -84,12 +85,14 @@ public class SkyStoneTeleOp extends GenericOpMode {
 //            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //            robot.armMotor.setPower(ARM_SPEED);
 
+            currentPos = robot.armMotor.getCurrentPosition(); //Since we reverse the motor, the encoder will be negative as well
             if (Math.abs(y2) > 0.1) {
                 robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 robot.armMotor.setPower(y2 * ARM_SPEED);
+                previousPos = currentPos;
                 isMoving = true;
-            } else if (isMoving) {
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition());
+            } else {
+                robot.armMotor.setTargetPosition(previousPos);
                 robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.armMotor.setPower(1);
                 isMoving = false;
@@ -106,7 +109,8 @@ public class SkyStoneTeleOp extends GenericOpMode {
             telemetry.addData("r", "%.5f", r);
             telemetry.addData("y2", "%.5f", y2);
             telemetry.addData("armMotor Position", robot.armMotor.getCurrentPosition());
-            telemetry.addData("armMotor Target Position", robot.armMotor.getTargetPosition());
+            telemetry.addData("armMotor Previous Position", previousPos);
+//            telemetry.addData("armMotor Target Position", robot.armMotor.getTargetPosition());
             telemetry.update();
         }
     }
