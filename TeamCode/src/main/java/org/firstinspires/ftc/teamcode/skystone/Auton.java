@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
 
 @Autonomous(name = "Autonomous", group = "SkyStone")
-@Disabled
+//@Disabled
 public class Auton extends GenericOpMode {
     private Robot robot = new Robot(this);
     private AutonProcedures autonProcedures = new AutonProcedures();
@@ -28,7 +28,7 @@ public class Auton extends GenericOpMode {
 
 //        thread.start();
 
-        autonProcedures.startWithStartSpot(3);
+        autonProcedures.startWithStartSpot(2);
 //        autonProcedures.start();
 
         while (opModeIsActive()) {

@@ -92,9 +92,11 @@ public class SkyStoneTeleOp extends GenericOpMode {
                 previousPos = currentPos;
                 isMoving = true;
             } else {
-                robot.armMotor.setTargetPosition(previousPos);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(1);
+//                robot.armMotor.setTargetPosition(previousPos);
+//                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                robot.armMotor.setPower(1);
+
+                robot.moveArmMotor(previousPos);
                 isMoving = false;
             }
 

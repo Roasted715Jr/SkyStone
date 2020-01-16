@@ -53,7 +53,7 @@ public class Robot {
     private HardwareMap hardwareMap;
     private OdometryGlobalCoordinatePosition globalPositionUpdate;
     public DcMotor armMotor;
-    public Servo armServo, clawServo, lFoundationServo, rFoundationServo, blockServo;
+    public Servo armServo, clawServo, lFoundationServo, rFoundationServo;//, blockServo;
     private GenericOpMode runningOpMode;
 //    TouchSensor rTouch, lTouch;
 
@@ -97,7 +97,6 @@ public class Robot {
                 armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
                 //As long as we keep power to the motor from the phone or the battery, the encoder will constantly be tracking its position
                 armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                armMotor.setTargetPosition(armMotor.getCurrentPosition());
                 armMotor.setPower(0);
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
 
@@ -470,6 +469,12 @@ public class Robot {
             return 0;
 
         return (desiredAngle > 0 ? 1 : -1) * speed / 5;
+    }
+
+    public void moveArmMotor(int pos) {
+        armMotor.setTargetPosition(pos);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
     }
 
     public void stop() {

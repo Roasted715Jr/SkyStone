@@ -355,44 +355,55 @@ public class AutonProcedures {
         else
             blockPos = isRed ? 1 : 3;
 
-        runningOpMode.addTelemetry("Block Position", blockPos);
-        runningOpMode.updateTelemetry();
+//        runningOpMode.addTelemetry("Block Position", blockPos);
+//        runningOpMode.updateTelemetry();
 
         //Go to the SkyStone and grab it
-        centerOnSkyStone();
-        robot.blockServo.setPosition(1);
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-
-        }
+        centerOnSkyStone(isRed);
+//        robot.moveArmMotor(-674);
+//        try {
+//            Thread.sleep(1500);
+//        } catch (Exception e) {
+//
+//        }
 
         //Try 5 ft for now
-        deliverSkyStone(isRed, 60);
+//        deliverSkyStone(isRed, 60);
         
         //Move an extra 2 ft over
-        robot.goDistance(-84, 0, 0, -1, 0 ,0);
-        approachSkyStone();
-        centerOnSkyStone();
+//        robot.goDistance(-84, 0, 0, -1, 0 ,0);
+//        approachSkyStone();
+//        centerOnSkyStone();
         //Move past the previous
-        deliverSkyStone(isRed, 90);
+//        deliverSkyStone(isRed, 90);
+
+        while (runningOpMode.opModeIsActive()) {
+            runningOpMode.addTelemetry("Block Position", blockPos);
+            runningOpMode.addTelemetry("lColor Found SkyStone", foundSkyStone(robot.lColor));
+            runningOpMode.addTelemetry("rColor Found SkyStone", foundSkyStone(robot.rColor));
+            runningOpMode.updateTelemetry();
+        }
     }
 
     private void approachSkyStone() {
-        robot.setMecanumMotorPowers(0, 0.25, 0);
-        while (robot.distanceSensor.getDistance(DistanceUnit.INCH) > 3) {
+        robot.setMecanumMotorPowers(0, 0.1, 0);
+        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 2) {
             runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
             runningOpMode.updateTelemetry();
         }
         robot.setMecanumMotorPowers(0, 0, 0);
     }
 
-    private void centerOnSkyStone() {
-        while (!(foundSkyStone(robot.rColor) && foundSkyStone(robot.lColor))) {
-            //Run this inside the loop so that when we go for the second SkyStone we don't move if we're already lined up
-            robot.setMecanumMotorPowers(foundSkyStone(robot.rColor) ? 0.25 : -0.25, 0, 0);
+    private void centerOnSkyStone(boolean isRed) {
+        if (blockPos == 1)
+            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
+        else if (blockPos > 0)
+            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
 
+        while (runningOpMode.opModeIsActive() && !(foundSkyStone(robot.rColor) && foundSkyStone(robot.lColor))) {
             runningOpMode.addTelemetry("Centering on block position " + blockPos);
+            runningOpMode.addTelemetry("lColor Found SkyStone", foundSkyStone(robot.lColor));
+            runningOpMode.addTelemetry("rColor Found SkyStone", foundSkyStone(robot.rColor));
             runningOpMode.updateTelemetry();
         }
 
@@ -406,9 +417,9 @@ public class AutonProcedures {
         robot.goDistance(distance * dir, 0, 0, dir, 0 ,0);
 
         robot.goDistance(0, 5, 0, 0, 1, 0);
-        robot.blockServo.setPosition(0);
+        robot.moveArmMotor(0);
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1500);
         } catch (Exception e) {
 
         }
@@ -416,11 +427,12 @@ public class AutonProcedures {
     }
 
     private boolean foundSkyStone(RevColorSensorV3 color) {
-        return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000);
+//        return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000); //With light on
+        return inRange(color.red(), 0, 10) && inRange(color.green(), 0, 10) && inRange(color.blue(), 0, 10); //With light off
     }
 
     private boolean inRange(double val, double min, double max) {
-        return min < val && val < max;
+        return min <= val && val <= max;
     }
 
     void simpleAuton(boolean isRight, boolean isFar) {
