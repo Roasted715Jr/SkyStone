@@ -88,16 +88,14 @@ public class SkyStoneTeleOp extends GenericOpMode {
             currentPos = robot.armMotor.getCurrentPosition(); //Since we reverse the motor, the encoder will be negative as well
             if (Math.abs(y2) > 0.1) {
                 robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.armMotor.setPower(y2 * ARM_SPEED);
+                robot.armMotor.setPower(-y2 * (y2 > 0 ? 0.5 : 1) * ARM_SPEED);
                 previousPos = currentPos;
-                isMoving = true;
             } else {
 //                robot.armMotor.setTargetPosition(previousPos);
 //                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //                robot.armMotor.setPower(1);
 
                 robot.moveArmMotor(previousPos);
-                isMoving = false;
             }
 
             if (gamepad2.a)
