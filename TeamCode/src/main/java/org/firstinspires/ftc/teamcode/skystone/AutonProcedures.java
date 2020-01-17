@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.skystone;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -348,9 +346,9 @@ public class AutonProcedures {
         //Get the Skystone
         approachSkyStone();
 
-        if (foundSkyStone(robot.rColor))
+        if (robot.foundSkyStone(robot.rColor))
             blockPos = isRed ? 3 : 1;
-        else if (foundSkyStone(robot.lColor))
+        else if (robot.foundSkyStone(robot.lColor))
             blockPos = 2;
         else
             blockPos = isRed ? 1 : 3;
@@ -359,7 +357,7 @@ public class AutonProcedures {
 //        runningOpMode.updateTelemetry();
 
         //Go to the SkyStone and grab it
-        centerOnSkyStone(isRed);
+//        centerOnSkyStone(isRed);
 //        robot.moveArmMotor(-674);
 //        try {
 //            Thread.sleep(1500);
@@ -379,31 +377,36 @@ public class AutonProcedures {
 
         while (runningOpMode.opModeIsActive()) {
             runningOpMode.addTelemetry("Block Position", blockPos);
-            runningOpMode.addTelemetry("lColor Found SkyStone", foundSkyStone(robot.lColor));
-            runningOpMode.addTelemetry("rColor Found SkyStone", foundSkyStone(robot.rColor));
+            runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
+            runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
             runningOpMode.updateTelemetry();
         }
     }
 
     private void approachSkyStone() {
-        robot.setMecanumMotorPowers(0, 0.1, 0);
-        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 2) {
-            runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
-            runningOpMode.updateTelemetry();
-        }
-        robot.setMecanumMotorPowers(0, 0, 0);
+//        robot.setMecanumMotorPowers(0, 0.1, 0);
+
+        robot.approachSkyStone(0.1, 0.1, 0, 0, 0.2, 1);
+
+//        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 2) {
+//            runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
+//            runningOpMode.updateTelemetry();
+//        }
+//        robot.setMecanumMotorPowers(0, 0, 0);
     }
 
     private void centerOnSkyStone(boolean isRed) {
         if (blockPos == 1)
-            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
+//            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
+            robot.centerOnSkyStone(isRed ? -0.1 : 0.1, 0, 0, 0.2, 1);
         else if (blockPos > 0)
-            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
+//            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
+            robot.centerOnSkyStone(isRed ? 0.1 : -0.1, 0, 0, 0.2, 1);
 
-        while (runningOpMode.opModeIsActive() && !(foundSkyStone(robot.rColor) && foundSkyStone(robot.lColor))) {
+        while (runningOpMode.opModeIsActive() && !(robot.foundSkyStone(robot.rColor) && robot.foundSkyStone(robot.lColor))) {
             runningOpMode.addTelemetry("Centering on block position " + blockPos);
-            runningOpMode.addTelemetry("lColor Found SkyStone", foundSkyStone(robot.lColor));
-            runningOpMode.addTelemetry("rColor Found SkyStone", foundSkyStone(robot.rColor));
+            runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
+            runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
             runningOpMode.updateTelemetry();
         }
 
@@ -424,15 +427,6 @@ public class AutonProcedures {
 
         }
         robot.goDistance(0, -5, 0, 0, -1, 0);
-    }
-
-    private boolean foundSkyStone(RevColorSensorV3 color) {
-//        return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000); //With light on
-        return inRange(color.red(), 0, 10) && inRange(color.green(), 0, 10) && inRange(color.blue(), 0, 10); //With light off
-    }
-
-    private boolean inRange(double val, double min, double max) {
-        return min <= val && val <= max;
     }
 
     void simpleAuton(boolean isRight, boolean isFar) {

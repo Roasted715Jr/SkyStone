@@ -399,7 +399,6 @@ public class Robot {
             runningOpMode.telemetry.addData("distanceToXTarget", distanceToXTarget / ODOMETER_COUNTS_PER_INCH);
             runningOpMode.telemetry.addData("distanceToYTarget", distanceToYTarget / ODOMETER_COUNTS_PER_INCH);
             runningOpMode.telemetry.addData("distance", distance / ODOMETER_COUNTS_PER_INCH);
-            runningOpMode.telemetry.addData("orientation", orientation);
 
             runningOpMode.telemetry.addData("robotMovementAngle", robotMovementAngle);
 
@@ -411,6 +410,111 @@ public class Robot {
             runningOpMode.telemetry.addData("orientation", orientation);
             runningOpMode.telemetry.addData("Check 1", Math.abs(targetRotation) + angleThreshold < Math.abs(orientation));
             runningOpMode.telemetry.addData("Check 2", Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold);
+
+            runningOpMode.telemetry.update();
+        }
+
+        setMecanumMotorPowers(0, 0, 0);
+    }
+
+    public void approachSkyStone(double xSpeed, double ySpeed, double threshold, double targetRotation, double rotationSpeed, double angleThreshold) {
+        //This should start at 0
+        double targetX = 0;
+//        targetY *= ODOMETER_COUNTS_PER_INCH;
+        threshold *= ODOMETER_COUNTS_PER_INCH;
+
+        boolean foundBlock = true;
+
+        //These values should start at 0
+        double distanceToXTarget = 0;
+//        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+        double orientation = 0;
+
+//        telemetry.addData("orientation", orientation);
+//        telemetry.update();
+
+//        Log.d("orientation", Double.toString(orientation));
+//        Log.d("Check 1", Double.toString(Math.abs(targetRotation) + angleThreshold));
+//        Log.d("Check 2", Double.toString(Math.abs(targetRotation) - angleThreshold));
+
+        while (runningOpMode.opModeIsActive() && (foundBlock || Math.abs(distanceToXTarget) > threshold ||
+                //Check to see if we are over or under our desired rotation to continue the loop
+                (Math.abs(targetRotation) + angleThreshold < Math.abs(orientation) || Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold))) {
+            foundBlock = foundSkyStone(lColor) || foundSkyStone(rColor) ? false : true;
+
+            distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
+//            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+
+            //We are reversing x and y because 0 degrees is forwards rather than to the right
+//            double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
+            double robotMovementAngle = globalPositionUpdate.returnXCoordinate() - targetX > threshold ? -90 :
+                    globalPositionUpdate.returnXCoordinate() - targetX < -threshold ? 90 : 0;
+
+            double robotMovementXComponent = calculateX(robotMovementAngle, xSpeed);
+//            double robotMovementYComponent = calculateY(robotMovementAngle, ySpeed);
+            double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
+            double robotMovementRComponent = calculateR(pivotCorrection, angleThreshold, rotationSpeed);
+
+//            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent);
+            setMecanumMotorPowers(robotMovementXComponent, ySpeed, 0);
+//            distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+            orientation = globalPositionUpdate.returnOrientation();
+
+            runningOpMode.telemetry.addData("targetX", targetX);
+            runningOpMode.telemetry.addData("xPosition", globalPositionUpdate.returnXCoordinate());
+            runningOpMode.telemetry.addData("distanceToXTarget", distanceToXTarget / ODOMETER_COUNTS_PER_INCH);
+//            runningOpMode.telemetry.addData("distanceToYTarget", distanceToYTarget / ODOMETER_COUNTS_PER_INCH);
+//            runningOpMode.telemetry.addData("distance", distance / ODOMETER_COUNTS_PER_INCH);
+
+            runningOpMode.telemetry.addData("robotMovementAngle", robotMovementAngle);
+
+            runningOpMode.telemetry.addData("robotMovementXComponent", robotMovementXComponent);
+//            runningOpMode.telemetry.addData("robotMovementYComponent", robotMovementYComponent);
+            runningOpMode.telemetry.addData("pivotCorrection", pivotCorrection);
+            runningOpMode.telemetry.addData("robotMovementRComponent", robotMovementRComponent);
+
+            runningOpMode.telemetry.addData("orientation", orientation);
+            runningOpMode.telemetry.addData("Check 1", Math.abs(targetRotation) + angleThreshold < Math.abs(orientation));
+            runningOpMode.telemetry.addData("Check 2", Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold);
+
+            runningOpMode.telemetry.update();
+        }
+
+        setMecanumMotorPowers(0, 0, 0);
+    }
+
+    public void centerOnSkyStone(double xSpeed, double ySpeed, double targetRotation, double rotationSpeed, double angleThreshold) {
+        double orientation = globalPositionUpdate.returnOrientation();
+        boolean keepMoving = true;
+
+//        telemetry.addData("orientation", orientation);
+//        telemetry.update();
+
+//        Log.d("orientation", Double.toString(orientation));
+//        Log.d("Check 1", Double.toString(Math.abs(targetRotation) + angleThreshold));
+//        Log.d("Check 2", Double.toString(Math.abs(targetRotation) - angleThreshold));
+
+        while (runningOpMode.opModeIsActive() && (!foundSkyStone(lColor) || !foundSkyStone(rColor) ||
+                //Check to see if we are over or under our desired rotation to continue the loop
+                (Math.abs(targetRotation) + angleThreshold < Math.abs(orientation) || Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold))) {
+            if (foundSkyStone(lColor) && foundSkyStone(rColor))
+                keepMoving = false;
+
+            double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
+            double robotMovementRComponent = calculateR(pivotCorrection, angleThreshold, rotationSpeed);
+
+            setMecanumMotorPowers(keepMoving ? xSpeed : 0, keepMoving ? ySpeed : 0, robotMovementRComponent);
+//            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, 0);
+            orientation = globalPositionUpdate.returnOrientation();
+
+            runningOpMode.telemetry.addData("pivotCorrection", pivotCorrection);
+            runningOpMode.telemetry.addData("robotMovementRComponent", robotMovementRComponent);
+            runningOpMode.telemetry.addData("orientation", orientation);
+//            runningOpMode.telemetry.addData("Check 1", Math.abs(targetRotation) + angleThreshold < Math.abs(orientation));
+//            runningOpMode.telemetry.addData("Check 2", Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold);
+
+            runningOpMode.addTelemetry("lColor Found SkyStone", foundSkyStone(lColor));
+            runningOpMode.addTelemetry("rColor Found SkyStone", foundSkyStone(rColor));
 
             runningOpMode.telemetry.update();
         }
@@ -475,6 +579,15 @@ public class Robot {
         armMotor.setTargetPosition(pos);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setPower(1);
+    }
+
+    public boolean foundSkyStone(RevColorSensorV3 color) {
+//        return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000); //With light on
+        return inRange(color.red(), 0, 10) && inRange(color.green(), 0, 10) && inRange(color.blue(), 0, 10); //With light off
+    }
+
+    private boolean inRange(double val, double min, double max) {
+        return min <= val && val <= max;
     }
 
     public void stop() {
