@@ -161,6 +161,22 @@ public class Robot {
         positionThread.start();
     }
 
+    public void setStartSpot(double x, double y, double r) {
+        globalPositionUpdate.setStartSpot(x, y ,r);
+    }
+
+    public double getX() {
+        return globalPositionUpdate.returnXCoordinate();
+    }
+
+    public double getY() {
+        return globalPositionUpdate.returnYCoordinate();
+    }
+
+    public double getR() {
+        return globalPositionUpdate.returnOrientation();
+    }
+
     public void setMecanumMotorPowers(double x, double y, double r) {
         //Turn speed is half of x or y
         //x and y speed are the same

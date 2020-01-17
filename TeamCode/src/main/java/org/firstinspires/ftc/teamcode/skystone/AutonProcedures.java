@@ -87,7 +87,7 @@ public class AutonProcedures {
 
     // Next, translate the camera lens to where it is on the robot.
     // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-    final float CAMERA_FORWARD_DISPLACEMENT  = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+    final float CAMERA_FORWARD_DISPLACEMENT  = -4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
     final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
     final float CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
 
@@ -230,8 +230,11 @@ public class AutonProcedures {
     void start() {
         targetsSkyStone.activate();
 
-//        while (target == null)
-//            target = updatePosition();
+        while (runningOpMode.opModeIsActive() && target == null)
+            target = updatePosition();
+
+        //0-2 is x, y, z
+        robot.setStartSpot(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, rotation.thirdAngle);
 
 //        runningOpMode.addTelemetry("This is the first step");
 //        runningOpMode.updateTelemetry();
@@ -239,6 +242,7 @@ public class AutonProcedures {
         //Find our starting spot
         startSpot = getStartSpot();
 //        startSpot = 2;
+
 
         //Interpret our starting spot
 //        VectorF skyStonePos;
@@ -270,7 +274,15 @@ public class AutonProcedures {
 //        Move backwards, turn towards the audience, and move backwards past the bridge
 
         while (runningOpMode.opModeIsActive()) {
+            updatePosition();
             runningOpMode.addTelemetry("startSpot", startSpot);
+            runningOpMode.addTelemetry("x", translation.get(0) / mmPerInch);
+            runningOpMode.addTelemetry("y", translation.get(1) / mmPerInch);
+            //-rotation is the same direction global position update goes by
+            runningOpMode.addTelemetry("r", -rotation.thirdAngle + 90); //This is our heading
+            runningOpMode.addTelemetry("GPS x", robot.getX());
+            runningOpMode.addTelemetry("GPS y", robot.getY());
+            runningOpMode.addTelemetry("GPS r", robot.getR());
             runningOpMode.updateTelemetry();
         }
 
