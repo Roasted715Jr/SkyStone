@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Created by Sarthak on 6/1/2019.
@@ -17,7 +18,7 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
     DcMotor verticalRight, verticalLeft, horizontal;
 
     //The amount of encoder ticks for each inch the robot moves. This will change for each robot and needs to be changed here
-    final double COUNTS_PER_INCH = 307.699557;
+    final double COUNTS_PER_INCH = 306.381642;
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
     String verticalLeftEncoderName = "blMotor", verticalRightEncoderName = "brMotor", horizontalEncoderName = "flMotor";
@@ -69,9 +70,9 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
         positionThread.start();
 
         //Use this if encoder values are wrong
-//        globalPositionUpdate.reverseRightEncoder();
+        globalPositionUpdate.reverseRightEncoder();
 //        globalPositionUpdate.reverseLeftEncoder();
-//        globalPositionUpdate.reverseNormalEncoder();
+        globalPositionUpdate.reverseNormalEncoder();
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates

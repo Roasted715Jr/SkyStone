@@ -78,10 +78,6 @@ public class Robot {
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 globalPositionUpdate = new OdometryGlobalCoordinatePosition(lOdometer, rOdometer, hOdometer, ODOMETER_COUNTS_PER_INCH, 75);
-                Thread positionThread = new Thread(globalPositionUpdate);
-                positionThread.start();
-
-
                 globalPositionUpdate.reverseRightEncoder();
                 globalPositionUpdate.reverseNormalEncoder();
                 lOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -156,7 +152,6 @@ public class Robot {
     }
 
     public void startGlobalPositionUpdate() {
-        globalPositionUpdate = new OdometryGlobalCoordinatePosition(lOdometer, rOdometer, hOdometer, ODOMETER_COUNTS_PER_INCH, 75);
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
     }
@@ -175,6 +170,10 @@ public class Robot {
 
     public double getR() {
         return globalPositionUpdate.returnOrientation();
+    }
+
+    public double getCountsPerInch() {
+        return ODOMETER_COUNTS_PER_INCH;
     }
 
     public void setMecanumMotorPowers(double x, double y, double r) {

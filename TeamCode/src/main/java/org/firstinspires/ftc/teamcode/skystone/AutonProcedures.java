@@ -39,7 +39,7 @@ public class AutonProcedures {
     private int blockPos = 0;
 
     //Stuff for Vuforia
-    private static final boolean PHONE_IS_PORTRAIT = false;
+    private static final boolean PHONE_IS_PORTRAIT = true;
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -64,7 +64,7 @@ public class AutonProcedures {
     private OpenGLMatrix lastLocation;
     private VuforiaLocalizer vuforia;
     private boolean targetVisible = false;
-    private float phoneXRotate    = 0;
+    private float phoneXRotate    = 0; //These two become overridden depending
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
 
@@ -103,7 +103,6 @@ public class AutonProcedures {
         this.runningOpMode = runningOpMode;
 
         robot.init(hardwareMap);
-        robot.startGlobalPositionUpdate();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         //For if we don't need to see what is in the camera frame
@@ -209,7 +208,7 @@ public class AutonProcedures {
 
         // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90 ;
+            phoneXRotate = 90;
         }
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
@@ -234,7 +233,9 @@ public class AutonProcedures {
             target = updatePosition();
 
         //0-2 is x, y, z
-        robot.setStartSpot(translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, rotation.thirdAngle);
+//        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), -rotation.thirdAngle - 90);
+        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), rotation.thirdAngle + 90);
+        robot.startGlobalPositionUpdate();
 
 //        runningOpMode.addTelemetry("This is the first step");
 //        runningOpMode.updateTelemetry();
@@ -279,9 +280,11 @@ public class AutonProcedures {
             runningOpMode.addTelemetry("x", translation.get(0) / mmPerInch);
             runningOpMode.addTelemetry("y", translation.get(1) / mmPerInch);
             //-rotation is the same direction global position update goes by
-            runningOpMode.addTelemetry("r", -rotation.thirdAngle + 90); //This is our heading
-            runningOpMode.addTelemetry("GPS x", robot.getX());
-            runningOpMode.addTelemetry("GPS y", robot.getY());
+//            runningOpMode.addTelemetry("r", -rotation.thirdAngle - 90); //This is our heading
+            runningOpMode.addTelemetry("r", rotation.thirdAngle);
+//            runningOpMode.addTelemetry("r", rotation);
+            runningOpMode.addTelemetry("GPS x", robot.getX() / robot.getCountsPerInch());
+            runningOpMode.addTelemetry("GPS y", robot.getY() / robot.getCountsPerInch());
             runningOpMode.addTelemetry("GPS r", robot.getR());
             runningOpMode.updateTelemetry();
         }
@@ -316,12 +319,12 @@ public class AutonProcedures {
         if (targetVisible) {
             // express position (translation) of robot in inches.
             translation = lastLocation.getTranslation();
-            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+//            runningOpMode.addTelemetry("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+//                    translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
             // express the rotation of the robot in degrees.
             rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+//            runningOpMode.addTelemetry("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
         }
         else {
             runningOpMode.addTelemetry("Visible Target", "none");
