@@ -41,9 +41,9 @@ public class TestOdometry_SPD extends GenericOpMode {
 //        globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 
-//        goToPosition(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
-//        goToPosition(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
-//        goToPosition(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+//        goToPositionNew(0 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+//        goToPositionNew(24 * COUNTS_PER_INCH, 24 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
+//        goToPositionNew(0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.5, 0, 1 * COUNTS_PER_INCH);
 
         goToPosition(3,0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.75, 180, 9 * COUNTS_PER_INCH,25);
         goToPosition(3,0 * COUNTS_PER_INCH, 0 * COUNTS_PER_INCH, 0.25, 180, 9 * COUNTS_PER_INCH,1);
@@ -51,7 +51,7 @@ public class TestOdometry_SPD extends GenericOpMode {
 
         goToPosition(1,24 * COUNTS_PER_INCH,24 * COUNTS_PER_INCH,.25,180,.25 * COUNTS_PER_INCH,0.5);
         goToPosition(2,24 * COUNTS_PER_INCH,24 * COUNTS_PER_INCH,.08,180,.25 * COUNTS_PER_INCH,0.5);
-        //goToPosition(0 * COUNTS_PER_INCH,24 * COUNTS_PER_INCH,.1,90,.25 * COUNTS_PER_INCH,0.25);
+        //goToPositionNew(0 * COUNTS_PER_INCH,24 * COUNTS_PER_INCH,.1,90,.25 * COUNTS_PER_INCH,0.25);
 
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates

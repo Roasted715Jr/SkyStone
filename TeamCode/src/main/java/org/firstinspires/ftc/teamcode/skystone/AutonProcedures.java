@@ -99,130 +99,137 @@ public class AutonProcedures {
     private VectorF translation;
     private Orientation rotation;
 
-    void init(Robot robot, HardwareMap hardwareMap, GenericOpMode runningOpMode) {
+    void init(Robot robot, HardwareMap hardwareMap, GenericOpMode genericOpMode) {
+        init(robot, hardwareMap, genericOpMode, false);
+    }
+
+    void init(Robot robot, HardwareMap hardwareMap, GenericOpMode runningOpMode, boolean initVuforia) {
         this.robot = robot;
         this.hardwareMap = hardwareMap;
         this.runningOpMode = runningOpMode;
 
         robot.init(hardwareMap);
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        //For if we don't need to see what is in the camera frame
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-        parameters.vuforiaLicenseKey = Robot.VUFORIA_LICENSE_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
+        if (initVuforia) {
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+            //For if we don't need to see what is in the camera frame
+            // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+            parameters.vuforiaLicenseKey = Robot.VUFORIA_LICENSE_KEY;
+            parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+            vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        stoneTarget = targetsSkyStone.get(0);
-        stoneTarget.setName("Stone Target");
-        blueRearBridge = targetsSkyStone.get(1);
-        blueRearBridge.setName("Blue Rear Bridge");
-        redRearBridge = targetsSkyStone.get(2);
-        redRearBridge.setName("Red Rear Bridge");
-        redFrontBridge = targetsSkyStone.get(3);
-        redFrontBridge.setName("Red Front Bridge");
-        blueFrontBridge = targetsSkyStone.get(4);
-        blueFrontBridge.setName("Blue Front Bridge");
-        red1 = targetsSkyStone.get(5);
-        red1.setName("Red Perimeter 1");
-        red2 = targetsSkyStone.get(6);
-        red2.setName("Red Perimeter 2");
-        front1 = targetsSkyStone.get(7);
-        front1.setName("Front Perimeter 1");
-        front2 = targetsSkyStone.get(8);
-        front2.setName("Front Perimeter 2");
-        blue1 = targetsSkyStone.get(9);
-        blue1.setName("Blue Perimeter 1");
-        blue2 = targetsSkyStone.get(10);
-        blue2.setName("Blue Perimeter 2");
-        rear1 = targetsSkyStone.get(11);
-        rear1.setName("Rear Perimeter 1");
-        rear2 = targetsSkyStone.get(12);
-        rear2.setName("Rear Perimeter 2");
+            targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
-        allTrackables.addAll(targetsSkyStone);
+            stoneTarget = targetsSkyStone.get(0);
+            stoneTarget.setName("Stone Target");
+            blueRearBridge = targetsSkyStone.get(1);
+            blueRearBridge.setName("Blue Rear Bridge");
+            redRearBridge = targetsSkyStone.get(2);
+            redRearBridge.setName("Red Rear Bridge");
+            redFrontBridge = targetsSkyStone.get(3);
+            redFrontBridge.setName("Red Front Bridge");
+            blueFrontBridge = targetsSkyStone.get(4);
+            blueFrontBridge.setName("Blue Front Bridge");
+            red1 = targetsSkyStone.get(5);
+            red1.setName("Red Perimeter 1");
+            red2 = targetsSkyStone.get(6);
+            red2.setName("Red Perimeter 2");
+            front1 = targetsSkyStone.get(7);
+            front1.setName("Front Perimeter 1");
+            front2 = targetsSkyStone.get(8);
+            front2.setName("Front Perimeter 2");
+            blue1 = targetsSkyStone.get(9);
+            blue1.setName("Blue Perimeter 1");
+            blue2 = targetsSkyStone.get(10);
+            blue2.setName("Blue Perimeter 2");
+            rear1 = targetsSkyStone.get(11);
+            rear1.setName("Rear Perimeter 1");
+            rear2 = targetsSkyStone.get(12);
+            rear2.setName("Rear Perimeter 2");
 
-        // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
-        // Rotated it to to face forward, and raised it to sit on the ground correctly.
-        // This can be used for generic target-centric approach algorithms
-        stoneTarget.setLocation(OpenGLMatrix
-                .translation(0, 0, stoneZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+            allTrackables.addAll(targetsSkyStone);
 
-        //Set the position of the bridge support targets with relation to origin (center of field)
-        blueFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
+            // Set the position of the Stone Target.  Since it's not fixed in position, assume it's at the field origin.
+            // Rotated it to to face forward, and raised it to sit on the ground correctly.
+            // This can be used for generic target-centric approach algorithms
+            stoneTarget.setLocation(OpenGLMatrix
+                    .translation(0, 0, stoneZ)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
-        blueRearBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
+            //Set the position of the bridge support targets with relation to origin (center of field)
+            blueFrontBridge.setLocation(OpenGLMatrix
+                    .translation(-bridgeX, bridgeY, bridgeZ)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, bridgeRotZ)));
 
-        redFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
+            blueRearBridge.setLocation(OpenGLMatrix
+                    .translation(-bridgeX, bridgeY, bridgeZ)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, bridgeRotZ)));
 
-        redRearBridge.setLocation(OpenGLMatrix
-                .translation(bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
+            redFrontBridge.setLocation(OpenGLMatrix
+                    .translation(-bridgeX, -bridgeY, bridgeZ)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, -bridgeRotY, 0)));
 
-        //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+            redRearBridge.setLocation(OpenGLMatrix
+                    .translation(bridgeX, -bridgeY, bridgeZ)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 0, bridgeRotY, 0)));
 
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
+            //Set the position of the perimeter targets with relation to origin (center of field)
+            red1.setLocation(OpenGLMatrix
+                    .translation(quadField, -halfField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
 
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90)));
+            red2.setLocation(OpenGLMatrix
+                    .translation(-quadField, -halfField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180)));
 
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
+            front1.setLocation(OpenGLMatrix
+                    .translation(-halfField, -quadField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+            front2.setLocation(OpenGLMatrix
+                    .translation(-halfField, quadField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 90)));
 
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
+            blue1.setLocation(OpenGLMatrix
+                    .translation(-quadField, halfField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
 
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , -90)));
+            blue2.setLocation(OpenGLMatrix
+                    .translation(quadField, halfField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0)));
 
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+            rear1.setLocation(OpenGLMatrix
+                    .translation(halfField, quadField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
 
-        // We need to rotate the camera around it's long axis to bring the correct camera forward.
-        if (parameters.cameraDirection == VuforiaLocalizer.CameraDirection.BACK) {
-            phoneYRotate = -90;
-        } else {
-            phoneYRotate = 90;
+            rear2.setLocation(OpenGLMatrix
+                    .translation(halfField, -quadField, mmTargetHeight)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90)));
+
+            // We need to rotate the camera around it's long axis to bring the correct camera forward.
+            if (parameters.cameraDirection == VuforiaLocalizer.CameraDirection.BACK) {
+                phoneYRotate = -90;
+            } else {
+                phoneYRotate = 90;
+            }
+
+            // Rotate the phone vertical about the X axis if it's in portrait mode
+            if (PHONE_IS_PORTRAIT) {
+                phoneXRotate = 90;
+            }
+
+            OpenGLMatrix robotFromCamera = OpenGLMatrix
+                    .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
+                    .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
+
+            /**  Let all the trackable listeners know where the phone is.  */
+            for (VuforiaTrackable trackable : allTrackables) {
+                ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
+            }
+
+            targetsSkyStone.activate();
         }
-
-        // Rotate the phone vertical about the X axis if it's in portrait mode
-        if (PHONE_IS_PORTRAIT) {
-            phoneXRotate = 90;
-        }
-
-        OpenGLMatrix robotFromCamera = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
-
-        /**  Let all the trackable listeners know where the phone is.  */
-        for (VuforiaTrackable trackable : allTrackables) {
-            ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
-        }
-
-        targetsSkyStone.activate();
     }
 
     void startWithStartSpot(int startSpot) {
@@ -236,21 +243,16 @@ public class AutonProcedures {
         while (runningOpMode.opModeIsActive() && target == null)
             target = updatePosition();
 
+        //Find our starting spot
+        startSpot = getStartSpot();
+//        startSpot = 2;
+
         //0-2 is x, y, z
 //        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), rotation.thirdAngle + 90);
         robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), 0);
         robot.startGlobalPositionUpdate();
 
-//        runningOpMode.addTelemetry("This is the first step");
-//        runningOpMode.updateTelemetry();
-
-        //Find our starting spot
-        startSpot = getStartSpot();
-//        startSpot = 2;
-
-
         //Interpret our starting spot
-//        VectorF skyStonePos;
         switch (startSpot) {
             case START_BLUE_FOUNDATION:
                 runFoundationSide(false);
@@ -279,18 +281,20 @@ public class AutonProcedures {
 //        Move backwards, turn towards the audience, and move backwards past the bridge
 
         while (runningOpMode.opModeIsActive()) {
-//            updatePosition();
-//            runningOpMode.addTelemetry("startSpot", startSpot);
-//            runningOpMode.addTelemetry("x", translation.get(0) / mmPerInch);
-//            runningOpMode.addTelemetry("y", translation.get(1) / mmPerInch);
-//            //-rotation is the same direction global position update goes by
-////            runningOpMode.addTelemetry("r", -rotation.thirdAngle - 90); //This is our heading
-//            runningOpMode.addTelemetry("r", rotation.thirdAngle);
-////            runningOpMode.addTelemetry("r", rotation);
-//            runningOpMode.addTelemetry("GPS x", robot.getX() / robot.getCountsPerInch());
-//            runningOpMode.addTelemetry("GPS y", robot.getY() / robot.getCountsPerInch());
-//            runningOpMode.addTelemetry("GPS r", robot.getR());
-//            runningOpMode.updateTelemetry();
+            updatePosition();
+            runningOpMode.addTelemetry("startSpot", startSpot);
+            runningOpMode.addTelemetry("x", translation.get(0) / mmPerInch);
+            runningOpMode.addTelemetry("y", translation.get(1) / mmPerInch);
+            //-rotation is the same direction global position update goes by
+//            runningOpMode.addTelemetry("r", -rotation.thirdAngle - 90); //This is our heading
+            runningOpMode.addTelemetry("r", rotation.thirdAngle);
+//            runningOpMode.addTelemetry("r", rotation);
+            runningOpMode.addTelemetry("GPS x", robot.getX() / robot.getCountsPerInch());
+            runningOpMode.addTelemetry("GPS y", robot.getY() / robot.getCountsPerInch());
+            runningOpMode.addTelemetry("GPS r", robot.getR());
+            runningOpMode.addTelemetry("lColor", robot.foundSkyStone(robot.lColor));
+            runningOpMode.addTelemetry("rColor", robot.foundSkyStone(robot.rColor));
+            runningOpMode.updateTelemetry();
         }
 
         targetsSkyStone.deactivate();
@@ -341,7 +345,7 @@ public class AutonProcedures {
 
     private int getStartSpot() {
         //Wait for the target to become identified
-        while (updatePosition() == null) {
+        while (runningOpMode.opModeIsActive() && updatePosition() == null) {
             runningOpMode.addTelemetry("Finding Starting Spot");
             runningOpMode.updateTelemetry();
         }
@@ -370,9 +374,9 @@ public class AutonProcedures {
     }
 
     private void runSkystoneSide(boolean isRed) {
-        robot.goToPosition(2, -41.5, (isRed ? -1 : 1) * 40, 0.5, 0, 6, 0.25);
-        robot.goToPosition(1, -41.5, (isRed ? -1 : 1) * 40, 0.08, 0, 0.25, 0.25);
-        robot.goToPosition(3, -41.5, (isRed ? -1 : 1) * 40, 0.4, 0, 0.25, 0.25);
+        robot.goToPositionNew(2, -41.5, (isRed ? -1 : 1) * 40, 0.5, 0, 9, 0.25);
+        robot.goToPositionNew(1, -41.5, (isRed ? -1 : 1) * 40, 0.08, 0, 0.25, 0.25);
+        robot.goToPositionNew(3, -41.5, (isRed ? -1 : 1) * 40, 0.4, 0, 0.25, 0.25);
 
         runningOpMode.addTelemetry("Looking for SkyStone");
         runningOpMode.updateTelemetry();
@@ -392,53 +396,57 @@ public class AutonProcedures {
 
         //Go to the SkyStone and grab it
 //        centerOnSkyStone(isRed);
-        switch (blockPos) {
-            case 1:
-                robot.goToPosition(2,-52.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
-                robot.goToPosition(1,-52.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-52.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
-                break;
-            case 2:
-                robot.goToPosition(2,-44.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
-                robot.goToPosition(1,-44.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-44.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
-                break;
-            case 3:
-                robot.goToPosition(2,-36.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
-                robot.goToPosition(1,-36.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(1,-36.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
-                break;
-        }
-
-        grabAndDropOffSkyStone(isRed);
+//        switch (blockPos) {
+//            case 1:
+//                robot.goToPositionNew(2,-52.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+//                robot.goToPositionNew(1,-52.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+//                robot.goToPositionNew(3,-52.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+//                break;
+//            case 2:
+//                robot.goToPositionNew(2,-44.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+//                robot.goToPositionNew(1,-44.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+//                robot.goToPositionNew(3,-44.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+//                break;
+//            case 3:
+//                robot.goToPositionNew(2,-36.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+//                robot.goToPositionNew(1,-36.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+//                robot.goToPositionNew(1,-36.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+//                break;
+//        }
+//
+//        grabAndDropOffSkyStone(isRed);
 
         //Move over to the quarry
-        switch (blockPos) {
-            case 1:
-                break;
-            case 2:
-                robot.goToPosition(1,-68.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
-                robot.goToPosition(2,-68.5,(isRed ? -1 : 1) * 43,.2,0,0.25,.25);
-                robot.goToPosition(1,-68.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-68.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
-                break;
-            case 3:
-                robot.goToPosition(1,-60.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
-                robot.goToPosition(2,-60.5,(isRed ? -1 : 1) * 43,.2,0,3,.25);
-                robot.goToPosition(1,-60.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-60.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
-                break;
-        }
+//        switch (blockPos) {
+//            case 1:
+//                break;
+//            case 2:
+//                robot.goToPositionNew(1, 0, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
+//                robot.goToPositionNew(3, 0, (isRed ? -1 : 1) * 46, 0.4, 0, 3, 0.25);
+//                robot.goToPositionNew(1,-68.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
+//                robot.goToPositionNew(2,-68.5,(isRed ? -1 : 1) * 43,.2,0,0.25,.25);
+//                robot.goToPositionNew(1,-68.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+//                robot.goToPositionNew(3,-68.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+//                break;
+//            case 3:
+//                robot.goToPositionNew(1, 0, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
+//                robot.goToPositionNew(3, 0, (isRed ? -1 : 1) * 46, 0.4, 0, 3, 0.25);
+//                robot.goToPositionNew(1,-60.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
+//                robot.goToPositionNew(2,-60.5,(isRed ? -1 : 1) * 43,.2,0,3,.25);
+//                robot.goToPositionNew(1,-60.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+//                robot.goToPositionNew(3,-60.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+//                break;
+//        }
 
         grabAndDropOffSkyStone(isRed);
 
         while (runningOpMode.opModeIsActive()) {
-            runningOpMode.addTelemetry("Done");
-            runningOpMode.addTelemetry("Start Spot", startSpot);
-            runningOpMode.addTelemetry("x Position", robot.getX() / robot.getCountsPerInch());
-            runningOpMode.addTelemetry("y Position", robot.getY() / robot.getCountsPerInch());
-            runningOpMode.addTelemetry("Orientation", robot.getR());
-            runningOpMode.addTelemetry("Block Position", blockPos);
+//            runningOpMode.addTelemetry("Done");
+//            runningOpMode.addTelemetry("Start Spot", startSpot);
+//            runningOpMode.addTelemetry("x Position", robot.getX() / robot.getCountsPerInch());
+//            runningOpMode.addTelemetry("y Position", robot.getY() / robot.getCountsPerInch());
+//            runningOpMode.addTelemetry("Orientation", robot.getR());
+//            runningOpMode.addTelemetry("Block Position", blockPos);
             runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
             runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
             runningOpMode.updateTelemetry();
@@ -450,7 +458,7 @@ public class AutonProcedures {
 
 //        robot.approachSkyStone(0.1, 0.1, 0, 0, 0.2, 1);
 
-        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 1.5) {
+        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 2) {
             runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
             runningOpMode.updateTelemetry();
         }
@@ -485,12 +493,12 @@ public class AutonProcedures {
         robot.moveArmMotor(0);
 
         //Deliver the SkyStone
-        robot.goToPosition(1, 0, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
-        robot.goToPosition(3, 0, (isRed ? -1 : 1) * 46, 0.4, 0, 3, 0.25);
-        robot.goToPosition(1, 32, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
-        robot.goToPosition(2, 32, (isRed ? -1 : 1) * 43, 0.5, 0, 0.25, 0.25);
-        robot.goToPosition(1, 32, (isRed ? -1 : 1) * 43, 0.08, 0, 0.25, 0.25);
-        robot.goToPosition(3, 32, (isRed ? -1 : 1) * 43, 0.4, 0, 0.25, 0.25);
+        robot.goToPositionNew(1, 0, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
+        robot.goToPositionNew(3, 0, (isRed ? -1 : 1) * 46, 0.4, 0, 3, 0.25);
+        robot.goToPositionNew(1, 32, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
+        robot.goToPositionNew(2, 32, (isRed ? -1 : 1) * 43, 0.08, 0, 0.25, 0.25);
+        robot.goToPositionNew(1, 32, (isRed ? -1 : 1) * 43, 0.08, 0, 0.25, 0.25);
+        robot.goToPositionNew(3, 32, (isRed ? -1 : 1) * 43, 0.4, 0, 0.25, 0.25);
 
         //Drop the block off
         robot.moveArmMotor(-600);
@@ -524,13 +532,8 @@ public class AutonProcedures {
     }
 
     void simpleAuton(boolean isRight, boolean isFar, long waitTime) {
-        if (waitTime > 0) {
-            try {
-                Thread.sleep(waitTime);
-            } catch (Exception e) {
-
-            }
-        }
+        robot.startGlobalPositionUpdate();
+        robot.sleep(waitTime);
 
 //        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -548,10 +551,10 @@ public class AutonProcedures {
 
 
 
-//        robot.goToPosition(0, 24, 0, 0.5, 0.2, 1.5, 3);
+//        robot.goToPositionNew(0, 24, 0, 0.5, 0.2, 1.5, 3);
 
-        //For the 3 stage goToPosition
-//        robot.goToPosition(-36, 0, 0, 0.25, 0);
+        //For the 3 stage goToPositionNew
+//        robot.goToPositionNew(-36, 0, 0, 0.25, 0);
 
 //        robot.setMecanumMotorPowers(0, 0, 0);
     }

@@ -58,22 +58,22 @@ public class MyOdometryOpmode extends LinearOpMode {
 //        globalPositionUpdate.reverseLeftEncoder();
         globalPositionUpdate.reverseNormalEncoder();
 
-//        goToPosition(0, 23.75, 0, 0.5, 0.2, 1.5, 3);
+//        goToPositionNew(0, 23.75, 0, 0.5, 0.2, 1.5, 3);
 
-//        goToPosition(0, 24, 0.2, 0, 0.2, 0.5, 3);
-//        goToPosition(24, 23.75, 0.5, 0, 0.2, 1.5, 3);
-//        goToPosition(24, 24, 0.2, 0, 0.2, 0.5, 3);
-//        goToPosition(0.75, 0.75, 0.5, 0, 0.2, 1.5, 3);
-//        goToPosition(0, 0, 0.2, 0, 0.2, 0.5, 3);
-//        goToPosition(0, 0, 0.2, 90, 0.5, 2, 3);
+//        goToPositionNew(0, 24, 0.2, 0, 0.2, 0.5, 3);
+//        goToPositionNew(24, 23.75, 0.5, 0, 0.2, 1.5, 3);
+//        goToPositionNew(24, 24, 0.2, 0, 0.2, 0.5, 3);
+//        goToPositionNew(0.75, 0.75, 0.5, 0, 0.2, 1.5, 3);
+//        goToPositionNew(0, 0, 0.2, 0, 0.2, 0.5, 3);
+//        goToPositionNew(0, 0, 0.2, 90, 0.5, 2, 3);
 
-//        goToPosition(0, 24, 0.5, 0, 1.25, 3);
-//        goToPosition(24, 24, 0.5, 0, 1.25, 3);
-//        goToPosition(0, 0, 0.5, 0, 1.25, 3);
+//        goToPositionNew(0, 24, 0.5, 0, 1.25, 3);
+//        goToPositionNew(24, 24, 0.5, 0, 1.25, 3);
+//        goToPositionNew(0, 0, 0.5, 0, 1.25, 3);
 
-//        goToPosition(0, 0, 0.3, 90, 1.25, 3);
+//        goToPositionNew(0, 0, 0.3, 90, 1.25, 3);
 
-//        goToPosition(0, 24, 0.2, 0, 0.5, 1);
+//        goToPositionNew(0, 24, 0.2, 0, 0.5, 1);
 
         //22.5 y
         goToPosition(-36, 0, 0, 0.25, 0);

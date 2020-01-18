@@ -500,7 +500,7 @@ public class Robot {
     }
 
     //From Dad
-    public void goToPosition(int targetxyr, double targetX, double targetY, double robotPower, double targetRotation, double distanceThreshold, double angleThreshold) {
+    public void goToPositionNew(int targetxyr, double targetX, double targetY, double robotPower, double targetRotation, double distanceThreshold, double angleThreshold) {
         targetX *= ODOMETER_COUNTS_PER_INCH;
         targetY *= ODOMETER_COUNTS_PER_INCH;
         distanceThreshold *= ODOMETER_COUNTS_PER_INCH;
@@ -683,7 +683,7 @@ public class Robot {
 
     public boolean foundSkyStone(RevColorSensorV3 color) {
 //        return inRange(color.red(), 500, 2500) && inRange(color.green(), 1000, 3500) && inRange(color.blue(), 600, 2000); //With light on
-        return inRange(color.red(), 0, 10) && inRange(color.green(), 0, 10) && inRange(color.blue(), 0, 10); //With light off
+        return inRange(color.red(), 0, 5) && inRange(color.green(), 0, 5) && inRange(color.blue(), 0, 5); //With light off
     }
 
     private boolean inRange(double val, double min, double max) {

@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Color Sensor Test", group = GenericOpMode.GROUP_TESTINNG)
-@Disabled
+//@Disabled
 public class ColorSensorTest extends GenericOpMode {
     private Robot robot = new Robot(this);
 

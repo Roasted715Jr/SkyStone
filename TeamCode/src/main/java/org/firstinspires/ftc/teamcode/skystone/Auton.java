@@ -14,7 +14,7 @@ public class Auton extends GenericOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        autonProcedures.init(robot, hardwareMap, this); //This calls init in the Robot class
+        autonProcedures.init(robot, hardwareMap, this, true); //This calls init in the Robot class
 
 //        Thread thread = new Thread(new Runnable() {
 //            @Override
