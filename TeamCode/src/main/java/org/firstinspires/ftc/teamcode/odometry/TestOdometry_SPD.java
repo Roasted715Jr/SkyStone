@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.odometry;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.util.GenericOpMode;
+
 @TeleOp(name = "Testing Odometry - SPD")
-public class TestOdometry_SPD extends LinearOpMode{
+public class TestOdometry_SPD extends GenericOpMode {
     //Drive motors
     DcMotor right_front, right_back, left_front, left_back;
     //Odometry Wheels
@@ -107,7 +108,6 @@ public class TestOdometry_SPD extends LinearOpMode{
     }
 
     public void goToPosition(int targetxyr, double targetX, double targetY, double robotPower, double targetRotation, double distanceThreshold, double angleThreshold) {
-
         double distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
         double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
         double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
@@ -120,7 +120,7 @@ public class TestOdometry_SPD extends LinearOpMode{
             double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
             double robotMovementXComponent = calculateX(robotMovementAngle, robotPower);
             double robotMovementYComponent = calculateY(robotMovementAngle, robotPower);
-            double robotMovementRComponent = CalculateR(pivotCorrection,angleThreshold,robotPower);
+            double robotMovementRComponent = calculateR(pivotCorrection,angleThreshold,robotPower);
             //countMe++;
 
             if (targetxyr == 3) {
@@ -220,7 +220,7 @@ public class TestOdometry_SPD extends LinearOpMode{
         return Math.cos(Math.toRadians(desiredAngle)) * speed;
     }
 
-    private double CalculateR(double desiredAngle, double angleThreshold, double speed) {
+    private double calculateR(double desiredAngle, double angleThreshold, double speed) {
         double motorMovement;
         if(Math.abs(desiredAngle) > angleThreshold){
             if(desiredAngle > 0) {

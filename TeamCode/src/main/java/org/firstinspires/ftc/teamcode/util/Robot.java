@@ -498,6 +498,90 @@ public class Robot {
         setMecanumMotorPowers(0, 0, 0);
     }
 
+    //From Dad
+    public void goToPosition(int targetxyr, double targetX, double targetY, double robotPower, double targetRotation, double distanceThreshold, double angleThreshold) {
+        targetX *= ODOMETER_COUNTS_PER_INCH;
+        targetY *= ODOMETER_COUNTS_PER_INCH;
+        distanceThreshold *= ODOMETER_COUNTS_PER_INCH;
+
+        double distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
+        double distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+        double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+        double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
+        double countMe = 0;
+        boolean targetfound = false;
+        while (runningOpMode.opModeIsActive() && (targetfound == false)) { //(distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold) ) {
+
+            //We are reversing x and y because 0 degrees is forwards rather than to the right
+            double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
+            double robotMovementXComponent = calculateX(robotMovementAngle, robotPower);
+            double robotMovementYComponent = calculateY(robotMovementAngle, robotPower);
+            double robotMovementRComponent = calculateR(pivotCorrection,angleThreshold,robotPower);
+            //countMe++;
+
+            if (targetxyr == 3) {
+                setMecanumMotorPowers(0, 0, robotMovementRComponent);
+            }else{
+                setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent/4);
+            }
+            //setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent);
+
+            distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+            distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
+            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
+            pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
+
+            switch (targetxyr) {
+                case 1:
+                    if (Math.abs(distanceToXTarget) > distanceThreshold) {
+                        targetfound = false;
+                    } else {
+                        targetfound = true;
+                    }
+                    break;
+                case 2:
+                    if (Math.abs(distanceToYTarget) > distanceThreshold) {
+                        targetfound = false;
+                    } else {
+                        targetfound = true;
+                    }
+                    break;
+                case 3:
+                    if (Math.abs(pivotCorrection) > angleThreshold) {
+                        targetfound = false;
+                    } else {
+                        targetfound = true;
+                    }
+                    break;
+                case 0:
+                    if ((distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold)) {
+                        targetfound = false;
+                    } else {
+                        targetfound = true;
+                    }
+                    break;
+            }
+
+            runningOpMode.telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / ODOMETER_COUNTS_PER_INCH);
+            runningOpMode.telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / ODOMETER_COUNTS_PER_INCH);
+            runningOpMode.telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+            runningOpMode.telemetry.addData("Targeting", targetxyr);
+            runningOpMode.telemetry.addData("distanceToXTarget", distanceToXTarget);
+            runningOpMode.telemetry.addData("distanceToYTarget", distanceToYTarget);
+            runningOpMode.telemetry.addData("distance", distance);
+
+            runningOpMode.telemetry.addData("robotMovementAngle", robotMovementAngle);
+
+            runningOpMode.telemetry.addData("robotMovementXComponent", robotMovementXComponent);
+            runningOpMode.telemetry.addData("robotMovementYComponent", robotMovementYComponent);
+            runningOpMode.telemetry.addData("pivotCorrection", pivotCorrection);
+
+            runningOpMode.telemetry.update();
+        }
+
+        setMecanumMotorPowers(0, 0, 0);
+    }
+
     public void centerOnSkyStone(double xSpeed, double ySpeed, double targetRotation, double rotationSpeed, double angleThreshold) {
         double orientation = globalPositionUpdate.returnOrientation();
         boolean keepMoving = true;

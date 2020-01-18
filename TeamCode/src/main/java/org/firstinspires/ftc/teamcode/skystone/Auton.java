@@ -28,8 +28,8 @@ public class Auton extends GenericOpMode {
 
 //        thread.start();
 
-        autonProcedures.startWithStartSpot(2);
-//        autonProcedures.start();
+//        autonProcedures.startWithStartSpot(2);
+        autonProcedures.start();
 
         while (opModeIsActive()) {
 //            if (isStopRequested()) {
