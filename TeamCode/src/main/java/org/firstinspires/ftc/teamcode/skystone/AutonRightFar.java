@@ -16,7 +16,7 @@ public class AutonRightFar extends GenericOpMode {
 
         waitForStart();
 
-        autonProcedures.simpleAuton(true, true, 22000);
+        autonProcedures.simpleAuton(true, true, 25500);
 
         while (opModeIsActive()) {
 

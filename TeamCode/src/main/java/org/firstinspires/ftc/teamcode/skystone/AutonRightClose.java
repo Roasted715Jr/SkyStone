@@ -16,7 +16,7 @@ public class AutonRightClose extends GenericOpMode {
 
         waitForStart();
 
-        autonProcedures.simpleAuton(true, false, 22000);
+        autonProcedures.simpleAuton(true, false, 27000);
 
         while (opModeIsActive()) {
 
