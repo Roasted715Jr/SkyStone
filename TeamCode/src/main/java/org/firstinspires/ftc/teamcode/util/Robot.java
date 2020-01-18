@@ -93,6 +93,7 @@ public class Robot {
                 armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
                 //As long as we keep power to the motor from the phone or the battery, the encoder will constantly be tracking its position
                 armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 armMotor.setPower(0);
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
 
@@ -692,5 +693,13 @@ public class Robot {
     public void stop() {
         //Stop the thread
         globalPositionUpdate.stop();
+    }
+
+    public void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (Exception e) {
+
+        }
     }
 }

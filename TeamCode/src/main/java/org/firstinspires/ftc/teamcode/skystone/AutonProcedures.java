@@ -237,8 +237,8 @@ public class AutonProcedures {
             target = updatePosition();
 
         //0-2 is x, y, z
-//        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), -rotation.thirdAngle - 90);
-        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), rotation.thirdAngle + 90);
+//        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), rotation.thirdAngle + 90);
+        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), 0);
         robot.startGlobalPositionUpdate();
 
 //        runningOpMode.addTelemetry("This is the first step");
@@ -370,8 +370,12 @@ public class AutonProcedures {
     }
 
     private void runSkystoneSide(boolean isRed) {
-        robot.goToPosition(2, -53, -40, 0.5, 0, 6, 0.25);
-        robot.goToPosition(1, -53, -40, 0.08, 0, 0.25, 0.25);
+        robot.goToPosition(2, -41.5, (isRed ? -1 : 1) * 40, 0.5, 0, 6, 0.25);
+        robot.goToPosition(1, -41.5, (isRed ? -1 : 1) * 40, 0.08, 0, 0.25, 0.25);
+        robot.goToPosition(3, -41.5, (isRed ? -1 : 1) * 40, 0.4, 0, 0.25, 0.25);
+
+        runningOpMode.addTelemetry("Looking for SkyStone");
+        runningOpMode.updateTelemetry();
 
         //Get the Skystone
         approachSkyStone();
@@ -383,23 +387,26 @@ public class AutonProcedures {
         else
             blockPos = isRed ? 1 : 3;
 
-//        runningOpMode.addTelemetry("Block Position", blockPos);
-//        runningOpMode.updateTelemetry();
+        runningOpMode.addTelemetry("Found SkyStone at position " + blockPos);
+        runningOpMode.updateTelemetry();
 
         //Go to the SkyStone and grab it
 //        centerOnSkyStone(isRed);
         switch (blockPos) {
             case 1:
-                robot.goToPosition(2,52.5,43,.2,0,.5,.25);
-                robot.goToPosition(1,52.5,43,.2,0,.25,.25);
+                robot.goToPosition(2,-52.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+                robot.goToPosition(1,-52.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3,-52.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
             case 2:
-                robot.goToPosition(2,44.5,43,.2,0,.5,.25);
-                robot.goToPosition(1,44.5,43,.2,0,.25,.25);
+                robot.goToPosition(2,-44.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+                robot.goToPosition(1,-44.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3,-44.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
             case 3:
-                robot.goToPosition(2,36.5,43,.2,0,.5,.25);
-                robot.goToPosition(1,36.5,43,.2,0,.25,.25);
+                robot.goToPosition(2,-36.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+                robot.goToPosition(1,-36.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(1,-36.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
         }
 
@@ -410,28 +417,27 @@ public class AutonProcedures {
             case 1:
                 break;
             case 2:
-                robot.goToPosition(2,68.5,43,.5,0,3,.25);
-                robot.goToPosition(1,68.5,43,.08,0,.25,.25);
+                robot.goToPosition(1,-68.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
+                robot.goToPosition(2,-68.5,(isRed ? -1 : 1) * 43,.2,0,0.25,.25);
+                robot.goToPosition(1,-68.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3,-68.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
             case 3:
-                robot.goToPosition(2,60.5,43,.5,0,3,.25);
-                robot.goToPosition(1,60.5,43,.08,0,.25,.25);
+                robot.goToPosition(1,-60.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
+                robot.goToPosition(2,-60.5,(isRed ? -1 : 1) * 43,.2,0,3,.25);
+                robot.goToPosition(1,-60.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3,-60.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
         }
 
         grabAndDropOffSkyStone(isRed);
 
-        //Try 5 ft for now
-//        deliverSkyStone(isRed, 60);
-        
-        //Move an extra 2 ft over
-//        robot.goDistance(-84, 0, 0, -1, 0 ,0);
-//        approachSkyStone();
-//        centerOnSkyStone();
-        //Move past the previous
-//        deliverSkyStone(isRed, 90);
-
         while (runningOpMode.opModeIsActive()) {
+            runningOpMode.addTelemetry("Done");
+            runningOpMode.addTelemetry("Start Spot", startSpot);
+            runningOpMode.addTelemetry("x Position", robot.getX() / robot.getCountsPerInch());
+            runningOpMode.addTelemetry("y Position", robot.getY() / robot.getCountsPerInch());
+            runningOpMode.addTelemetry("Orientation", robot.getR());
             runningOpMode.addTelemetry("Block Position", blockPos);
             runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
             runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
@@ -444,7 +450,7 @@ public class AutonProcedures {
 
 //        robot.approachSkyStone(0.1, 0.1, 0, 0, 0.2, 1);
 
-        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 2) {
+        while (runningOpMode.opModeIsActive() && robot.distanceSensor.getDistance(DistanceUnit.INCH) > 1.5) {
             runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
             runningOpMode.updateTelemetry();
         }
@@ -470,29 +476,31 @@ public class AutonProcedures {
     }
 
     private void grabAndDropOffSkyStone(boolean isRed) {
+        robot.moveArmMotor(-300);
+        robot.clawServo.setPosition(0.25);
+        robot.sleep(1500);
         robot.moveArmMotor(-674);
-        try {
-            Thread.sleep(1500);
-        } catch (Exception e) {
-
-        }
         robot.clawServo.setPosition(0.95);
+        robot.sleep(1500);
         robot.moveArmMotor(0);
 
         //Deliver the SkyStone
-        robot.goToPosition(1, 32, -43, 0.5, 0, 3, 0.25);
-        robot.goToPosition(1, 32, -43, 0.08, 0, 0.25, 0.25);
+        robot.goToPosition(1, 0, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
+        robot.goToPosition(3, 0, (isRed ? -1 : 1) * 46, 0.4, 0, 3, 0.25);
+        robot.goToPosition(1, 32, (isRed ? -1 : 1) * 46, 0.5, 0, 3, 0.25);
+        robot.goToPosition(2, 32, (isRed ? -1 : 1) * 43, 0.5, 0, 0.25, 0.25);
+        robot.goToPosition(1, 32, (isRed ? -1 : 1) * 43, 0.08, 0, 0.25, 0.25);
+        robot.goToPosition(3, 32, (isRed ? -1 : 1) * 43, 0.4, 0, 0.25, 0.25);
 
         //Drop the block off
-        robot.moveArmMotor(-650);
+        robot.moveArmMotor(-600);
+        robot.sleep(1000);
         robot.clawServo.setPosition(0.25);
-        try {
-            Thread.sleep(1500);
-        } catch (Exception e) {
-
-        }
-        //Leave the claw open
-        robot.moveArmMotor(-50);
+        robot.sleep(1500);
+        robot.moveArmMotor(-300);
+        robot.clawServo.setPosition(0.95);
+        robot.sleep(1000);
+        robot.moveArmMotor(0);
     }
 
     private void deliverSkyStone(boolean isRed, int distance) {

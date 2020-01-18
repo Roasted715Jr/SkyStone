@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.odometry;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 
 @TeleOp(name = "Testing Odometry - SPD")
+@Disabled
 public class TestOdometry_SPD extends GenericOpMode {
     //Drive motors
     DcMotor right_front, right_back, left_front, left_back;
