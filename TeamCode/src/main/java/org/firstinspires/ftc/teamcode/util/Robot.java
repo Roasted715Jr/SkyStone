@@ -515,9 +515,9 @@ public class Robot {
 
             //We are reversing x and y because 0 degrees is forwards rather than to the right
             double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
-            double robotMovementXComponent = calculateX(robotMovementAngle, robotPower);
-            double robotMovementYComponent = calculateY(robotMovementAngle, robotPower);
-            double robotMovementRComponent = calculateR(pivotCorrection,angleThreshold,robotPower);
+            double robotMovementXComponent = calculateX(robotMovementAngle - getR(), robotPower);
+            double robotMovementYComponent = calculateY(robotMovementAngle - getR(), robotPower);
+            double robotMovementRComponent = calculateR(pivotCorrection, angleThreshold, robotPower);
             //countMe++;
 
             if (targetxyr == 3) {

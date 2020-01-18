@@ -236,18 +236,21 @@ public class AutonProcedures {
         while (runningOpMode.opModeIsActive() && target == null)
             target = updatePosition();
 
+        //Find our starting spot
+        startSpot = getStartSpot();
+
         //0-2 is x, y, z
 //        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), rotation.thirdAngle + 90);
-        robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), 0);
+        if (startSpot == 1 || startSpot == 2)
+            robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), 180);
+        else if (startSpot == 3 || startSpot == 4)
+            robot.setStartSpot(translation.get(0) / mmPerInch * robot.getCountsPerInch(), translation.get(1) / mmPerInch * robot.getCountsPerInch(), 0);
+
         robot.startGlobalPositionUpdate();
 
 //        runningOpMode.addTelemetry("This is the first step");
 //        runningOpMode.updateTelemetry();
-
-        //Find our starting spot
-        startSpot = getStartSpot();
 //        startSpot = 2;
-
 
         //Interpret our starting spot
 //        VectorF skyStonePos;
@@ -294,8 +297,6 @@ public class AutonProcedures {
         }
 
         targetsSkyStone.deactivate();
-        runningOpMode.addTelemetry("Done");
-        runningOpMode.updateTelemetry();
     }
 
     private VuforiaTrackable updatePosition() {
@@ -341,7 +342,7 @@ public class AutonProcedures {
 
     private int getStartSpot() {
         //Wait for the target to become identified
-        while (updatePosition() == null) {
+        while (runningOpMode.opModeIsActive() && updatePosition() == null) {
             runningOpMode.addTelemetry("Finding Starting Spot");
             runningOpMode.updateTelemetry();
         }
@@ -370,9 +371,10 @@ public class AutonProcedures {
     }
 
     private void runSkystoneSide(boolean isRed) {
-        robot.goToPosition(2, -41.5, (isRed ? -1 : 1) * 40, 0.5, 0, 6, 0.25);
-        robot.goToPosition(1, -41.5, (isRed ? -1 : 1) * 40, 0.08, 0, 0.25, 0.25);
-        robot.goToPosition(3, -41.5, (isRed ? -1 : 1) * 40, 0.4, 0, 0.25, 0.25);
+        robot.goToPosition(2, robot.getX(), (isRed ? -1 : 1) * 40, 0.5, 0, 6, 0.25);
+        robot.goToPosition(2, isRed ? -41.5 : 41.5, (isRed ? -1 : 1) * 40, 0.5, 0, 6, 0.25);
+        robot.goToPosition(1, isRed ? -41.5 : 41.5, (isRed ? -1 : 1) * 40, 0.08, 0, 0.25, 0.25);
+        robot.goToPosition(3, isRed ? -41.5 : 41.5, (isRed ? -1 : 1) * 40, 0.4, 0, 0.25, 0.25);
 
         runningOpMode.addTelemetry("Looking for SkyStone");
         runningOpMode.updateTelemetry();
@@ -394,19 +396,19 @@ public class AutonProcedures {
 //        centerOnSkyStone(isRed);
         switch (blockPos) {
             case 1:
-                robot.goToPosition(2,-52.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
-                robot.goToPosition(1,-52.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-52.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                robot.goToPosition(2, isRed ? -52.5 : 52.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+                robot.goToPosition(1, isRed ? -52.5 : 52.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3, isRed ? -52.5 : 52.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
             case 2:
-                robot.goToPosition(2,-44.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
-                robot.goToPosition(1,-44.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-44.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                robot.goToPosition(2, isRed ? -44.5 : 44.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+                robot.goToPosition(1, isRed ? -44.5 : 44.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3, isRed ? -44.5 : 44.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
             case 3:
-                robot.goToPosition(2,-36.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
-                robot.goToPosition(1,-36.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(1,-36.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                robot.goToPosition(2, isRed ? -36.5 : 36.5,(isRed ? -1 : 1) * 43,.2,0,.5,.25);
+                robot.goToPosition(1, isRed ? -36.5 : 36.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(1, isRed ? -36.5 : 36.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
                 break;
         }
 
@@ -417,32 +419,36 @@ public class AutonProcedures {
             case 1:
                 break;
             case 2:
-                robot.goToPosition(1,-68.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
-                robot.goToPosition(2,-68.5,(isRed ? -1 : 1) * 43,.2,0,0.25,.25);
-                robot.goToPosition(1,-68.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-68.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                robot.goToPosition(1, isRed ? -68.5 : 68.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
+                robot.goToPosition(2, isRed ? -68.5 : 68.5,(isRed ? -1 : 1) * 43,.2,0,0.25,.25);
+                robot.goToPosition(1, isRed ? -68.5 : 68.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3, isRed ? -68.5 : 68.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                grabAndDropOffSkyStone(isRed);
                 break;
             case 3:
-                robot.goToPosition(1,-60.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
-                robot.goToPosition(2,-60.5,(isRed ? -1 : 1) * 43,.2,0,3,.25);
-                robot.goToPosition(1,-60.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
-                robot.goToPosition(3,-60.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                robot.goToPosition(1, isRed ? -60.5 : 60.5,(isRed ? -1 : 1) * 43,.5,0,3,.25);
+                robot.goToPosition(2, isRed ? -60.5 : 60.5,(isRed ? -1 : 1) * 43,.2,0,3,.25);
+                robot.goToPosition(1, isRed ? -60.5 : 60.5,(isRed ? -1 : 1) * 43,.2,0,.25,.25);
+                robot.goToPosition(3, isRed ? -60.5 : 60.5,(isRed ? -1 : 1) * 43,.4,0,.25,.25);
+                grabAndDropOffSkyStone(isRed);
                 break;
         }
 
-        grabAndDropOffSkyStone(isRed);
+        //Park
+        robot.goToPosition(1, 0, (isRed ? -1 : 1) * 46, 0.5, 0, 3, .25);
+        robot.goToPosition(1, 0, (isRed ? -1 : 1) * 46, 0.2, 0, 0.25, .25);
 
-        while (runningOpMode.opModeIsActive()) {
-            runningOpMode.addTelemetry("Done");
-            runningOpMode.addTelemetry("Start Spot", startSpot);
-            runningOpMode.addTelemetry("x Position", robot.getX() / robot.getCountsPerInch());
-            runningOpMode.addTelemetry("y Position", robot.getY() / robot.getCountsPerInch());
-            runningOpMode.addTelemetry("Orientation", robot.getR());
-            runningOpMode.addTelemetry("Block Position", blockPos);
-            runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
-            runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
-            runningOpMode.updateTelemetry();
-        }
+//        while (runningOpMode.opModeIsActive()) {
+//            runningOpMode.addTelemetry("Done");
+//            runningOpMode.addTelemetry("Start Spot", startSpot);
+//            runningOpMode.addTelemetry("x Position", robot.getX() / robot.getCountsPerInch());
+//            runningOpMode.addTelemetry("y Position", robot.getY() / robot.getCountsPerInch());
+//            runningOpMode.addTelemetry("Orientation", robot.getR());
+//            runningOpMode.addTelemetry("Block Position", blockPos);
+//            runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
+//            runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
+//            runningOpMode.updateTelemetry();
+//        }
     }
 
     private void approachSkyStone() {
@@ -454,24 +460,6 @@ public class AutonProcedures {
             runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
             runningOpMode.updateTelemetry();
         }
-        robot.setMecanumMotorPowers(0, 0, 0);
-    }
-
-    private void centerOnSkyStone(boolean isRed) {
-        if (blockPos == 1)
-            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
-//            robot.centerOnSkyStone(isRed ? -0.1 : 0.1, 0, 0, 0.2, 1);
-        else if (blockPos > 0)
-            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
-//            robot.centerOnSkyStone(isRed ? 0.1 : -0.1, 0, 0, 0.2, 1);
-
-        while (runningOpMode.opModeIsActive() && !(robot.foundSkyStone(robot.rColor) && robot.foundSkyStone(robot.lColor))) {
-            runningOpMode.addTelemetry("Centering on block position " + blockPos);
-            runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
-            runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
-            runningOpMode.updateTelemetry();
-        }
-
         robot.setMecanumMotorPowers(0, 0, 0);
     }
 
@@ -517,6 +505,24 @@ public class AutonProcedures {
 
         }
         robot.goDistance(0, -5, 0, 0, -1, 0);
+    }
+
+    private void centerOnSkyStone(boolean isRed) {
+        if (blockPos == 1)
+            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
+//            robot.centerOnSkyStone(isRed ? -0.1 : 0.1, 0, 0, 0.2, 1);
+        else if (blockPos > 0)
+            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
+//            robot.centerOnSkyStone(isRed ? 0.1 : -0.1, 0, 0, 0.2, 1);
+
+        while (runningOpMode.opModeIsActive() && !(robot.foundSkyStone(robot.rColor) && robot.foundSkyStone(robot.lColor))) {
+            runningOpMode.addTelemetry("Centering on block position " + blockPos);
+            runningOpMode.addTelemetry("lColor Found SkyStone", robot.foundSkyStone(robot.lColor));
+            runningOpMode.addTelemetry("rColor Found SkyStone", robot.foundSkyStone(robot.rColor));
+            runningOpMode.updateTelemetry();
+        }
+
+        robot.setMecanumMotorPowers(0, 0, 0);
     }
 
     void simpleAuton(boolean isRight, boolean isFar) {
