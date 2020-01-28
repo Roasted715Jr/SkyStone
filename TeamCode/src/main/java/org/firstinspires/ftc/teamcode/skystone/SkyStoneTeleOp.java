@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
 
-@TeleOp(name = "SkyStone TeleOp", group = GenericOpMode.GROUP_SKYSTONE)
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SkyStone TeleOp", group = GenericOpMode.GROUP_SKYSTONE)
 public class SkyStoneTeleOp extends GenericOpMode {
     private static final double SPEED_MAX = 0.75;
     private static final double SPEED_MIN = 0.25;
@@ -28,6 +28,8 @@ public class SkyStoneTeleOp extends GenericOpMode {
         double x, y, r;
 
         waitForStart();
+
+        robot.retractOdometers();
 
         targetPos = robot.armMotor.getCurrentPosition();
         previousPos = robot.armMotor.getCurrentPosition();

@@ -54,6 +54,7 @@ public class Robot {
     private OdometryGlobalCoordinatePosition globalPositionUpdate;
     public DcMotor armMotor;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo;//, blockServo;
+    public Servo rOdometerServo, hOdometerServo, lOdometerServo;
     private GenericOpMode runningOpMode;
 //    TouchSensor rTouch, lTouch;
 
@@ -83,6 +84,10 @@ public class Robot {
                 lOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 hOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+                lOdometerServo = hardwareMap.get(Servo.class, "lOdometerServo");
+                hOdometerServo = hardwareMap.get(Servo.class, "hOdometerServo");
+                rOdometerServo = hardwareMap.get(Servo.class, "rOdometerServo");
 
                 lOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 rOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -150,6 +155,18 @@ public class Robot {
                 SPUR_TEETH = 1;
                 break;
         }
+    }
+
+    public void deployOdometers() {
+        rOdometerServo.setPosition(0);
+        hOdometerServo.setPosition(0);
+        lOdometerServo.setPosition(1);
+    }
+
+    public void retractOdometers() {
+        rOdometerServo.setPosition(1);
+        hOdometerServo.setPosition(1);
+        lOdometerServo.setPosition(0);
     }
 
     public void startGlobalPositionUpdate() {

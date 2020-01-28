@@ -532,8 +532,10 @@ public class AutonProcedures {
     }
 
     void simpleAuton(boolean isRight, boolean isFar, long waitTime) {
+        robot.deployOdometers();
+        robot.sleep(500);
         robot.startGlobalPositionUpdate();
-        robot.sleep(waitTime);
+        robot.sleep(waitTime - 500);
 
 //        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
