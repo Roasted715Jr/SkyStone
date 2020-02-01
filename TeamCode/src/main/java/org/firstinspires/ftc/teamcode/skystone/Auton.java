@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
 
 @Autonomous(name = "Autonomous", group = "SkyStone")
-//@Disabled
+@Disabled
 public class Auton extends GenericOpMode {
     private Robot robot = new Robot(this);
     private AutonProcedures autonProcedures = new AutonProcedures();

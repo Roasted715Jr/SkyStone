@@ -703,6 +703,10 @@ public class Robot {
         return inRange(color.red(), 0, 5) && inRange(color.green(), 0, 5) && inRange(color.blue(), 0, 5); //With light off
     }
 
+    public int sumOfColors(RevColorSensorV3 color) {
+        return color.red() + color.blue() + color.green();
+    }
+
     private boolean inRange(double val, double min, double max) {
         return min <= val && val <= max;
     }
