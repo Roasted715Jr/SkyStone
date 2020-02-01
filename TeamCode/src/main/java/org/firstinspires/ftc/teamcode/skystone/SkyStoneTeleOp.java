@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.skystone;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.GenericOpMode;
@@ -11,8 +10,6 @@ public class SkyStoneTeleOp extends GenericOpMode {
     private static final double SPEED_MAX = 0.75;
     private static final double SPEED_MIN = 0.25;
     private static final double ARM_SPEED = 0.5;
-    private static final int ARM_MAX_POS = 674; //113 //Make sure to negate stuff when you need to use this value
-    private static final int ARM_INCREMENT = 1;
 
     private Robot robot = new Robot(this);
 
@@ -20,8 +17,9 @@ public class SkyStoneTeleOp extends GenericOpMode {
         boolean aPressed = false, multiplierToggle = false;
 //        double speedMultiplier = 1, currentPos, targetPos = 0;
         double speedMultiplier;
-        int currentPos, targetPos, previousPos;
-        boolean isMoving = false;
+        int currentPos, previousPos;
+//        int targetPos;
+//        boolean isMoving = false;
 
         robot.init(hardwareMap);
 
@@ -31,7 +29,7 @@ public class SkyStoneTeleOp extends GenericOpMode {
 
         robot.retractOdometers();
 
-        targetPos = robot.armMotor.getCurrentPosition();
+//        targetPos = robot.armMotor.getCurrentPosition();
         previousPos = robot.armMotor.getCurrentPosition();
 
         while (opModeIsActive()) {
