@@ -16,7 +16,7 @@ public class AutonLeftFar extends GenericOpMode {
 
         waitForStart();
 
-        autonProcedures.simpleAuton(false, true, 25500);
+        autonProcedures.simpleAuton(false, true, 23000);
 
         while (opModeIsActive()) {
             telemetry.update();

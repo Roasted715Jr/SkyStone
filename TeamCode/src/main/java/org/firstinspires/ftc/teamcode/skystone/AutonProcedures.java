@@ -560,14 +560,16 @@ public class AutonProcedures {
 //        robot.goDistance(isRight ? -36 : 36, 0, 0, isRight ? -1 : 1, 0, 0);
 
         if (isFar) {
-            robot.goToPosition(0, 26, 0, 0.25, 0.2, 10, 3);
-            robot.goToPosition((isRight ? -1 : 1) * 38, 26, 0, 0.25, 0.2, 10, 3);
+//            robot.goToPosition(0, 26, 0, 0.25, 0.2, 10, 3);
+            robot.goToPositionNew(2, 0, 26, 0.25, 0, 10, 3);
+//            robot.goToPosition((isRight ? -1 : 1) * 38, 26, 0, 0.25, 0.2, 10, 3);
+            robot.goToPositionNew(1, (isRight ? -1 : 1) * 40, 26, 0.25, 0, 10, 3);
         } else
-            robot.goToPosition((isRight ? -1 : 1) * 38, 4, 0, 0.25, 0.2, 10, 3);
+//            robot.goToPosition((isRight ? -1 : 1) * 38, 4, 0, 0.25, 0.2, 10, 3);
+            robot.goToPositionNew(1, (isRight ? -1 : 1) * 40, 4, 0.25, 0,10, 3);
 
-        robot.goToPosition((isRight ? -1 : 1) * 38, isFar ? 26 : 4, 0, 0.1, 0.2, 2, 3);
-
-
+//        robot.goToPosition((isRight ? -1 : 1) * 38, isFar ? 26 : 4, 0, 0.1, 0.2, 2, 3);
+        robot.goToPositionNew(1, (isRight ? -1 : 1) * 40, isFar ? 26 : 4, 0.1, 0, 2, 3);
 
 //        robot.goToPositionNew(0, 24, 0, 0.5, 0.2, 1.5, 3);
 
