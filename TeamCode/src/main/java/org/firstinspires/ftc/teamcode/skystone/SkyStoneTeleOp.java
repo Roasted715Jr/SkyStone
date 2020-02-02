@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.skystone;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SkyStone TeleOp", group = GenericOpMode.GROUP_SKYSTONE)
+@TeleOp(name = "SkyStone TeleOp", group = GenericOpMode.GROUP_SKYSTONE)
 public class SkyStoneTeleOp extends GenericOpMode {
     private static final double SPEED_MAX = 0.75;
     private static final double SPEED_MIN = 0.25;
