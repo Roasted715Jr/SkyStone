@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.odometry.OdometryGlobalCoordinatePosition;
 
 //Length is 15.75
@@ -23,10 +22,6 @@ public class Robot {
 //    private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
 //    private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
     private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
-//    private static final double EXTERNAL_COUNTS_PER_REVOLUTION = 8192;
-//    private static final double TURN_SPEED = 0.25;
-//    private static final double JOY_DEADZONE = 0.05;
-//    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
     private static final int ENCODER_THRESHOLD = 50;
     private static final double POWER_INCREMENT = 0.1;
 
@@ -38,12 +33,6 @@ public class Robot {
     private static final int ROBOT_TYPE = INTAKE_TEST;
 
     public static final String VUFORIA_LICENSE_KEY = "Abq1tHr/////AAABmYC8ioniS0f2gyQRx7fZlTWMwyYcrV/bnslJvcDe0AhxA/GAkYTIdNbPWjYtplipzvASUZRGR+AoGDI1dKyuCFCc4qy1eVbx8NO4nuAKzeGoncY7acvfol19suW5Zl29E+APEV0CG4GVBe4R+bZ/Xyd2E7CZ7AcrLbWM8+SJiMCDnxJa3J0ozBHMPMs6GNFyYS6YCVNMkFcLEKxDicwXqpuJddG5XenbAs8ot9UT11WRYZjpprLkSRtM1/OyigcUeb0wk2PL6lFVBMHMZbWK5HkJEmBoN5+v2fP6zouj0GPGyEh/eV8Xe71LhBz0WXKd180hUCowZVBfdsTtuYwFiBkAyRLtiQQb4/b80sAx1b6s";
-
-    private static int PINION_TEETH;
-    private static int SPUR_TEETH;
-    private static double xMult;
-    private static double yMult;
-    private static double rMult;
 
     //Ctrl+Q or Ctrl+Shift+I for documentation and definition
     public RevColorSensorV3 rColor, lColor;
@@ -115,9 +104,6 @@ public class Robot {
 //                lTouch = hardwareMap.get(TouchSensor.class, "lTouch");
 
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
-
-//                PINION_TEETH = 1;
-//                SPUR_TEETH = 1;
                 break;
             case MECANUM_PUSHBOT:
                 flMotor = hardwareMap.get(DcMotor.class, "frontL");
@@ -129,9 +115,6 @@ public class Robot {
                 setMecanumMotorPowers(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-//                PINION_TEETH = 1;
-//                SPUR_TEETH = 1;
                 break;
             case MATT_TINY_BOT:
                 rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
@@ -140,11 +123,6 @@ public class Robot {
                 setSimpleMotorPowers(0);
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-//                distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
-                PINION_TEETH = 1;
-                SPUR_TEETH = 1;
                 break;
             case TINY_BOT:
                 rightMotor = hardwareMap.get(DcMotor.class, "driveR");
@@ -152,9 +130,6 @@ public class Robot {
                 setSimpleMotorPowers(0);
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                PINION_TEETH = 1;
-                SPUR_TEETH = 1;
                 break;
             case INTAKE_TEST:
                 rIntake = hardwareMap.get(DcMotor.class, "rIntake");
@@ -162,12 +137,6 @@ public class Robot {
                 lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
-    }
-
-    public void deployOdometers() {
-        rOdometerServo.setPosition(0);
-        hOdometerServo.setPosition(0);
-        lOdometerServo.setPosition(1);
     }
 
     public void retractOdometers() {
@@ -202,28 +171,12 @@ public class Robot {
     }
 
     public void setMecanumMotorPowers(double x, double y, double r) {
-        //Turn speed is half of x or y
-        //x and y speed are the same
-//        xMult = 0.4;
-//        yMult = 0.4;
-//        rMult = 0.2;
-
-//        xMult = 1;
-//        yMult = 1;
-//        rMult = 1;
-
-//        xMult = MOTOR_MULTIPLIER * 2 / 5;
-//        yMult = MOTOR_MULTIPLIER * 2 / 5;
-//        rMult = MOTOR_MULTIPLIER / 5;
-
-        //When at 45 deg on left stick, multiply by 0.704 (or 1/2 / (sqrt(2) / 2)) to get optimal x and y
-
 //        flMotor.setPower(x + y + r);
 //        blMotor.setPower(-x + y + r);
 //        frMotor.setPower(-x + y - r);
 //        brMotor.setPower(x + y - r);
 
-        //We reverse these because they're on the right side
+        //We reverse these two motors because they're on the right side
         frMotor.setPower(-(-x + y - r));
         brMotor.setPower(-(x + y - r));
         flMotor.setPower(x + y + r);
@@ -480,7 +433,7 @@ public class Robot {
         while (runningOpMode.opModeIsActive() && (foundBlock || Math.abs(distanceToXTarget) > threshold ||
                 //Check to see if we are over or under our desired rotation to continue the loop
                 (Math.abs(targetRotation) + angleThreshold < Math.abs(orientation) || Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold))) {
-            foundBlock = foundSkyStone(lColor) || foundSkyStone(rColor) ? false : true;
+            foundBlock = !foundSkyStone(lColor) && !foundSkyStone(rColor);
 
             distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
 //            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
@@ -534,8 +487,8 @@ public class Robot {
         double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
         double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
         double countMe = 0;
-        boolean targetfound = false;
-        while (runningOpMode.opModeIsActive() && (targetfound == false)) { //(distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold) ) {
+        boolean targetFound = false;
+        while (runningOpMode.opModeIsActive() && !targetFound) { //(distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold) ) {
 
             //We are reversing x and y because 0 degrees is forwards rather than to the right
             double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
@@ -558,32 +511,16 @@ public class Robot {
 
             switch (targetxyr) {
                 case 1:
-                    if (Math.abs(distanceToXTarget) > distanceThreshold) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = Math.abs(distanceToXTarget) <= distanceThreshold;
                     break;
                 case 2:
-                    if (Math.abs(distanceToYTarget) > distanceThreshold) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = Math.abs(distanceToYTarget) <= distanceThreshold;
                     break;
                 case 3:
-                    if (Math.abs(pivotCorrection) > angleThreshold) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = Math.abs(pivotCorrection) <= angleThreshold;
                     break;
                 case 0:
-                    if ((distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold)) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = distance <= distanceThreshold && Math.abs(pivotCorrection) <= angleThreshold;
                     break;
             }
 

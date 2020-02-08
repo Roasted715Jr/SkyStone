@@ -54,15 +54,6 @@ public class SkyStoneTeleOp extends GenericOpMode {
             else if (gamepad2.right_bumper)
                 robot.clawServo.setPosition(0.25);
 
-//            currentPos = robot.armServo.getPosition();
-//            if (gamepad2.dpad_up)
-//                robot.armServo.setPosition(currentPos + 0.003);
-//            else if (gamepad2.dpad_down)
-//                robot.armServo.setPosition(currentPos - 0.003);
-////            if (gamepad2.left_trigger > 0.25)
-////                robot.armServo.setPosition(currentPos + 0.003);
-////            else if (gamepad2.left_bumper)
-////                robot.armServo.setPosition(currentPos - 0.003);
 
 //            targetPos = robot.armMotor.getCurrentPosition();
             double y2 = -gamepad2.left_stick_y;
