@@ -34,7 +34,8 @@ public class Robot {
     private static final int MATT_TINY_BOT = 1;
     private static final int TINY_BOT = 2;
     private static final int MECANUM_PUSHBOT = 3;
-    private static final int ROBOT_TYPE = MAIN_BOT;
+    private static final int INTAKE_TEST = 4;
+    private static final int ROBOT_TYPE = INTAKE_TEST;
 
     public static final String VUFORIA_LICENSE_KEY = "Abq1tHr/////AAABmYC8ioniS0f2gyQRx7fZlTWMwyYcrV/bnslJvcDe0AhxA/GAkYTIdNbPWjYtplipzvASUZRGR+AoGDI1dKyuCFCc4qy1eVbx8NO4nuAKzeGoncY7acvfol19suW5Zl29E+APEV0CG4GVBe4R+bZ/Xyd2E7CZ7AcrLbWM8+SJiMCDnxJa3J0ozBHMPMs6GNFyYS6YCVNMkFcLEKxDicwXqpuJddG5XenbAs8ot9UT11WRYZjpprLkSRtM1/OyigcUeb0wk2PL6lFVBMHMZbWK5HkJEmBoN5+v2fP6zouj0GPGyEh/eV8Xe71LhBz0WXKd180hUCowZVBfdsTtuYwFiBkAyRLtiQQb4/b80sAx1b6s";
 
@@ -53,6 +54,7 @@ public class Robot {
     private HardwareMap hardwareMap;
     private OdometryGlobalCoordinatePosition globalPositionUpdate;
     public DcMotor armMotor;
+    public DcMotor rIntake, lIntake;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo;//, blockServo;
     public Servo rOdometerServo, hOdometerServo, lOdometerServo;
     private GenericOpMode runningOpMode;
@@ -153,6 +155,11 @@ public class Robot {
 
                 PINION_TEETH = 1;
                 SPUR_TEETH = 1;
+                break;
+            case INTAKE_TEST:
+                rIntake = hardwareMap.get(DcMotor.class, "rIntake");
+                lIntake = hardwareMap.get(DcMotor.class, "lIntake");
+                lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
     }
