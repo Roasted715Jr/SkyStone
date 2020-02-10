@@ -16,11 +16,24 @@ public class IntakeTest extends GenericOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y;
-            robot.rIntake.setPower(y);
-            robot.lIntake.setPower(y);
+            if (gamepad1.right_trigger > 0.25) {
+                robot.rIntake.setPower(1);
+                robot.lIntake.setPower(1);
+            } else if (gamepad1.left_trigger > 0.25) {
+                robot.rIntake.setPower(-1);
+                robot.lIntake.setPower(-1);
+            } else {
+                robot.rIntake.setPower(0);
+                robot.lIntake.setPower(0);
+            }
 
-            telemetry.addData("Joystick val", y);
+            double lY = -gamepad1.left_stick_y;
+            double rY = -gamepad1.right_stick_y;
+            robot.liftMotor.setPower(lY);
+            robot.extendMotor.setPower(rY);
+
+            telemetry.addData("Left Y", lY);
+            telemetry.addData("Right Y", rY);
             telemetry.update();
         }
     }

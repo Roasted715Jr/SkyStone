@@ -43,7 +43,7 @@ public class Robot {
     private HardwareMap hardwareMap;
     private OdometryGlobalCoordinatePosition globalPositionUpdate;
     public DcMotor armMotor;
-    public DcMotor rIntake, lIntake;
+    public DcMotor rIntake, lIntake, liftMotor, extendMotor;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo;//, blockServo;
     public Servo rOdometerServo, hOdometerServo, lOdometerServo;
     private GenericOpMode runningOpMode;
@@ -134,6 +134,8 @@ public class Robot {
             case INTAKE_TEST:
                 rIntake = hardwareMap.get(DcMotor.class, "rIntake");
                 lIntake = hardwareMap.get(DcMotor.class, "lIntake");
+                liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
+                extendMotor = hardwareMap.get(DcMotor.class, "extendMotor");
                 lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
