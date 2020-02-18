@@ -137,6 +137,7 @@ public class Robot {
                 liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
                 extendMotor = hardwareMap.get(DcMotor.class, "extendMotor");
                 lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+                liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 break;
         }
     }

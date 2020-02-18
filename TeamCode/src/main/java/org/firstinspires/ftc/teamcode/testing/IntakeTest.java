@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Intake Test", group = GenericOpMode.GROUP_TESTINNG)
 public class IntakeTest extends GenericOpMode {
-    Robot robot = new Robot(this);
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,11 +29,26 @@ public class IntakeTest extends GenericOpMode {
 
             double lY = -gamepad1.left_stick_y;
             double rY = -gamepad1.right_stick_y;
-            robot.liftMotor.setPower(lY);
+
+            boolean atLowLimit = robot.liftMotor.getCurrentPosition() < 0;
+            boolean atHighLimit = robot.liftMotor.getCurrentPosition() > 4100;
+
+            if (atLowLimit && lY > 0)
+                robot.liftMotor.setPower(lY * 1);
+            else if (atHighLimit && lY < 0)
+                robot.liftMotor.setPower(lY * 1);
+            else if (!atLowLimit && !atHighLimit)
+                robot.liftMotor.setPower(lY * 1);
+            else
+                robot.liftMotor.setPower(0);
+
             robot.extendMotor.setPower(rY);
 
             telemetry.addData("Left Y", lY);
+            telemetry.addData("atLowLimit", atLowLimit);
+            telemetry.addData("atHighLimit", atHighLimit);
             telemetry.addData("Right Y", rY);
+            telemetry.addData("liftMotor Pos", robot.liftMotor.getCurrentPosition());
             telemetry.update();
         }
     }
