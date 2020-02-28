@@ -132,12 +132,18 @@ public class Robot {
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 break;
             case INTAKE_TEST:
+                flMotor = hardwareMap.get(DcMotor.class, "flMotor");
+                blMotor = hardwareMap.get(DcMotor.class, "blMotor");
+                frMotor = hardwareMap.get(DcMotor.class, "frMotor");
+                brMotor = hardwareMap.get(DcMotor.class, "brMotor");
+
                 rIntake = hardwareMap.get(DcMotor.class, "rIntake");
                 lIntake = hardwareMap.get(DcMotor.class, "lIntake");
                 liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
                 extendMotor = hardwareMap.get(DcMotor.class, "extendMotor");
                 lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                 liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
         }
     }

@@ -7,19 +7,43 @@ import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Intake Test", group = GenericOpMode.GROUP_TESTINNG)
 public class IntakeTest extends GenericOpMode {
+    private static final double SPEED_MAX = 0.75;
+    private static final double SPEED_MIN = 0.25;
+
     private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
+        boolean aPressed = false, multiplierToggle = false;
+        double x, y, r;
+        double speedMultiplier;
+
         robot.init(hardwareMap);
 
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.right_trigger > 0.25) {
+            //Controller #1
+            x = gamepad1.left_stick_x;
+            y = -gamepad1.left_stick_y;
+            r = gamepad1.right_stick_x;
+
+            if (gamepad1.a) {
+                if (!aPressed)
+                    multiplierToggle = !multiplierToggle;
+                aPressed = true;
+            } else
+                aPressed = false;
+
+            speedMultiplier = multiplierToggle ? SPEED_MIN : SPEED_MAX;
+
+            robot.setMecanumMotorPowers(x * speedMultiplier, y * speedMultiplier, r * speedMultiplier);
+
+            //Controller #2
+            if (gamepad2.right_trigger > 0.25) {
                 robot.rIntake.setPower(1);
                 robot.lIntake.setPower(1);
-            } else if (gamepad1.left_trigger > 0.25) {
+            } else if (gamepad2.left_trigger > 0.25) {
                 robot.rIntake.setPower(-1);
                 robot.lIntake.setPower(-1);
             } else {
@@ -27,8 +51,8 @@ public class IntakeTest extends GenericOpMode {
                 robot.lIntake.setPower(0);
             }
 
-            double lY = -gamepad1.left_stick_y;
-            double rY = -gamepad1.right_stick_y;
+            double lY = -gamepad2.left_stick_y;
+            double rY = -gamepad2.right_stick_y;
 
             boolean atLowLimit = robot.liftMotor.getCurrentPosition() < 0;
             boolean atHighLimit = robot.liftMotor.getCurrentPosition() > 4100;
@@ -44,9 +68,13 @@ public class IntakeTest extends GenericOpMode {
 
             robot.extendMotor.setPower(rY);
 
+            telemetry.addData("speedMultiplier", speedMultiplier);
+            telemetry.addData("x", "%.5f", x);
+            telemetry.addData("y", "%.5f", y);
+            telemetry.addData("r", "%.5f", r);
             telemetry.addData("Left Y", lY);
-            telemetry.addData("atLowLimit", atLowLimit);
-            telemetry.addData("atHighLimit", atHighLimit);
+//            telemetry.addData("atLowLimit", atLowLimit);
+//            telemetry.addData("atHighLimit", atHighLimit);
             telemetry.addData("Right Y", rY);
             telemetry.addData("liftMotor Pos", robot.liftMotor.getCurrentPosition());
             telemetry.update();
