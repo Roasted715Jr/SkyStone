@@ -144,6 +144,8 @@ public class Robot {
                 lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                 liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                extendMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 break;
         }
     }

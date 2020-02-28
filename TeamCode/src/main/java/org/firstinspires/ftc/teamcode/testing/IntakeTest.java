@@ -58,15 +58,25 @@ public class IntakeTest extends GenericOpMode {
             boolean atHighLimit = robot.liftMotor.getCurrentPosition() > 4100;
 
             if (atLowLimit && lY > 0)
-                robot.liftMotor.setPower(lY * 1);
+                robot.liftMotor.setPower(lY);
             else if (atHighLimit && lY < 0)
-                robot.liftMotor.setPower(lY * 1);
+                robot.liftMotor.setPower(lY);
             else if (!atLowLimit && !atHighLimit)
-                robot.liftMotor.setPower(lY * 1);
+                robot.liftMotor.setPower(lY);
             else
                 robot.liftMotor.setPower(0);
 
-            robot.extendMotor.setPower(rY);
+            boolean atFarLimit = robot.extendMotor.getCurrentPosition() > 1800;
+            boolean atCloseLimit = robot.extendMotor.getCurrentPosition() < 30;
+
+            if (atCloseLimit && rY > 0)
+                robot.extendMotor.setPower(rY);
+            else if (atFarLimit && rY < 0)
+                robot.extendMotor.setPower(rY);
+            else if (!atCloseLimit && !atFarLimit)
+                robot.extendMotor.setPower(rY);
+            else
+                robot.extendMotor.setPower(0);
 
             telemetry.addData("speedMultiplier", speedMultiplier);
             telemetry.addData("x", "%.5f", x);
@@ -77,6 +87,7 @@ public class IntakeTest extends GenericOpMode {
 //            telemetry.addData("atHighLimit", atHighLimit);
             telemetry.addData("Right Y", rY);
             telemetry.addData("liftMotor Pos", robot.liftMotor.getCurrentPosition());
+            telemetry.addData("extendMotor Pos", robot.extendMotor.getCurrentPosition());
             telemetry.update();
         }
     }
