@@ -27,7 +27,7 @@ public class Robot {
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
-    private static final int TINY_BOT = 2;
+    private static final int BABY_BOT = 2;
     private static final int MECANUM_PUSHBOT = 3;
     private static final int INTAKE_TEST = 4;
     private static final int ROBOT_TYPE = INTAKE_TEST;
@@ -44,6 +44,7 @@ public class Robot {
     private OdometryGlobalCoordinatePosition globalPositionUpdate;
     public DcMotor armMotor;
     public DcMotor rIntake, lIntake, liftMotor, extendMotor;
+    public Servo grabberServo;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo;//, blockServo;
     public Servo rOdometerServo, hOdometerServo, lOdometerServo;
     private GenericOpMode runningOpMode;
@@ -93,8 +94,8 @@ public class Robot {
                 armMotor.setPower(0);
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
 
-                rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
-                lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
+                rFoundationServo = hardwareMap.get(Servo.class, "rFoundation");
+                lFoundationServo = hardwareMap.get(Servo.class, "lFoundation");
 //                blockServo = hardwareMap.get(Servo.class, "blockServo");
 
                 rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
@@ -124,9 +125,9 @@ public class Robot {
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 break;
-            case TINY_BOT:
-                rightMotor = hardwareMap.get(DcMotor.class, "driveR");
-                leftMotor = hardwareMap.get(DcMotor.class, "driveL");
+            case BABY_BOT:
+                rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
+                leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
                 setSimpleMotorPowers(0);
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -141,11 +142,16 @@ public class Robot {
                 lIntake = hardwareMap.get(DcMotor.class, "lIntake");
                 liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
                 extendMotor = hardwareMap.get(DcMotor.class, "extendMotor");
+
                 lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                 liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
                 extendMotor.setDirection(DcMotorSimple.Direction.REVERSE);
                 extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                grabberServo = hardwareMap.get(Servo.class, "grabberServo");
+                rFoundationServo = hardwareMap.get(Servo.class, "rFoundation");
+                lFoundationServo = hardwareMap.get(Servo.class, "lFoundation");
                 break;
         }
     }
@@ -194,7 +200,7 @@ public class Robot {
         blMotor.setPower(-x + y + r);
     }
 
-    void setSimpleMotorPowers(double power) {
+    public void setSimpleMotorPowers(double power) {
         rightMotor.setPower(power);
         leftMotor.setPower(power);
     }

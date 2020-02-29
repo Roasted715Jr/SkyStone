@@ -35,6 +35,11 @@ public class IntakeTest extends GenericOpMode {
             } else
                 aPressed = false;
 
+            if (gamepad1.x)
+                robot.moveHooks(true);
+            else if (gamepad1.b)
+                robot.moveHooks(false);
+
             speedMultiplier = multiplierToggle ? SPEED_MIN : SPEED_MAX;
 
             robot.setMecanumMotorPowers(x * speedMultiplier, y * speedMultiplier, r * speedMultiplier);
@@ -54,8 +59,8 @@ public class IntakeTest extends GenericOpMode {
             double lY = -gamepad2.left_stick_y;
             double rY = -gamepad2.right_stick_y;
 
-            boolean atLowLimit = robot.liftMotor.getCurrentPosition() < 0;
-            boolean atHighLimit = robot.liftMotor.getCurrentPosition() > 4100;
+            boolean atLowLimit = robot.liftMotor.getCurrentPosition() <= 0;
+            boolean atHighLimit = robot.liftMotor.getCurrentPosition() >= 4300;
 
             if (atLowLimit && lY > 0)
                 robot.liftMotor.setPower(lY);
@@ -66,17 +71,24 @@ public class IntakeTest extends GenericOpMode {
             else
                 robot.liftMotor.setPower(0);
 
-            boolean atFarLimit = robot.extendMotor.getCurrentPosition() > 1800;
-            boolean atCloseLimit = robot.extendMotor.getCurrentPosition() < 30;
+            boolean atFarLimit = robot.extendMotor.getCurrentPosition() > 1750;
+            boolean atCloseLimit = robot.extendMotor.getCurrentPosition() < 50;
 
-            if (atCloseLimit && rY > 0)
-                robot.extendMotor.setPower(rY);
-            else if (atFarLimit && rY < 0)
-                robot.extendMotor.setPower(rY);
-            else if (!atCloseLimit && !atFarLimit)
-                robot.extendMotor.setPower(rY);
-            else
-                robot.extendMotor.setPower(0);
+            if (gamepad2.right_bumper)
+                robot.grabberServo.setPosition(1);
+            else if (gamepad2.left_bumper)
+                robot.grabberServo.setPosition(0);
+
+            if (robot.grabberServo.getPosition() > 0.75) {
+                if (atCloseLimit && rY > 0)
+                    robot.extendMotor.setPower(rY);
+                else if (atFarLimit && rY < 0)
+                    robot.extendMotor.setPower(rY);
+                else if (!atCloseLimit && !atFarLimit)
+                    robot.extendMotor.setPower(rY);
+                else
+                    robot.extendMotor.setPower(0);
+            }
 
             telemetry.addData("speedMultiplier", speedMultiplier);
             telemetry.addData("x", "%.5f", x);
@@ -88,6 +100,7 @@ public class IntakeTest extends GenericOpMode {
             telemetry.addData("Right Y", rY);
             telemetry.addData("liftMotor Pos", robot.liftMotor.getCurrentPosition());
             telemetry.addData("extendMotor Pos", robot.extendMotor.getCurrentPosition());
+            telemetry.addData("grabberServo Pos", robot.grabberServo.getPosition());
             telemetry.update();
         }
     }
