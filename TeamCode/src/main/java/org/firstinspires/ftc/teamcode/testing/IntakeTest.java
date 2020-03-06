@@ -35,9 +35,9 @@ public class IntakeTest extends GenericOpMode {
             } else
                 aPressed = false;
 
-            if (gamepad1.x)
+            if (gamepad1.right_trigger > 0.5)
                 robot.moveHooks(true);
-            else if (gamepad1.b)
+            else if (gamepad1.left_trigger > 0.5)
                 robot.moveHooks(false);
 
             speedMultiplier = multiplierToggle ? SPEED_MIN : SPEED_MAX;
@@ -72,7 +72,7 @@ public class IntakeTest extends GenericOpMode {
                 robot.liftMotor.setPower(0);
 
             boolean atFarLimit = robot.extendMotor.getCurrentPosition() > 1750;
-            boolean atCloseLimit = robot.extendMotor.getCurrentPosition() < 50;
+            boolean atCloseLimit = robot.extendMotor.getCurrentPosition() < 60;
 
             if (gamepad2.right_bumper)
                 robot.grabberServo.setPosition(1);

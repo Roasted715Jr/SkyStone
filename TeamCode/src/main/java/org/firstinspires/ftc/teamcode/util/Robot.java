@@ -137,6 +137,7 @@ public class Robot {
                 blMotor = hardwareMap.get(DcMotor.class, "blMotor");
                 frMotor = hardwareMap.get(DcMotor.class, "frMotor");
                 brMotor = hardwareMap.get(DcMotor.class, "brMotor");
+                setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
                 rIntake = hardwareMap.get(DcMotor.class, "rIntake");
                 lIntake = hardwareMap.get(DcMotor.class, "lIntake");
