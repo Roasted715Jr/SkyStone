@@ -470,7 +470,7 @@ public class AutonProcedures {
     }
 
     private void approachSkyStone() {
-        robot.setMecanumMotorPowers(0, 0.1, 0);
+        robot.setMecanumPower(0, 0.1, 0);
 
 //        robot.approachSkyStone(0.1, 0.1, 0, 0, 0.2, 1);
 
@@ -478,15 +478,15 @@ public class AutonProcedures {
             runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
             runningOpMode.updateTelemetry();
         }
-        robot.setMecanumMotorPowers(0, 0, 0);
+        robot.setMecanumPower(0, 0, 0);
     }
 
     private void centerOnSkyStone(boolean isRed) {
         if (blockPos == 1)
-            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
+            robot.setMecanumPower(isRed ? -0.1 : 0.1, 0, 0);
 //            robot.centerOnSkyStone(isRed ? -0.1 : 0.1, 0, 0, 0.2, 1);
         else if (blockPos > 0)
-            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
+            robot.setMecanumPower(isRed ? 0.1 : -0.1, 0, 0);
 //            robot.centerOnSkyStone(isRed ? 0.1 : -0.1, 0, 0, 0.2, 1);
 
         while (runningOpMode.opModeIsActive() && !(robot.foundSkyStone(robot.rColor) && robot.foundSkyStone(robot.lColor))) {
@@ -496,7 +496,7 @@ public class AutonProcedures {
             runningOpMode.updateTelemetry();
         }
 
-        robot.setMecanumMotorPowers(0, 0, 0);
+        robot.setMecanumPower(0, 0, 0);
     }
 
     private void grabAndDropOffSkyStone(boolean isRed) {
@@ -550,7 +550,7 @@ public class AutonProcedures {
     void simpleAuton(boolean isRight, boolean isFar, long waitTime) {
 //        robot.deployOdometers();
 //        robot.sleep(500);
-        robot.clawServo.setPosition(0.95);
+//        robot.clawServo.setPosition(0.95);
         robot.startGlobalPositionUpdate();
         robot.sleep(waitTime);
 
