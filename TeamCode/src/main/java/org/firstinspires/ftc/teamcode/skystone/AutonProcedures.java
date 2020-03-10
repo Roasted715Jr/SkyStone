@@ -470,7 +470,7 @@ public class AutonProcedures {
     }
 
     private void approachSkyStone() {
-        robot.setMecanumMotorPowers(0, 0.1, 0);
+        robot.setMecanumPower(0, 0.1, 0);
 
 //        robot.approachSkyStone(0.1, 0.1, 0, 0, 0.2, 1);
 
@@ -478,15 +478,15 @@ public class AutonProcedures {
             runningOpMode.addTelemetry("Distance", robot.distanceSensor.getDistance(DistanceUnit.INCH));
             runningOpMode.updateTelemetry();
         }
-        robot.setMecanumMotorPowers(0, 0, 0);
+        robot.setMecanumPower(0, 0, 0);
     }
 
     private void centerOnSkyStone(boolean isRed) {
         if (blockPos == 1)
-            robot.setMecanumMotorPowers(isRed ? -0.1 : 0.1, 0, 0);
+            robot.setMecanumPower(isRed ? -0.1 : 0.1, 0, 0);
 //            robot.centerOnSkyStone(isRed ? -0.1 : 0.1, 0, 0, 0.2, 1);
         else if (blockPos > 0)
-            robot.setMecanumMotorPowers(isRed ? 0.1 : -0.1, 0, 0);
+            robot.setMecanumPower(isRed ? 0.1 : -0.1, 0, 0);
 //            robot.centerOnSkyStone(isRed ? 0.1 : -0.1, 0, 0, 0.2, 1);
 
         while (runningOpMode.opModeIsActive() && !(robot.foundSkyStone(robot.rColor) && robot.foundSkyStone(robot.lColor))) {
@@ -496,7 +496,7 @@ public class AutonProcedures {
             runningOpMode.updateTelemetry();
         }
 
-        robot.setMecanumMotorPowers(0, 0, 0);
+        robot.setMecanumPower(0, 0, 0);
     }
 
     private void grabAndDropOffSkyStone(boolean isRed) {
@@ -550,7 +550,7 @@ public class AutonProcedures {
     void simpleAuton(boolean isRight, boolean isFar, long waitTime) {
 //        robot.deployOdometers();
 //        robot.sleep(500);
-        robot.clawServo.setPosition(0.95);
+//        robot.clawServo.setPosition(0.95);
         robot.startGlobalPositionUpdate();
         robot.sleep(waitTime);
 
@@ -560,14 +560,16 @@ public class AutonProcedures {
 //        robot.goDistance(isRight ? -36 : 36, 0, 0, isRight ? -1 : 1, 0, 0);
 
         if (isFar) {
-            robot.goToPosition(0, 26, 0, 0.25, 0.2, 10, 3);
-            robot.goToPosition((isRight ? -1 : 1) * 38, 26, 0, 0.25, 0.2, 10, 3);
+//            robot.goToPosition(0, 26, 0, 0.25, 0.2, 10, 3);
+            robot.goToPositionNew(2, 0, 26, 0.25, 0, 10, 3);
+//            robot.goToPosition((isRight ? -1 : 1) * 38, 26, 0, 0.25, 0.2, 10, 3);
+            robot.goToPositionNew(1, (isRight ? -1 : 1) * 40, 26, 0.25, 0, 10, 3);
         } else
-            robot.goToPosition((isRight ? -1 : 1) * 38, 4, 0, 0.25, 0.2, 10, 3);
+//            robot.goToPosition((isRight ? -1 : 1) * 38, 4, 0, 0.25, 0.2, 10, 3);
+            robot.goToPositionNew(1, (isRight ? -1 : 1) * 40, 4, 0.25, 0,10, 3);
 
-        robot.goToPosition((isRight ? -1 : 1) * 38, isFar ? 26 : 4, 0, 0.1, 0.2, 2, 3);
-
-
+//        robot.goToPosition((isRight ? -1 : 1) * 38, isFar ? 26 : 4, 0, 0.1, 0.2, 2, 3);
+        robot.goToPositionNew(1, (isRight ? -1 : 1) * 40, isFar ? 26 : 4, 0.1, 0, 2, 3);
 
 //        robot.goToPositionNew(0, 24, 0, 0.5, 0.2, 1.5, 3);
 

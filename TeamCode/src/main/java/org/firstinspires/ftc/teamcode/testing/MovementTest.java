@@ -31,7 +31,7 @@ public class MovementTest extends GenericOpMode {
 
 //        robot.goDistance(0, 48, 0, 0, 1, 0);
 //        robot.goDistance(0, 56, 0);
-        robot.setMecanumMotorRunmodes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.setMecanumRunmode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.goDistance(0, 12, 0, 0, 1, 0);
 
         //Tested with a 50 count stop in advance to reaching the target position
@@ -40,7 +40,7 @@ public class MovementTest extends GenericOpMode {
         //Expected 36, went 35 (~50 over)
         //Expected 48, went 47 (~40 over)
         robot.goDistance(-48, 0, 0, 1, 0, 0);
-        robot.setMecanumMotorPowers(0, 0, 0);
+        robot.setMecanumPower(0, 0, 0);
 
         while (opModeIsActive()) {
             addTelemetry("flMotor", robot.flMotor.getCurrentPosition() + " / " + robot.flMotor.getTargetPosition());

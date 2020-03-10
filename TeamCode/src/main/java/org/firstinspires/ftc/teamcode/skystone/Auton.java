@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode.skystone;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.util.GenericOpMode;
 import org.firstinspires.ftc.teamcode.util.Robot;
+
+import android.media.MediaPlayer;
 
 @Autonomous(name = "Autonomous", group = "SkyStone")
 @Disabled
@@ -15,32 +18,21 @@ public class Auton extends GenericOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         autonProcedures.init(robot, hardwareMap, this, true); //This calls init in the Robot class
-
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (!interrupted())
-//                    autonProcedures.start();
-//            }
-//        });
+        MediaPlayer mediaPlayer = MediaPlayer.create(hardwareMap.appContext, R.raw.charge);
 
         waitForStart();
 
-//        thread.start();
+        mediaPlayer.start();
 
 //        autonProcedures.startWithStartSpot(2);
         autonProcedures.start();
 
         while (opModeIsActive()) {
-//            if (isStopRequested()) {
-////                autonProcedures.running = false; //For testing purposes
-//            }
 
-//            telemetry.update();
         }
 
-//        thread.interrupt();
-//        thread.stop();
+        mediaPlayer.stop();
+
         robot.stop();
     }
 }

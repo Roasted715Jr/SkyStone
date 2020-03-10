@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.odometry.OdometryGlobalCoordinatePosition;
 
 //Length is 15.75
@@ -23,26 +22,17 @@ public class Robot {
 //    private static final int REV_CORE_HEX_COUNTS_PER_REVOLUTION = 288;
 //    private static final int NEVEREST_40_COUNTS_PER_REVOLUTION = 1120;
     private static final int NEVEREST_20_COUNTS_PER_REVOLUTION = 537; //Is actually 537.6, but setting the motors requires an int so it will truncate to 537 anyways
-//    private static final double EXTERNAL_COUNTS_PER_REVOLUTION = 8192;
-//    private static final double TURN_SPEED = 0.25;
-//    private static final double JOY_DEADZONE = 0.05;
-//    private static final double MOTOR_MULTIPLIER = 0.5 / (Math.sqrt(2) / 2);
     private static final int ENCODER_THRESHOLD = 50;
     private static final double POWER_INCREMENT = 0.1;
 
     private static final int MAIN_BOT = 0;
     private static final int MATT_TINY_BOT = 1;
-    private static final int TINY_BOT = 2;
+    private static final int BABY_BOT = 2;
     private static final int MECANUM_PUSHBOT = 3;
-    private static final int ROBOT_TYPE = MAIN_BOT;
+    private static final int INTAKE_TEST = 4;
+    private static final int ROBOT_TYPE = INTAKE_TEST;
 
     public static final String VUFORIA_LICENSE_KEY = "Abq1tHr/////AAABmYC8ioniS0f2gyQRx7fZlTWMwyYcrV/bnslJvcDe0AhxA/GAkYTIdNbPWjYtplipzvASUZRGR+AoGDI1dKyuCFCc4qy1eVbx8NO4nuAKzeGoncY7acvfol19suW5Zl29E+APEV0CG4GVBe4R+bZ/Xyd2E7CZ7AcrLbWM8+SJiMCDnxJa3J0ozBHMPMs6GNFyYS6YCVNMkFcLEKxDicwXqpuJddG5XenbAs8ot9UT11WRYZjpprLkSRtM1/OyigcUeb0wk2PL6lFVBMHMZbWK5HkJEmBoN5+v2fP6zouj0GPGyEh/eV8Xe71LhBz0WXKd180hUCowZVBfdsTtuYwFiBkAyRLtiQQb4/b80sAx1b6s";
-
-    private static int PINION_TEETH;
-    private static int SPUR_TEETH;
-    private static double xMult;
-    private static double yMult;
-    private static double rMult;
 
     //Ctrl+Q or Ctrl+Shift+I for documentation and definition
     public RevColorSensorV3 rColor, lColor;
@@ -53,6 +43,8 @@ public class Robot {
     private HardwareMap hardwareMap;
     private OdometryGlobalCoordinatePosition globalPositionUpdate;
     public DcMotor armMotor;
+    public DcMotor rIntake, lIntake, liftMotor, extendMotor;
+    public Servo grabberServo;
     public Servo armServo, clawServo, lFoundationServo, rFoundationServo;//, blockServo;
     public Servo rOdometerServo, hOdometerServo, lOdometerServo;
     private GenericOpMode runningOpMode;
@@ -66,6 +58,40 @@ public class Robot {
         hardwareMap = ahwMap;
 
         switch (ROBOT_TYPE) {
+            case INTAKE_TEST:
+                flMotor = hardwareMap.get(DcMotor.class, "flMotor");
+                blMotor = hardwareMap.get(DcMotor.class, "blMotor");
+                frMotor = hardwareMap.get(DcMotor.class, "frMotor");
+                brMotor = hardwareMap.get(DcMotor.class, "brMotor");
+                hOdometer = flMotor;
+                lOdometer = blMotor;
+                rOdometer = brMotor;
+                setMecanumPower(0, 0, 0);
+                setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                setMecanumRunmode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                initOdometry();
+
+                rIntake = hardwareMap.get(DcMotor.class, "rIntake");
+                lIntake = hardwareMap.get(DcMotor.class, "lIntake");
+                liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
+                extendMotor = hardwareMap.get(DcMotor.class, "extendMotor");
+
+                lIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+                liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                extendMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                grabberServo = hardwareMap.get(Servo.class, "grabberServo");
+                rFoundationServo = hardwareMap.get(Servo.class, "rFoundation");
+                lFoundationServo = hardwareMap.get(Servo.class, "lFoundation");
+
+//                rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
+//                lColor = hardwareMap.get(RevColorSensorV3.class, "lColor");
+//                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
+                break;
             case MAIN_BOT:
                 flMotor = hardwareMap.get(DcMotor.class, "flMotor");
                 hOdometer = flMotor;
@@ -74,24 +100,11 @@ public class Robot {
                 frMotor = hardwareMap.get(DcMotor.class, "frMotor");
                 brMotor = hardwareMap.get(DcMotor.class, "brMotor");
                 rOdometer = brMotor;
-                setMecanumMotorPowers(0, 0, 0);
+                setMecanumPower(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                setMecanumRunmode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                globalPositionUpdate = new OdometryGlobalCoordinatePosition(lOdometer, rOdometer, hOdometer, ODOMETER_COUNTS_PER_INCH, 75);
-                globalPositionUpdate.reverseRightEncoder();
-                globalPositionUpdate.reverseNormalEncoder();
-                lOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                rOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                hOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-                lOdometerServo = hardwareMap.get(Servo.class, "lOdometerServo");
-                hOdometerServo = hardwareMap.get(Servo.class, "hOdometerServo");
-                rOdometerServo = hardwareMap.get(Servo.class, "rOdometerServo");
-
-                lOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                rOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                hOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                initOdometry();
 
 //                armServo = hardwareMap.get(Servo.class, "armServo"); //Vertical is at 0.3
                 armMotor = hardwareMap.get(DcMotor.class, "armMotor");
@@ -102,8 +115,8 @@ public class Robot {
                 armMotor.setPower(0);
                 clawServo = hardwareMap.get(Servo.class, "clawServo");
 
-                rFoundationServo = hardwareMap.get(Servo.class, "rFoundationServo");
-                lFoundationServo = hardwareMap.get(Servo.class, "lFoundationServo");
+                rFoundationServo = hardwareMap.get(Servo.class, "rFoundation");
+                lFoundationServo = hardwareMap.get(Servo.class, "lFoundation");
 //                blockServo = hardwareMap.get(Servo.class, "blockServo");
 
                 rColor = hardwareMap.get(RevColorSensorV3.class, "rColor");
@@ -113,9 +126,6 @@ public class Robot {
 //                lTouch = hardwareMap.get(TouchSensor.class, "lTouch");
 
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distance");
-
-//                PINION_TEETH = 1;
-//                SPUR_TEETH = 1;
                 break;
             case MECANUM_PUSHBOT:
                 flMotor = hardwareMap.get(DcMotor.class, "frontL");
@@ -124,12 +134,9 @@ public class Robot {
                 brMotor = hardwareMap.get(DcMotor.class, "backR");
                 frMotor.setDirection(DcMotor.Direction.REVERSE);
                 brMotor.setDirection(DcMotor.Direction.REVERSE);
-                setMecanumMotorPowers(0, 0, 0);
+                setMecanumPower(0, 0, 0);
                 setMecanumZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-//                PINION_TEETH = 1;
-//                SPUR_TEETH = 1;
+                setMecanumRunmode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 break;
             case MATT_TINY_BOT:
                 rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
@@ -138,29 +145,32 @@ public class Robot {
                 setSimpleMotorPowers(0);
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-//                distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
-                PINION_TEETH = 1;
-                SPUR_TEETH = 1;
                 break;
-            case TINY_BOT:
-                rightMotor = hardwareMap.get(DcMotor.class, "driveR");
-                leftMotor = hardwareMap.get(DcMotor.class, "driveL");
+            case BABY_BOT:
+                rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
+                leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
                 setSimpleMotorPowers(0);
                 setSimpleZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 setSimpleMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                PINION_TEETH = 1;
-                SPUR_TEETH = 1;
                 break;
         }
     }
 
-    public void deployOdometers() {
-        rOdometerServo.setPosition(0);
-        hOdometerServo.setPosition(0);
-        lOdometerServo.setPosition(1);
+    private void initOdometry() {
+        globalPositionUpdate = new OdometryGlobalCoordinatePosition(lOdometer, rOdometer, hOdometer, ODOMETER_COUNTS_PER_INCH, 75);
+        globalPositionUpdate.reverseRightEncoder();
+        globalPositionUpdate.reverseNormalEncoder();
+
+        lOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hOdometer.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hOdometer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+//        lOdometerServo = hardwareMap.get(Servo.class, "lOdometerServo");
+//        hOdometerServo = hardwareMap.get(Servo.class, "hOdometerServo");
+//        rOdometerServo = hardwareMap.get(Servo.class, "rOdometerServo");
     }
 
     public void retractOdometers() {
@@ -194,41 +204,25 @@ public class Robot {
         return ODOMETER_COUNTS_PER_INCH;
     }
 
-    public void setMecanumMotorPowers(double x, double y, double r) {
-        //Turn speed is half of x or y
-        //x and y speed are the same
-//        xMult = 0.4;
-//        yMult = 0.4;
-//        rMult = 0.2;
-
-//        xMult = 1;
-//        yMult = 1;
-//        rMult = 1;
-
-//        xMult = MOTOR_MULTIPLIER * 2 / 5;
-//        yMult = MOTOR_MULTIPLIER * 2 / 5;
-//        rMult = MOTOR_MULTIPLIER / 5;
-
-        //When at 45 deg on left stick, multiply by 0.704 (or 1/2 / (sqrt(2) / 2)) to get optimal x and y
-
+    public void setMecanumPower(double x, double y, double r) {
 //        flMotor.setPower(x + y + r);
 //        blMotor.setPower(-x + y + r);
 //        frMotor.setPower(-x + y - r);
 //        brMotor.setPower(x + y - r);
 
-        //We reverse these because they're on the right side
+        //We reverse these two motors because they're on the right side
         frMotor.setPower(-(-x + y - r));
         brMotor.setPower(-(x + y - r));
         flMotor.setPower(x + y + r);
         blMotor.setPower(-x + y + r);
     }
 
-    void setSimpleMotorPowers(double power) {
+    public void setSimpleMotorPowers(double power) {
         rightMotor.setPower(power);
         leftMotor.setPower(power);
     }
 
-    public void setMecanumMotorRunmodes(DcMotor.RunMode runMode) {
+    public void setMecanumRunmode(DcMotor.RunMode runMode) {
         flMotor.setMode(runMode);
         blMotor.setMode(runMode);
         frMotor.setMode(runMode);
@@ -260,7 +254,7 @@ public class Robot {
         int rCounts = 0;
 
         setMecanumTargetPositions(xCounts, yCounts, rCounts);
-        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_TO_POSITION);
+        setMecanumRunmode(DcMotor.RunMode.RUN_TO_POSITION);
 //        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        rampMecanumMotors(x, y, r, true);
@@ -277,7 +271,7 @@ public class Robot {
                 break;
 
             if (power < 1) {
-                setMecanumMotorPowers(power * x, power * y, power * r);
+                setMecanumPower(power * x, power * y, power * r);
                 power += POWER_INCREMENT;
             }
 
@@ -293,7 +287,7 @@ public class Robot {
 //        runningOpMode.addTelemetry(nearTarget(frMotor, ENCODER_THRESHOLD));
 //        runningOpMode.addTelemetry(nearTarget(brMotor, ENCODER_THRESHOLD));
 //        runningOpMode.updateTelemetry();
-        setMecanumMotorRunmodes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setMecanumRunmode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     void setMecanumTargetPositions(int x, int y, int r) {
@@ -331,7 +325,7 @@ public class Robot {
                 if (power >= 1) {
                     //                power = target;
                     //                rampUp = !rampUp;   // Switch ramp direction
-                    setMecanumMotorPowers(x, y, r);
+                    setMecanumPower(x, y, r);
                     return;
                 }
             } else {
@@ -340,7 +334,7 @@ public class Robot {
                 if (power <= 0) {
                     //                power = target;
                     //                rampUp = !rampUp;  // Switch ramp direction
-                    setMecanumMotorPowers(0, 0, 0);
+                    setMecanumPower(0, 0, 0);
                     return;
                 }
             }
@@ -362,7 +356,7 @@ public class Robot {
                 flMotor.setPower(power * flMax);
                 blMotor.setPower(power * blMax);
             } else
-                setMecanumMotorPowers(power * x, power * y, power * r);
+                setMecanumPower(power * x, power * y, power * r);
 
 //            runningOpMode.addTelemetry("flMotor", flMotor.getCurrentPosition() + "/" + flMotor.getTargetPosition());
 //            runningOpMode.addTelemetry("blMotor", blMotor.getCurrentPosition() + "/" + blMotor.getTargetPosition());
@@ -425,7 +419,7 @@ public class Robot {
             double robotMovementRComponent = calculateR(pivotCorrection, angleThreshold, rotationSpeed);
 
 //            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent);
-            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, 0);
+            setMecanumPower(robotMovementXComponent, robotMovementYComponent, 0);
             distance = Math.hypot(distanceToXTarget, distanceToYTarget);
             orientation = globalPositionUpdate.returnOrientation();
 
@@ -447,7 +441,7 @@ public class Robot {
             runningOpMode.telemetry.update();
         }
 
-        setMecanumMotorPowers(0, 0, 0);
+        setMecanumPower(0, 0, 0);
     }
 
     public void approachSkyStone(double xSpeed, double ySpeed, double threshold, double targetRotation, double rotationSpeed, double angleThreshold) {
@@ -473,7 +467,7 @@ public class Robot {
         while (runningOpMode.opModeIsActive() && (foundBlock || Math.abs(distanceToXTarget) > threshold ||
                 //Check to see if we are over or under our desired rotation to continue the loop
                 (Math.abs(targetRotation) + angleThreshold < Math.abs(orientation) || Math.abs(orientation) < Math.abs(targetRotation) - angleThreshold))) {
-            foundBlock = foundSkyStone(lColor) || foundSkyStone(rColor) ? false : true;
+            foundBlock = !foundSkyStone(lColor) && !foundSkyStone(rColor);
 
             distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
 //            distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
@@ -489,7 +483,7 @@ public class Robot {
             double robotMovementRComponent = calculateR(pivotCorrection, angleThreshold, rotationSpeed);
 
 //            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent);
-            setMecanumMotorPowers(robotMovementXComponent, ySpeed, 0);
+            setMecanumPower(robotMovementXComponent, ySpeed, 0);
 //            distance = Math.hypot(distanceToXTarget, distanceToYTarget);
             orientation = globalPositionUpdate.returnOrientation();
 
@@ -513,7 +507,7 @@ public class Robot {
             runningOpMode.telemetry.update();
         }
 
-        setMecanumMotorPowers(0, 0, 0);
+        setMecanumPower(0, 0, 0);
     }
 
     //From Dad
@@ -527,8 +521,8 @@ public class Robot {
         double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
         double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
         double countMe = 0;
-        boolean targetfound = false;
-        while (runningOpMode.opModeIsActive() && (targetfound == false)) { //(distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold) ) {
+        boolean targetFound = false;
+        while (runningOpMode.opModeIsActive() && !targetFound) { //(distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold) ) {
 
             //We are reversing x and y because 0 degrees is forwards rather than to the right
             double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
@@ -538,9 +532,9 @@ public class Robot {
             //countMe++;
 
             if (targetxyr == 3) {
-                setMecanumMotorPowers(0, 0, robotMovementRComponent);
+                setMecanumPower(0, 0, robotMovementRComponent);
             }else{
-                setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent/4);
+                setMecanumPower(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent/4);
             }
             //setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, robotMovementRComponent);
 
@@ -551,32 +545,16 @@ public class Robot {
 
             switch (targetxyr) {
                 case 1:
-                    if (Math.abs(distanceToXTarget) > distanceThreshold) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = Math.abs(distanceToXTarget) <= distanceThreshold;
                     break;
                 case 2:
-                    if (Math.abs(distanceToYTarget) > distanceThreshold) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = Math.abs(distanceToYTarget) <= distanceThreshold;
                     break;
                 case 3:
-                    if (Math.abs(pivotCorrection) > angleThreshold) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = Math.abs(pivotCorrection) <= angleThreshold;
                     break;
                 case 0:
-                    if ((distance > distanceThreshold) || (Math.abs(pivotCorrection) > angleThreshold)) {
-                        targetfound = false;
-                    } else {
-                        targetfound = true;
-                    }
+                    targetFound = distance <= distanceThreshold && Math.abs(pivotCorrection) <= angleThreshold;
                     break;
             }
 
@@ -597,7 +575,7 @@ public class Robot {
             runningOpMode.telemetry.update();
         }
 
-        setMecanumMotorPowers(0, 0, 0);
+        setMecanumPower(0, 0, 0);
     }
 
     public void centerOnSkyStone(double xSpeed, double ySpeed, double targetRotation, double rotationSpeed, double angleThreshold) {
@@ -620,7 +598,7 @@ public class Robot {
             double pivotCorrection = targetRotation - globalPositionUpdate.returnOrientation();
             double robotMovementRComponent = calculateR(pivotCorrection, angleThreshold, rotationSpeed);
 
-            setMecanumMotorPowers(keepMoving ? xSpeed : 0, keepMoving ? ySpeed : 0, robotMovementRComponent);
+            setMecanumPower(keepMoving ? xSpeed : 0, keepMoving ? ySpeed : 0, robotMovementRComponent);
 //            setMecanumMotorPowers(robotMovementXComponent, robotMovementYComponent, 0);
             orientation = globalPositionUpdate.returnOrientation();
 
@@ -636,7 +614,7 @@ public class Robot {
             runningOpMode.telemetry.update();
         }
 
-        setMecanumMotorPowers(0, 0, 0);
+        setMecanumPower(0, 0, 0);
     }
 
     public void goToPosition(double targetX, double targetY, double targetRotation, double speed, double rotationSpeed) {
@@ -653,12 +631,12 @@ public class Robot {
         //Make this so we can go backwards with this as well
         while (runningOpMode.opModeIsActive() && Math.abs(distanceToYTarget) > 0.25) {
             distanceToYTarget = targetY - globalPositionUpdate.returnYCoordinate();
-            setMecanumMotorPowers(0, (distanceToYTarget > 0 ? 1 : -1) * speed, 0);
+            setMecanumPower(0, (distanceToYTarget > 0 ? 1 : -1) * speed, 0);
             runningOpMode.telemetry.addData("distanceToYTarget", distanceToYTarget / ODOMETER_COUNTS_PER_INCH);
             runningOpMode.telemetry.update();
         }
 
-        setMecanumMotorPowers(0, 0, 0);
+        setMecanumPower(0, 0, 0);
     }
 
     void goToX(double targetX, double speed) {
@@ -668,13 +646,13 @@ public class Robot {
         //Make this so we can go backwards with this as well
         while (runningOpMode.opModeIsActive() && Math.abs(distanceToXTarget) > 0.25) {
             distanceToXTarget = targetX - globalPositionUpdate.returnXCoordinate();
-            setMecanumMotorPowers((distanceToXTarget > 0 ? 1 : -1) * speed, 0, 0);
+            setMecanumPower((distanceToXTarget > 0 ? 1 : -1) * speed, 0, 0);
             runningOpMode.telemetry.addData("distanceToXTarget", distanceToXTarget / ODOMETER_COUNTS_PER_INCH);
             runningOpMode.telemetry.addData("horizontalEncoder", hOdometer.getCurrentPosition());
             runningOpMode.telemetry.update();
         }
 
-        setMecanumMotorPowers(0, 0, 0);
+        setMecanumPower(0, 0, 0);
     }
 
     private double calculateX(double desiredAngle, double speed) {
